@@ -29,9 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: pnpm/action-setup@v2
-        with:
-          package_json_file: ../package.json
+        uses: pnpm/action-setup@v3
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
