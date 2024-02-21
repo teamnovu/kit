@@ -1,4 +1,5 @@
-# jktools - look no further. We have all you will ever need.
+# @teamnovu/kit-*
+look no further. We have all you will ever need.
 
 Just kidding.
 
