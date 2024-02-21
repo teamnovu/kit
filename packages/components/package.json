@@ -1,0 +1,48 @@
+{
+  "name": "@teamnovu/kit-components",
+  "version": "1.0.11",
+  "description": "A collection of vue(3) components for jkweb",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./Image": "./dist/Image.mjs",
+    "./Dialog": "./dist/Dialog.mjs",
+    "./Collapse": "./dist/Collapse.mjs",
+    "./Accordion": "./dist/Accordion.mjs",
+    "./AccordionItem": "./dist/AccordionItem.mjs",
+    "./AccordionHeader": "./dist/AccordionHeader.mjs",
+    "./AccordionBody": "./dist/AccordionBody.mjs",
+    "./HAccordion": "./dist/HAccordion.mjs",
+    "./HAccordionItem": "./dist/HAccordionItem.mjs",
+    "./AccessibleComponent": "./dist/AccessibleComponent.mjs"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "watch": "NODE_ENV=development vite build --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/JKwebGmbH/jktools.git"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "components"
+  ],
+  "author": "Elias Bernhaut",
+  "bugs": {
+    "url": "https://gitlab.com/JKwebGmbH/jktools/issues"
+  },
+  "homepage": "https://gitlab.com/JKwebGmbH/jktools#readme",
+  "dependencies": {
+    "@teamnovu/kit-composables": "workspace:*",
+    "@vueuse/core": "^9.13.0",
+    "lodash-es": "^4.17.21",
+    "uuid-browser": "^3.1.0"
+  }
+}

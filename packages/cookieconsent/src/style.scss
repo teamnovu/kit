@@ -1,0 +1,33 @@
+@import 'vanilla-cookieconsent/dist/cookieconsent.css';
+
+#cc-main .pm__body {
+    overflow-y: scroll;
+}
+
+.cc-rejected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 0 2rem;
+    button {
+        background: var(--cc-btn-primary-bg);
+        border: 1px solid var(--cc-btn-primary-border-color);
+        border-radius: var(--cc-btn-border-radius);
+        color: var(--cc-btn-primary-color);
+        font-size: .82em;
+        font-weight: 600;
+        min-height: 42px;
+        padding: 0.5em 1em;
+        text-align: center;
+        margin-top: 1rem;
+        transition: background-color .15s ease,border-color .15s ease,color .15s ease;
+        &:hover {
+            background: var(--cc-btn-primary-hover-bg);
+            border-color: var(--cc-btn-primary-hover-border-color);
+            color: var(--cc-btn-primary-hover-color);
+        }
+    }
+} 

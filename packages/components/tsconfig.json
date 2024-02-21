@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {
+      "@teamnovu/kit-components/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}

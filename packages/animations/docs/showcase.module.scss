@@ -1,0 +1,16 @@
+.card-pop {
+  transition-property: transform;
+  transition-duration: var(--jk-animation-card-pop-duration);
+  transition-delay: var(--jk-animation-card-pop-delay);
+  transition-timing-function: var(--jk-animation-card-pop-easing);
+
+  transform: scale(1);
+}
+
+.card-pop-in {
+  transform: scale(1);
+}
+
+.card-pop-out {
+  transform: scale(0.7);
+}

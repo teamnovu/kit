@@ -1,0 +1,50 @@
+{
+  "description": "One place for shared JS/Web development goods",
+  "homepage": "https://github.com/teamnovu/kit",
+  "author": "@teamnovu",
+  "type": "module",
+  "scripts": {
+    "preinstall": "git config core.hooksPath hooks",
+    "build": "npm run build --workspaces --if-present",
+    "watch": "npm run build && esno ./scripts/runAll watch",
+    "typecheck": "tsc --noEmit",
+    "docs:dev": "vitepress dev --port 3000",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "workspaces": [
+    "packages/composables",
+    "packages/components",
+    "packages/animations",
+    "packages/nuxt",
+    "packages/cookieconsent"
+  ],
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/cli-service": "^5.0.8",
+    "@vue/compiler-sfc": "^3.2.47",
+    "autoprefixer": "^10.4.13",
+    "concurrently": "^7.6.0",
+    "eslint": "^8.35.0",
+    "esno": "^0.16.3",
+    "flexsearch": "^0.7.31",
+    "glob": "^9.3.0",
+    "lodash-es": "^4.17.21",
+    "markdown-it": "^13.0.1",
+    "rollup-plugin-copy": "^3.5.0",
+    "sass": "^1.59.3",
+    "shelljs": "^0.8.5",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.4",
+    "vite-plugin-dts": "^2.3.0",
+    "vitepress": "^1.0.0-alpha.72",
+    "vitepress-plugin-search": "^1.0.4-alpha.19"
+  },
+  "dependencies": {
+    "@teamnovu/kit-animations": "workspace:^",
+    "@teamnovu/kit-components": "workspace:^",
+    "@teamnovu/kit-composables": "workspace:^",
+    "@teamnovu/kit-cookieconsent": "workspace:^"
+  }
+}

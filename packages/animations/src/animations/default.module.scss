@@ -1,0 +1,104 @@
+@media screen and (prefers-reduced-motion: no-preference) { 
+
+  /* #region in-bottom */
+
+  .in-bottom {
+    transition-property: transform, opacity;
+    transition-duration: var(--jk-animation-in-bottom-duration);
+    transition-delay: var(--jk-animation-in-bottom-delay);
+    transition-timing-function: var(--jk-animation-in-bottom-easing);
+
+    opacity: 0;
+    transform: translateY(var(--jk-animation-in-bottom-offset));
+  }
+
+  .in-bottom-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .in-bottom-out-bottom {
+    transform: translateY(var(--jk-animation-in-bottom-offset));
+  }
+
+  .in-bottom-out-top {
+    transform: translateY(calc(var(--jk-animation-in-bottom-offset) * -1));
+  }
+
+  /* #endregion */
+
+
+  /* #region in-top */
+
+  .in-top {
+    transition-property: transform, opacity;
+    transition-duration: var(--jk-animation-in-top-duration);
+    transition-delay: var(--jk-animation-in-top-delay);
+    transition-timing-function: var(--jk-animation-in-top-easing);
+
+    opacity: 0;
+    transform: translateY(calc(var(--jk-animation-in-top-offset) * -1));
+  }
+
+  .in-top-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .in-top-out-bottom {
+    transform: translateY(calc(var(--jk-animation-in-top-offset) * -1));
+  }
+
+  .in-top-out-top {
+    transform: translateY(var(--jk-animation-in-top-offset));
+  }
+
+  /* #endregion */
+
+  /* #region in-left */
+
+  .in-left {
+    transition-property: transform, opacity;
+    transition-duration: var(--jk-animation-in-left-duration);
+    transition-delay: var(--jk-animation-in-left-delay);
+    transition-timing-function: var(--jk-animation-in-left-easing);
+
+    opacity: 0;
+    transform: translateX(calc(var(--jk-animation-in-left-offset) * -1));
+  }
+
+  .in-left-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .in-left-out {
+    transform: translateX(calc(var(--jk-animation-in-left-offset) * -1));
+  }
+
+  /* #endregion */
+
+  /* #region in-right */
+
+  .in-right {
+    transition-property: transform, opacity;
+    transition-duration: var(--jk-animation-in-right-duration);
+    transition-delay: var(--jk-animation-in-right-delay);
+    transition-timing-function: var(--jk-animation-in-right-easing);
+
+    opacity: 0;
+    transform: translateX(var(--jk-animation-in-right-offset));
+  }
+
+  .in-right-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .in-right-out {
+    transform: translateX(var(--jk-animation-in-right-offset));
+  }
+
+  /* #endregion */
+
+}

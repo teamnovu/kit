@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Loop through each folder in the 'packages' directory
+for dir in ./packages/*/ ; do
+  # Get the version number from package.json
+  VERSION=$(node -pe "require('$dir/package.json').version")
+  
+  # Create a file named 'version' and write the version number to it
+  echo $VERSION > $dir/version
+
+  # Add the 'version' file to the staging area
+  git add $dir/version
+done

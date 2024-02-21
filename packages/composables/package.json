@@ -1,0 +1,43 @@
+{
+  "name": "@teamnovu/kit-composables",
+  "version": "1.1.3",
+  "description": "A collection of composables",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.mjs"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "watch": "NODE_ENV=development vite build --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/JKwebGmbH/jktools.git"
+  },
+  "keywords": [
+    "composable",
+    "vue",
+    "vue3"
+  ],
+  "author": "Elias Bernhaut",
+  "bugs": {
+    "url": "https://gitlab.com/JKwebGmbH/jktools/issues"
+  },
+  "homepage": "https://gitlab.com/JKwebGmbH/jktools#readme",
+  "dependencies": {
+    "@vueuse/core": "^9.13.0",
+    "lodash-es": "^4.17.21",
+    "uuid": "^9.0.0",
+    "uuid-browser": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.1",
+    "@types/uuid": "^9.0.1",
+    "@types/uuid-browser": "^3.1.0"
+  }
+}
