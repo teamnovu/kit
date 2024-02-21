@@ -29,7 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: pnpm/action-setup@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+      - uses: pnpm/action-setup@v3
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
