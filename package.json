@@ -3,6 +3,7 @@
   "homepage": "https://github.com/teamnovu/kit",
   "author": "@teamnovu",
   "type": "module",
+  "packageManager": "pnpm@8.15.3",
   "scripts": {
     "preinstall": "git config core.hooksPath hooks",
     "build": "npm run build --workspaces --if-present",
