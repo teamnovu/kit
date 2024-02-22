@@ -5,9 +5,8 @@
   "type": "module",
   "packageManager": "pnpm@8.15.3",
   "scripts": {
-    "preinstall": "git config core.hooksPath hooks",
-    "build": "npm run build",
-    "watch": "npm run build && esno ./scripts/runAll watch",
+    "build": "pnpm -r build",
+    "watch": "pnpm -r run build && esno ./scripts/runAll watch",
     "typecheck": "tsc --noEmit",
     "docs:dev": "vitepress dev --port 3000",
     "docs:build": "vitepress build",
