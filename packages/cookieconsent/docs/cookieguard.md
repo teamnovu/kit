@@ -34,8 +34,9 @@ const { allowed } = useCookieGuard('functional.srf');
 body {
     --cc-font-family: var(--vp-font-family-base);
     --cc-btn-primary-bg: var(--vp-c-brand);
-    --cc-btn-primary-border-color: #{var(--vp-c-brand)};
+    --cc-btn-primary-border-color: var(--vp-c-brand);
     --cc-btn-primary-hover-bg: var(--vp-c-brand-darker);
+    --cc-btn-primary-hover-border-color: var(--vp-c-brand-darker);
     --cc-toggle-on-bg: var(--vp-c-brand);
 }
 .video {

@@ -21,8 +21,9 @@ if (!import.meta.env.SSR) {
 body {
     --cc-font-family: var(--vp-font-family-base);
     --cc-btn-primary-bg: var(--vp-c-brand);
-    --cc-btn-primary-border-color: #{var(--vp-c-brand)};
+    --cc-btn-primary-border-color: var(--vp-c-brand);
     --cc-btn-primary-hover-bg: var(--vp-c-brand-darker);
+    --cc-btn-primary-hover-border-color: var(--vp-c-brand-darker);
     --cc-toggle-on-bg: var(--vp-c-brand);
 }
 </style>
@@ -98,12 +99,12 @@ You can find available [options here](https://cookieconsent.orestbida.com/refere
 
 You can customize the default styling easily with a few handy styling variables. You can find a [complete list here](https://github.com/orestbida/cookieconsent/blob/master/src/cookieconsent.css).
 
-```scss
+```css
 body {
-    --cc-font-family: #{var(--vp-font-family-base)};
-    --cc-btn-primary-bg: #{var(--vp-c-brand)};
-    --cc-btn-primary-border-color: #{var(--vp-c-brand)};
-    --cc-btn-primary-hover-bg: #{var(--vp-c-brand-darker)};
-    --cc-toggle-bg-on: #{var(--vp-c-brand)};
+    --cc-font-family: var(--vp-font-family-base);
+    --cc-btn-primary-bg: var(--vp-c-brand);
+    --cc-btn-primary-border-color: var(--vp-c-brand);
+    --cc-btn-primary-hover-bg: var(--vp-c-brand-darker);
+    --cc-toggle-bg-on: var(--vp-c-brand);
 }
 ```
