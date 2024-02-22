@@ -20,7 +20,7 @@ import {
   type EasingFunction,
   type MaybeRef,
 } from "@vueuse/core";
-import uuid from "uuid-browser/v4";
+import { nanoid } from 'nanoid'
 
 // #region Types
 
@@ -42,7 +42,7 @@ const emit = defineEmits(["update:open"]);
 
 const collapseRef = ref<HTMLElement>();
 const isTransitioning = ref(false);
-const id = uuid();
+const id = nanoid();
 const isOpen = useCollapse(collapseRef, {
   ...omit(props, ["open"]),
   id,

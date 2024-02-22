@@ -1,6 +1,6 @@
 {
   "name": "@teamnovu/kit-cookieconsent",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "A Vue wrapper for Cookie Consent",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
@@ -31,5 +31,8 @@
     "@vueuse/core": "^10.5.0",
     "defu": "^6.1.3",
     "vanilla-cookieconsent": "^3.0.0-rc.15"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^3.10.2"
   }
 }

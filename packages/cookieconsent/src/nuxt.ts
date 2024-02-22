@@ -3,9 +3,10 @@ import {
   addImports,
   defineNuxtModule,
 } from '@nuxt/kit';
+import type { NuxtModule } from '@nuxt/schema';
 import type { CookieConsentConfig } from './types';
 
-export default defineNuxtModule<CookieConsentConfig>({
+const module: NuxtModule<CookieConsentConfig> = defineNuxtModule<CookieConsentConfig>({
 
   meta: {
     name: '@teamnovu/kit-cookieconsent',
@@ -39,3 +40,5 @@ export default defineNuxtModule<CookieConsentConfig>({
   },
 
 });
+
+export default module;

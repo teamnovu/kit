@@ -15,7 +15,7 @@ import {
   provide,
   nextTick,
 } from 'vue';
-import uuid from 'uuid-browser/v4';
+import { nanoid } from 'nanoid'
 import { useCollapseController } from './injects/collapseController';
 import { collapseContextKey } from './injects/collapseContext';
 
@@ -31,7 +31,7 @@ export default function useCollapsable(
   elm?: HTMLElement | Ref<HTMLElement | undefined>,
   options?: CollapseOptions,
 ) {
-  const id = options?.id ?? uuid() as string;
+  const id = options?.id ?? nanoid() as string;
   const dimension = computed(() => options?.dimension ?? 'height');
 
   const baseState = ref(options?.initiallyClosed ? 0 : 100);

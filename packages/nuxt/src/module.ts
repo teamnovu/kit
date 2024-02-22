@@ -6,6 +6,7 @@ import {
   createResolver,
   addImportsDir,
 } from '@nuxt/kit';
+import type { NuxtModule } from '@nuxt/schema';
 import * as Components from '@teamnovu/kit-components';
 import * as Composables from '@teamnovu/kit-composables';
 import { type Options as AnimationsOptions } from '@teamnovu/kit-animations';
@@ -26,7 +27,7 @@ export interface JktoolsNuxtOptions {
  * }
  * ```
  */
-export default defineNuxtModule<JktoolsNuxtOptions>({
+const module: NuxtModule<JktoolsNuxtOptions> = defineNuxtModule<JktoolsNuxtOptions>({
   meta: {
     name: 'jktools',
     configKey: 'jktools',
@@ -74,3 +75,5 @@ declare module '@nuxt/schema' {
     jktools?: JktoolsNuxtOptions
   }
 }
+
+export default module;

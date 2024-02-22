@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import type { App, Directive, DirectiveBinding } from 'vue';
-import uuid from 'uuid-browser/v4';
+import { nanoid } from 'nanoid'
 import createInstance, { createContext } from './impl';
 import type { Animation, Options, ScrollContainer } from './types';
 import defaultAnimations from './animations';
@@ -30,7 +30,7 @@ export const create = (options: Options = {}): CreateResult => {
     element: any,
     bind: DirectiveBinding<Animation>,
   ) => {
-    const id = element.__jkAnimateId || `jk-animate-id-${uuid()}`;
+    const id = element.__jkAnimateId || `jk-animate-id-${nanoid()}`;
     // eslint-disable-next-line no-param-reassign
     element.__jkAnimateId = id;
 

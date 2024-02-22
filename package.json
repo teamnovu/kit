@@ -6,7 +6,7 @@
   "packageManager": "pnpm@8.15.3",
   "scripts": {
     "preinstall": "git config core.hooksPath hooks",
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build",
     "watch": "npm run build && esno ./scripts/runAll watch",
     "typecheck": "tsc --noEmit",
     "docs:dev": "vitepress dev --port 3000",
@@ -22,12 +22,14 @@
   ],
   "devDependencies": {
     "@types/lodash-es": "^4.17.6",
+    "@typescript-eslint/parser": "^7.0.2",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/cli-service": "^5.0.8",
     "@vue/compiler-sfc": "^3.2.47",
     "autoprefixer": "^10.4.13",
     "concurrently": "^7.6.0",
     "eslint": "^8.35.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "esno": "^0.16.3",
     "flexsearch": "^0.7.31",
     "glob": "^9.3.0",
