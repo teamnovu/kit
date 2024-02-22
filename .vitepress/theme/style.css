@@ -8,7 +8,6 @@
  * -------------------------------------------------------------------------- */
 
  :root {
-  --vp-c-bg: #111;
   --vp-c-brand: #D5C283;
   --vp-c-brand-1: #D5C283;
   --vp-c-brand-light: #EBDFB7;
@@ -100,6 +99,10 @@
   Also specify some classes twice to have higher specificity
   over scoped class data attribute.
 */
+.dark {
+  --vp-c-bg: #111;
+}
+
 .dark .vp-doc a,
 .dark .vp-doc a > code,
 .dark .VPNavBarMenuLink.VPNavBarMenuLink:hover,
