@@ -40,28 +40,20 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Install dependencies
         run: pnpm install
-      - name: Build with VitePress
+      - name: Build
         run: |
           pnpm build
           pnpm docs:build
           touch .vitepress/dist/.nojekyll
-      - name: Upload artifact
+      - name: Publish to npm
+        env:
+           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+           pnpm -r publish --no-git-checks
+      - name: Upload docs artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .vitepress/dist
-
-  # Publish packages
-  publish:
-    runs-on: ubuntu-latest
-    needs: build
-    name: Publish to npm
-    steps:
-      - uses: pnpm/action-setup@v3
-      - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          pnpm -r publish --no-git-checks
 
   # Docs deployment
   docs:
