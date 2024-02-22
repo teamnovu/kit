@@ -16,7 +16,7 @@ permissions:
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: docs
+  group: release
   cancel-in-progress: false
 
 jobs:
@@ -30,30 +30,38 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - uses: pnpm/action-setup@v3
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
+
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
       - name: Build
         run: |
           pnpm build
           pnpm docs:build
           touch .vitepress/dist/.nojekyll
+
       - name: Publish to npm
+        shell: bash
+        run: pnpm -r publish --access public --no-git-checks
         env:
            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-           pnpm -r publish --no-git-checks
+
       - name: Upload docs artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .vitepress/dist
+
 
   # Docs deployment
   docs:
