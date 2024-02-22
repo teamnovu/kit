@@ -1,9 +1,10 @@
-import { join } from 'path';
+import path, { join } from 'path';
 import { loadConfigFromFile, normalizePath, type ConfigEnv } from 'vite';
-import { readdir, access, constants } from 'fs/promises';
+import {
+  readdir, access, constants, readFile,
+} from 'fs/promises';
 import type { DefaultTheme, UserConfig } from 'vitepress';
 import { glob } from 'glob';
-import path from 'path';
 
 type GetPromiseType<T extends Promise<unknown>> = T extends Promise<
   infer Target
@@ -70,7 +71,7 @@ function packageFilter(file: Dirent) {
  */
 async function filterAsync<T>(
   coll: T[],
-  predicate: Parameters<T[]['filter']>[0]
+  predicate: Parameters<T[]['filter']>[0],
 ) {
   const predicateMask = await Promise.all(coll.map(predicate));
   return coll.filter((_, i) => predicateMask[i]);
@@ -118,12 +119,12 @@ export async function collectPackageNamesWithConfig() {
  */
 export async function loadPackageConfiguration(
   pkgName: string,
-  configEnv: ConfigEnv
+  configEnv: ConfigEnv,
 ) {
   const result = await loadConfigFromFile(
     configEnv,
     `./packages/${pkgName}/docs/config.ts`,
-    normalizePath(process.cwd())
+    normalizePath(process.cwd()),
   );
   return result?.config;
 }
@@ -137,16 +138,14 @@ export async function loadPackageConfiguration(
  */
 export async function loadPackageConfigurations(
   configEnv: ConfigEnv,
-  pkgNames: string[]
+  pkgNames: string[],
 ) {
   if (!pkgNames.length) return [];
-  const configPromises = pkgNames.map((pkgName) =>
-    loadPackageConfiguration(pkgName, configEnv)
-  );
+  const configPromises = pkgNames.map((pkgName) => loadPackageConfiguration(pkgName, configEnv));
   const configs = await Promise.all(configPromises);
   return (
-    (configs.filter((config) => config) as UserConfig<DefaultTheme.Config>[]) ??
-    []
+    (configs.filter((config) => config) as UserConfig<DefaultTheme.Config>[])
+    ?? []
   );
 }
 
@@ -172,20 +171,17 @@ export async function buildExtendsChain(
  */
 async function buildSidebarConfigForPackage(pkgName: string) {
   const pkgDocPaths = await glob(`${getPackageDocsPath(pkgName)}/**/*.md`);
-  const relativePaths = pkgDocPaths.map((pkgDoc) =>
-    path.relative(getPackageDocsPath(pkgName), pkgDoc).slice(0, -3)
-  );
+  const relativePaths = pkgDocPaths.map((pkgDoc) => path.relative(getPackageDocsPath(pkgName), pkgDoc).slice(0, -3));
 
-  let sidebarConfig = {
-    text: buildSidebarName(pkgName) as string | undefined,
+  const sidebarConfig = {
+    text: await buildSidebarName(pkgName) as string | undefined,
     items: [] as DefaultTheme.SidebarItem[] | undefined,
   } as DefaultTheme.SidebarItem;
 
   for (const relPath of relativePaths) {
     const isIndex = relPath.toLocaleLowerCase() === 'index';
-    const pathParts =
-      isIndex ? [] : relPath.split(path.sep);
-    
+    const pathParts = isIndex ? [] : relPath.split(path.sep);
+
     if (isIndex) {
       sidebarConfig.link = path.join('packages', pkgName, relPath);
     }
@@ -202,7 +198,7 @@ async function buildSidebarConfigForPackage(pkgName: string) {
       } else {
         const newItem: DefaultTheme.SidebarItem = {
           items: [],
-          text: buildSidebarName(pathPart),
+          text: await buildSidebarName(pathPart),
           link: isLast ? path.join('packages', pkgName, relPath) : undefined,
         };
         currentItem.items?.push(newItem);
@@ -220,10 +216,15 @@ async function buildSidebarConfigForPackage(pkgName: string) {
  * @param name The plain string to convert into a proper display name
  * @returns The name in a printable format
  */
-function buildSidebarName(name: string) {
-  return capitalize(
-    name.replace(/(\w)[^\w_](\w)/, (_, m1, m2) => `${m1} ${m2.toUpperCase()}`)
-  );
+async function buildSidebarName(name: string) {
+  try {
+    const info = await readFile(`${getPackageDocsPath(name)}/info.json`);
+    return JSON.parse(info.toString()).name;
+  } catch (e) {
+    return capitalize(
+      name.replace(/(\w)[^\w_](\w)/, (_, m1, m2) => `${m1} ${m2.toUpperCase()}`),
+    );
+  }
 }
 
 /**
