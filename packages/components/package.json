@@ -44,5 +44,8 @@
     "@vueuse/core": "^9.13.0",
     "lodash-es": "^4.17.21",
     "nanoid": "^5.0.6"
+  },
+  "devDependencies": {
+    "@vueuse/shared": "^10.8.0"
   }
 }
