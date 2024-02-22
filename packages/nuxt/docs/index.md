@@ -1,6 +1,6 @@
 # *-nuxt
 
-Add jktools to nuxt
+Add @teamnovu/kit-* to nuxt
 
 ## Contents
 

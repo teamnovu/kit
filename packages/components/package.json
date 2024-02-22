@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/JKwebGmbH/jktools.git"
+    "url": "git+ssh://git@github.com:teamnovu/kit.git"
   },
   "keywords": [
     "vue",
@@ -35,10 +35,7 @@
     "components"
   ],
   "author": "Elias Bernhaut",
-  "bugs": {
-    "url": "https://gitlab.com/JKwebGmbH/jktools/issues"
-  },
-  "homepage": "https://gitlab.com/JKwebGmbH/jktools#readme",
+  "homepage": "https://kit.novu.ch/packages/components/",
   "dependencies": {
     "@teamnovu/kit-composables": "workspace:*",
     "@vueuse/core": "^9.13.0",

@@ -1,6 +1,10 @@
 {
   "description": "One place for shared JS/Web development goods",
-  "homepage": "https://github.com/teamnovu/kit",
+  "homepage": "https://kit.novu.ch/",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:teamnovu/kit.git"
+  },
   "author": "@teamnovu",
   "type": "module",
   "packageManager": "pnpm@8.15.3",

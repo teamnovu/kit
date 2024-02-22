@@ -11,26 +11,26 @@ import * as Components from '@teamnovu/kit-components';
 import * as Composables from '@teamnovu/kit-composables';
 import { type Options as AnimationsOptions } from '@teamnovu/kit-animations';
 
-export interface JktoolsNuxtOptions {
+export interface NovuKitNuxtOptions {
   prefix?: string
   animations?: AnimationsOptions
 }
 
 /**
- * jktools for Nuxt
+ * NovuKit for Nuxt
  * Usage:
  *
  * ```ts
  * // nuxt.config.js
  * export default {
- *   modules: ['@vueuse/jktools']
+ *   modules: ['@teamnovu/kit-nuxt']
  * }
  * ```
  */
-const module: NuxtModule<JktoolsNuxtOptions> = defineNuxtModule<JktoolsNuxtOptions>({
+const module: NuxtModule<NovuKitNuxtOptions> = defineNuxtModule<NovuKitNuxtOptions>({
   meta: {
-    name: 'jktools',
-    configKey: 'jktools',
+    name: 'kit',
+    configKey: 'kit',
   },
   defaults: {
     prefix: '',
@@ -39,7 +39,7 @@ const module: NuxtModule<JktoolsNuxtOptions> = defineNuxtModule<JktoolsNuxtOptio
     const { resolve } = createResolver(import.meta.url);
 
     // eslint-disable-next-line no-param-reassign
-    nuxt.options.runtimeConfig.public.jktools = {
+    nuxt.options.runtimeConfig.public.kit = {
       ...options,
     };
 
@@ -68,11 +68,11 @@ const module: NuxtModule<JktoolsNuxtOptions> = defineNuxtModule<JktoolsNuxtOptio
 declare module '@nuxt/schema' {
   // eslint-disable-next-line no-unused-vars
   interface NuxtConfig {
-    jktools?: JktoolsNuxtOptions
+    kit?: NovuKitNuxtOptions
   }
   // eslint-disable-next-line no-unused-vars
   interface NuxtOptions {
-    jktools?: JktoolsNuxtOptions
+    kit?: NovuKitNuxtOptions
   }
 }
 

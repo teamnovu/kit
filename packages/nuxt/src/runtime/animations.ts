@@ -8,7 +8,7 @@ import { defineNuxtPlugin, inject, useRuntimeConfig } from '#imports';
 
 export default defineNuxtPlugin(({ vueApp, hook }: any) => {
   const runtimeConfig = useRuntimeConfig();
-  const config = (runtimeConfig?.public?.jktools.animations ?? {}) as AnimationsOptions;
+  const config = (runtimeConfig?.public?.kit.animations ?? {}) as AnimationsOptions;
 
   vueApp.use(animate, config);
 

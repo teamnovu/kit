@@ -27,10 +27,10 @@ const baseConfig: UserConfig<DefaultTheme.Config> = {
     editLink: {
       pattern: ({ relativePath }): string => {
         if (relativePath.startsWith('packages/')) {
-          const [_, pkgName, ...files] = relativePath.split('/');
-          return `https://gitlab.com/JKwebGmbH/jktools/-/blob/master/packages/${pkgName}/docs/${files.join('/')}`;
+          const [, pkgName, ...files] = relativePath.split('/');
+          return `https://github.com/teamnovu/kit/tree/main/packages/${pkgName}/docs/${files.join('/')}`;
         }
-        return `https://gitlab.com/JKwebGmbH/jktools/-/blob/master/docs/${relativePath}`;
+        return `https://github.com/teamnovu/kit/tree/main/docs/${relativePath}`;
       },
     },
 
@@ -38,7 +38,6 @@ const baseConfig: UserConfig<DefaultTheme.Config> = {
       {
         text: 'General',
         items: [
-          { text: 'Preparation', link: '/preparation' },
           { text: 'Contribute', link: '/contribute' },
           { text: 'Guidelines', link: '/guidelines' },
           { text: 'Tried and Tested', link: '/tried' },
