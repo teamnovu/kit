@@ -51,11 +51,14 @@ jobs:
           pnpm docs:build
           touch .vitepress/dist/.nojekyll
 
+      - name: Set publishing config
+        run: pnpm config set '//registry.npmjs.org/:_authToken' "${NODE_AUTH_TOKEN}"
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
       - name: Publish to npm
         shell: bash
         run: pnpm -r publish --access public --no-git-checks
-        env:
-           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Upload docs artifact
         uses: actions/upload-pages-artifact@v3
