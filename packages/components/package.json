@@ -2,21 +2,55 @@
   "name": "@teamnovu/kit-components",
   "version": "1.0.12",
   "description": "A collection of vue(3) components for jkweb",
+  "type": "module",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.mjs",
-    "./Image": "./dist/Image.mjs",
-    "./Dialog": "./dist/Dialog.mjs",
-    "./Collapse": "./dist/Collapse.mjs",
-    "./Accordion": "./dist/Accordion.mjs",
-    "./AccordionItem": "./dist/AccordionItem.mjs",
-    "./AccordionHeader": "./dist/AccordionHeader.mjs",
-    "./AccordionBody": "./dist/AccordionBody.mjs",
-    "./HAccordion": "./dist/HAccordion.mjs",
-    "./HAccordionItem": "./dist/HAccordionItem.mjs",
-    "./AccessibleComponent": "./dist/AccessibleComponent.mjs"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./Image": {
+      "types": "./dist/Image.vue.d.ts",
+      "import": "./dist/Image.mjs"
+    },
+    "./Dialog": {
+      "types": "./dist/Dialog.vue.d.ts",
+      "import": "./dist/Dialog.mjs"
+    },
+    "./Collapse": {
+      "types": "./dist/Collapse.vue.d.ts",
+      "import": "./dist/Collapse.mjs"
+    },
+    "./Accordion": {
+      "types": "./dist/accordion/Accordion.vue.d.ts",
+      "import": "./dist/Accordion.mjs"
+    },
+    "./AccordionItem": {
+      "types": "./dist/accordion/AccordionItem.vue.d.ts",
+      "import": "./dist/AccordionItem.mjs"
+    },
+    "./AccordionHeader": {
+      "types": "./dist/accordion/AccordionHeader.vue.d.ts",
+      "import": "./dist/AccordionHeader.mjs"
+    },
+    "./AccordionBody": {
+      "types": "./dist/accordion/AccordionBody.vue.d.ts",
+      "import": "./dist/AccordionBody.mjs"
+    },
+    "./HAccordion": {
+      "types": "./dist/accordion/HAccordion.vue.d.ts",
+      "import": "./dist/HAccordion.mjs"
+    },
+    "./HAccordionItem": {
+      "types": "./dist/accordion/HAccordionItem.vue.d.ts",
+      "import": "./dist/HAccordionItem.mjs"
+    },
+    "./AccessibleComponent": {
+      "types": "./dist/AccessibleComponent.vue.d.ts",
+      "import": "./dist/AccessibleComponent.mjs"
+    }
   },
   "peerDependencies": {
     "vue": "^3.0.0"
