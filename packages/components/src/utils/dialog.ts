@@ -40,7 +40,7 @@ export function useDialogFocus(
     const dialog = unref(dialogRef);
     if (!dialog) return;
 
-    if (!dialog.contains(event.target as Element | null)) {
+    if (!dialog.contains(event.target as Element | null) && !(event.target instanceof Document)) {
       event.stopPropagation();
       findSelectionTarget()?.focus();
     }
