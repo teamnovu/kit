@@ -23,19 +23,14 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
   private readonly options: ShopwareClientOptions;
 
   constructor(options: ShopwareClientOptions) {
-    if (!options.baseURL || typeof options.baseURL !== 'string') {
-      throw new Error('Invalid baseURL: It must be a non-empty string.');
-    }
-
-    if (!options.apiKey || typeof options.apiKey !== 'string') {
-      throw new Error('Invalid apiKey: It must be a non-empty string.');
-    }
-
+    this.setBaseURL(options.baseURL);
+    this.setApiKey(options.apiKey);
     this.setLanguage(options.language);
+    this.setIncludeSeoUrls(options.includeSeoUrls);
     this.options = options;
   }
 
-  private setBaseURL(baseURL: string) {
+  public setBaseURL(baseURL: string) {
     if (typeof baseURL !== 'string') {
       throw new Error('Invalid baseURL: It must be a string.');
     }
@@ -43,7 +38,7 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
     this.options.baseURL = baseURL;
   }
 
-  private setApiKey(apiKey: string) {
+  public setApiKey(apiKey: string) {
     if (typeof apiKey !== 'string') {
       throw new Error('Invalid apiKey: It must be a string.');
     }
@@ -51,12 +46,20 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
     this.options.apiKey = apiKey;
   }
 
-  private setLanguage(language: string | undefined) {
+  public setLanguage(language: string | undefined) {
     if (language && typeof language !== 'string') {
       throw new Error('Invalid language: If provided, it must be a string.');
     }
 
     this.options.language = language;
+  }
+
+  public setIncludeSeoUrls(includeSeoUrls: boolean | undefined) {
+    if (typeof includeSeoUrls !== 'boolean') {
+      throw new Error('Invalid includeSeoUrls: It must be a boolean.');
+    }
+
+    this.options.includeSeoUrls = includeSeoUrls;
   }
 
   private isOperationKey(key: string): key is keyof Operations & string {
@@ -118,6 +121,7 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
         headers: {
           'Content-Type': 'application/json',
           'sw-access-key': this.options.apiKey,
+          ...(this.options.includeSeoUrls && { 'sw-include-seo-urls': 'true' }),
           ...(this.options.language && { 'sw-language-id': this.options.language }),
           ...options?.headers,
         },

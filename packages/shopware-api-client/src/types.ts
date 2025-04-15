@@ -61,6 +61,7 @@ export interface ShopwareQueryOptions<
 export interface ShopwareClientOptions {
   baseURL: string;
   apiKey: string;
+  includeSeoUrls?: boolean;
   language?: string;
 }
 
