@@ -23,6 +23,18 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
   private readonly options: ShopwareClientOptions;
 
   constructor(options: ShopwareClientOptions) {
+    if (!options.baseURL || typeof options.baseURL !== 'string') {
+      throw new Error('Invalid baseURL: It must be a non-empty string.');
+    }
+
+    if (!options.apiKey || typeof options.apiKey !== 'string') {
+      throw new Error('Invalid apiKey: It must be a non-empty string.');
+    }
+
+    if (options.language && typeof options.language !== 'string') {
+      throw new Error('Invalid language: If provided, it must be a string.');
+    }
+
     this.options = options;
   }
 
