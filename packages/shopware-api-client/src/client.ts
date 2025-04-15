@@ -1,0 +1,116 @@
+import type {
+  InferredOptions,
+  InferredResponse,
+  ShopwareClientOptions,
+  ShopwareMethodsForUrl,
+  ShopwareOperationUrls
+} from './types';
+
+export class ShopwareApiError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+    public readonly response?: unknown,
+  ) {
+    super(message);
+    this.name = 'ShopwareApiError';
+  }
+}
+
+const operationRegex = /^(?<name>\w+?)\s(?<method>get|post|put|patch|delete)\s+(?<url>\/\w+)/i;
+
+export class ShopwareClient<Operations extends Record<string, { body?: unknown; response?: unknown }>> {
+  private readonly options: ShopwareClientOptions;
+
+  constructor(options: ShopwareClientOptions) {
+    this.options = options;
+  }
+
+  private isOperationKey(key: string): key is keyof Operations & string {
+    return operationRegex.test(key);
+  }
+
+  private parseOperation(operation: keyof Operations & string): {
+    name: string;
+    method: string;
+    url: string;
+  } {
+    const match = operationRegex.exec(operation);
+    if (!match?.groups) {
+      throw new Error('Invalid operation format');
+    }
+    return {
+      name: match.groups.name,
+      method: match.groups.method.toUpperCase(),
+      url: match.groups.url,
+    };
+  }
+
+  private interpolateUrl(url: string, params: Record<string, string>): string {
+    return url.replace(/{([^}]+)}/g, (_, param) => {
+      if (!(param in params)) {
+        throw new Error(`Missing required URL parameter: ${param}`);
+      }
+      return params[param];
+    });
+  }
+
+  private parseEndpoint(endpoint: string) {
+    if (typeof endpoint === 'string' && endpoint.startsWith('/')) {
+      return {
+        name: endpoint,
+        url: endpoint,
+        method: 'GET',
+      };
+    }
+
+    if (this.isOperationKey(endpoint)) {
+      return this.parseOperation(endpoint);
+    }
+
+    throw new Error('Invalid endpoint. Must be either a URL starting with / or a valid operation key');
+  }
+
+  async query<URL extends ShopwareOperationUrls<Operations>, Method extends ShopwareMethodsForUrl<Operations, URL>>(
+    endpoint: URL,
+    options: InferredOptions<Operations, URL, Method>,
+  ): Promise<InferredResponse<Operations, URL, Method>> {
+    try {
+      const { url, method } = this.parseEndpoint(endpoint);
+      const interpolatedUrl = this.interpolateUrl(url, options.params);
+
+      const response = await fetch(`${this.options.baseURL}/store-api${interpolatedUrl}`, {
+        ...options,
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'sw-access-key': this.options.apiKey,
+          ...(this.options.language && { 'sw-language-id': this.options.language }),
+          ...options?.headers,
+        },
+        body: options?.body ? JSON.stringify(options.body) : undefined,
+      });
+
+      if (!response.ok) {
+        throw new ShopwareApiError(
+          `Shopware API request failed: ${response.statusText}`,
+          response.status,
+          await response.json().catch(() => undefined),
+        );
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof ShopwareApiError) {
+        throw error;
+      }
+
+      throw new ShopwareApiError(
+        'Failed to communicate with Shopware API',
+        500,
+        error instanceof Error ? error.message : undefined,
+      );
+    }
+  }
+}

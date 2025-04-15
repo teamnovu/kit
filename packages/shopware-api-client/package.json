@@ -1,0 +1,31 @@
+{
+  "name": "@teamnovu/kit-shopware-api-client",
+  "version": "0.0.1",
+  "description": "A client for the Shopware API",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "watch": "NODE_ENV=development vite build --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:teamnovu/kit.git"
+  },
+  "keywords": [],
+  "author": "Elias Bernhaut",
+  "homepage": "https://kit.novu.ch/packages/shopware-api-client/",
+  "dependencies": {
+    "vite": "^6.2.5"
+  }
+}
