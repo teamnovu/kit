@@ -31,11 +31,32 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
       throw new Error('Invalid apiKey: It must be a non-empty string.');
     }
 
-    if (options.language && typeof options.language !== 'string') {
+    this.setLanguage(options.language);
+    this.options = options;
+  }
+
+  private setBaseURL(baseURL: string) {
+    if (typeof baseURL !== 'string') {
+      throw new Error('Invalid baseURL: It must be a string.');
+    }
+
+    this.options.baseURL = baseURL;
+  }
+
+  private setApiKey(apiKey: string) {
+    if (typeof apiKey !== 'string') {
+      throw new Error('Invalid apiKey: It must be a string.');
+    }
+
+    this.options.apiKey = apiKey;
+  }
+
+  private setLanguage(language: string | undefined) {
+    if (language && typeof language !== 'string') {
       throw new Error('Invalid language: If provided, it must be a string.');
     }
 
-    this.options = options;
+    this.options.language = language;
   }
 
   private isOperationKey(key: string): key is keyof Operations & string {
