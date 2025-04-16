@@ -20,7 +20,12 @@ export class ShopwareApiError extends Error {
 const operationRegex = /^(?<name>\w+?)\s(?<method>get|post|put|patch|delete)\s+(?<url>\/\w+)/i;
 
 export class ShopwareClient<Operations extends Record<string, { body?: unknown; response?: unknown }>> {
-  private readonly options: ShopwareClientOptions;
+  private options: ShopwareClientOptions = {
+    baseURL: '',
+    apiKey: '',
+    language: 'de',
+    includeSeoUrls: false,
+  };
 
   constructor(options: ShopwareClientOptions) {
     this.setBaseURL(options.baseURL);
@@ -54,11 +59,7 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
     this.options.language = language;
   }
 
-  public setIncludeSeoUrls(includeSeoUrls: boolean | undefined) {
-    if (typeof includeSeoUrls !== 'boolean') {
-      throw new Error('Invalid includeSeoUrls: It must be a boolean.');
-    }
-
+  public setIncludeSeoUrls(includeSeoUrls: boolean = true) {
     this.options.includeSeoUrls = includeSeoUrls;
   }
 

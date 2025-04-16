@@ -1,7 +1,9 @@
-import {
-  watch, type Ref, provide, MaybeRef,
-} from 'vue';
 import { toReactive } from '@vueuse/core';
+import {
+  MaybeRef,
+  provide,
+  watch, type Ref,
+} from 'vue';
 import { collapseControllerKey } from './injects/collapseController';
 
 interface AccordionOptions {
@@ -10,7 +12,7 @@ interface AccordionOptions {
 }
 
 export default function useAccordion(options?: AccordionOptions) {
-  const controlled = toReactive(options?.value ?? {});
+  const controlled = toReactive(options?.value ?? {}) as Record<string, boolean>;
 
   const ensureOneOnly = () => {
     const stillTrue = Object.entries(controlled).filter(([_, bool]) => bool);

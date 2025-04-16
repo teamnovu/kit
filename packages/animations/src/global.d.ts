@@ -1,3 +1,5 @@
+declare module "*.module.scss";
+
 declare module 'process' {
   global {
     namespace NodeJS {

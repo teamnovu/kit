@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
+import { createDefu } from 'defu';
 import * as VanillaConsent from 'vanilla-cookieconsent';
 import type { App } from 'vue';
-import { ref, inject } from 'vue';
-import { createDefu } from 'defu';
-import type { Services, CookieConsentConfig } from './types';
-import { CookieConsentSymbol, isServer } from './lib';
+import { inject, ref } from 'vue';
 import DefaultConfig from './cookieconsent.config';
+import { CookieConsentSymbol, isServer } from './lib';
+import type { CookieConsent, CookieConsentConfig, Services } from './types';
 
 // if sections is set, ignore defaults
 const mergeConfig = createDefu((obj, key, value) => {
@@ -71,7 +71,7 @@ function install(app: App, _options?: CookieConsentConfig) {
     ...VanillaConsent,
     services,
     acceptService,
-  };
+  } satisfies CookieConsent;
 
   app.provide(CookieConsentSymbol, cookieConsent);
 

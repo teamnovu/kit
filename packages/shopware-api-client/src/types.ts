@@ -37,9 +37,9 @@ type InferredResponse<Operations, URL extends string, Method extends HttpMethod>
     ? InferResponseType<Operations[InferOperationFromUrl<Operations, URL, Method>]>
     : unknown;
 
-type ShopwareOperationUrls<Operations> = ExtractUrl<keyof Operations & string>;
+type ShopwareOperationUrls<Operations extends Record<string, unknown>> = ExtractUrl<keyof Operations & string>;
 
-type ShopwareMethodsForUrl<Operations, URL extends ShopwareOperationUrls<Operations>> =
+type ShopwareMethodsForUrl<Operations extends Record<string, unknown>, URL extends ShopwareOperationUrls<Operations>> =
   Extract<keyof Operations & string, `${string} ${string} ${URL}`> extends infer Operation
     ? Operation extends `${string} ${infer Method} ${URL}`
       ? Method extends Lowercase<HttpMethod>

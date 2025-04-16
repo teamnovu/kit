@@ -41,9 +41,9 @@
     "rollup-plugin-copy": "^3.5.0",
     "sass": "^1.59.3",
     "shelljs": "^0.8.5",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.4",
-    "vite-plugin-dts": "^2.3.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.0",
+    "vite-plugin-dts": "^4.5.3",
     "vitepress": "^1.0.0-alpha.72",
     "vitepress-plugin-search": "^1.0.4-alpha.19"
   },
@@ -51,6 +51,9 @@
     "@teamnovu/kit-animations": "workspace:^",
     "@teamnovu/kit-components": "workspace:^",
     "@teamnovu/kit-composables": "workspace:^",
-    "@teamnovu/kit-cookieconsent": "workspace:^"
+    "@teamnovu/kit-cookieconsent": "workspace:^",
+    "@teamnovu/kit-shopware-api-client": "workspace:^",
+    "@teamnovu/kit-shopware-composables": "workspace:^",
+    "@types/node": "^22.14.1"
   }
 }

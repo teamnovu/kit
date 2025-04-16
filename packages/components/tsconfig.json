@@ -3,8 +3,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "paths": {
-      "@teamnovu/kit-components/*": ["./src/*"]
-    }
+      "@teamnovu/kit-components/*": ["./src/*"],
+    },
+    "types": ["vite/client", "node"]
   },
   "include": ["src/**/*"]
 }
