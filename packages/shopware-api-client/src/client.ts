@@ -95,33 +95,15 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
     });
   }
 
-  private parseEndpoint(endpoint: string) {
-    if (typeof endpoint === 'string' && endpoint.startsWith('/')) {
-      return {
-        name: endpoint,
-        url: endpoint,
-        method: 'GET',
-      };
-    }
-
-    if (this.isOperationKey(endpoint)) {
-      return this.parseOperation(endpoint);
-    }
-
-    throw new Error('Invalid endpoint. Must be either a URL starting with / or a valid operation key');
-  }
-
   async query<URL extends ShopwareOperationUrls<Operations>, Method extends ShopwareMethodsForUrl<Operations, URL>>(
     endpoint: URL,
     options: InferredOptions<Operations, URL, Method>,
   ): Promise<InferredResponse<Operations, URL, Method>> {
     try {
-      const { url, method } = this.parseEndpoint(endpoint);
-      const interpolatedUrl = this.interpolateUrl(url, options.params);
+      const interpolatedUrl = this.interpolateUrl(endpoint, options.params);
 
       const response = await fetch(`${this.options.baseURL}/store-api${interpolatedUrl}`, {
         ...options,
-        method,
         headers: {
           'Content-Type': 'application/json',
           'sw-access-key': this.options.apiKey,
