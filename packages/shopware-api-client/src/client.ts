@@ -1,9 +1,9 @@
 import { InjectionKey } from 'vue';
 import type {
+  HttpMethod,
   InferredOptions,
   InferredResponse,
   ShopwareClientOptions,
-  ShopwareMethodsForUrl,
   ShopwareOperationUrls
 } from './types';
 
@@ -95,7 +95,7 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
     });
   }
 
-  async query<URL extends ShopwareOperationUrls<Operations>, Method extends ShopwareMethodsForUrl<Operations, URL>>(
+  async query<URL extends ShopwareOperationUrls<Operations>, Method extends HttpMethod>(
     endpoint: URL,
     options: InferredOptions<Operations, URL, Method>,
   ): Promise<InferredResponse<Operations, URL, Method>> {

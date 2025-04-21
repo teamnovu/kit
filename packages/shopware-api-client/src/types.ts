@@ -26,11 +26,11 @@ type InferBodyType<T> = T extends { body: infer TBody } ? TBody : never;
 type InferResponseType<T> = T extends { response: infer TResponse } ? TResponse : never;
 
 type InferredOptions<Operations, URL extends string, Method extends HttpMethod> = ShopwareQueryOptions<
-  Operations,
-  URL,
   InferOperationFromUrl<Operations, URL, Method> extends keyof Operations
   ? InferBodyType<Operations[InferOperationFromUrl<Operations, URL, Method>]>
-  : Record<string, unknown>
+  : Record<string, unknown>,
+  Lowercase<Method>,
+  URL
 >;
 
 type InferredResponse<Operations, URL extends string, Method extends HttpMethod> =
@@ -50,11 +50,11 @@ type ShopwareMethodsForUrl<Ops extends Record<string, unknown>, Url extends Shop
   ExtractMethods<Ops, Url> & LowercaseHttpMethod; // Intersect extracted methods with valid lowercase ones
 
 export interface ShopwareQueryOptions<
-  Ops extends Record<string, unknown>,
-  URLPattern extends ShopwareOperationUrls<Ops>,
   T = unknown,
+  Method extends LowercaseHttpMethod = LowercaseHttpMethod,
+  URLPattern extends string = string,
 > extends Omit<RequestInit, 'body' | 'method'> {
-  method?: ShopwareMethodsForUrl<Ops, URLPattern>;
+  method?: Method;
   body?: T;
   params: UrlParamsRecord<URLPattern>;
 }
