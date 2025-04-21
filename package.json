@@ -31,7 +31,6 @@
     "@vue/compiler-sfc": "^3.2.47",
     "autoprefixer": "^10.4.13",
     "concurrently": "^7.6.0",
-    "eslint": "^8.35.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "esno": "^0.16.3",
     "flexsearch": "^0.7.31",
