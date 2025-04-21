@@ -1,3 +1,4 @@
+import { InjectionKey } from 'vue';
 import type {
   InferredOptions,
   InferredResponse,
@@ -17,7 +18,9 @@ export class ShopwareApiError extends Error {
   }
 }
 
-const operationRegex = /^(?<name>\w+?)\s(?<method>get|post|put|patch|delete)\s+(?<url>\/\w+)/i;
+export const shopwareClientKey = Symbol('shopwareClient') as InjectionKey<ShopwareClient<any>>;
+
+const operationRegex = /^(?<name>\w+?)\s(?<method>get|post|put|patch|delete)\s+(?<url>\/.*)/i;
 
 export class ShopwareClient<Operations extends Record<string, { body?: unknown; response?: unknown }>> {
   private options: ShopwareClientOptions = {
