@@ -9,6 +9,11 @@ import pkg from './package.json';
 
 export default defineConfig({
   plugins: [vue(), dts()],
+  resolve: {
+    alias: {
+      '#store-types': resolve(__dirname, './api-types/storeApiTypes.d.ts'),
+    },
+  },
   build: {
     lib: {
       formats: ['es'],

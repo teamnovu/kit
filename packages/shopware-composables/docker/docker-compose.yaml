@@ -1,0 +1,23 @@
+name: 'shopware-for-kit'
+
+services:
+
+    shopware-for-kit:
+        image: dockware/dev:6.7.0.0-rc2
+        container_name: shopware-for-kit
+        ports:
+            - "8500:80"
+        volumes:
+            - "db:/var/lib/mysql"
+            - "./boot_end.sh:/var/www/boot_end.sh"
+            - "./custom:/var/www/html/custom"
+        networks:
+            - web
+
+volumes:
+    db:
+        driver: local
+
+networks:
+    web:
+        external: false
