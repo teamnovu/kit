@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/vue-query'
+import { queryOptions } from '@tanstack/vue-query'
 import { useShopwareQueryClient } from './inject'
 
 const productKeys = {
@@ -9,12 +9,13 @@ const productKeys = {
 export default function useProducts<Operations>() {
   const client = useShopwareQueryClient<Operations>()
 
-  return useQuery({
+  return queryOptions({
     queryKey: productKeys.lists(),
     queryFn: async () => {
       return client.query('/novu/headless/product-listing/{seoUrl}', {
+        method: 'post',
         params: {
-          seoUrl: 'de',
+          seoUrl: 'Food/Bakery-products/',
         },
       })
     },

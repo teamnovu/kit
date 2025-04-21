@@ -87,7 +87,7 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
   }
 
   private interpolateUrl(url: string, params: Record<string, string>): string {
-    return url.replace(/{([^}]+)}/g, (_, param) => {
+    return url.replace(/{([^}]+?)}/g, (_, param) => {
       if (!(param in params)) {
         throw new Error(`Missing required URL parameter: ${param}`);
       }

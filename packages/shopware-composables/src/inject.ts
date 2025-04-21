@@ -1,6 +1,6 @@
 import { operations } from '#store-types'
 import { ShopwareClient, shopwareClientKey } from '@teamnovu/kit-shopware-api-client'
-import { inject } from 'vue/dist/vue.js'
+import { inject } from 'vue'
 
 export function useShopwareQueryClient<Operations>() {
   const client = inject(shopwareClientKey)
