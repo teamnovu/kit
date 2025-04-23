@@ -108,6 +108,10 @@ const close = async (event: Event) => {
 
 // #region Watchers
 
+watch(dialogRef, async (newDialog, prevDialog) => {
+  if (newDialog && !prevDialog && show.value) await openDialog();
+})
+
 watch(show, async (newShow, prevShow) => {
   if (newShow === prevShow) return;
   const dialog = unref(dialogRef);
