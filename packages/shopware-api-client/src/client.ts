@@ -1,10 +1,8 @@
 import { InjectionKey } from 'vue';
 import type {
-  HttpMethod,
-  InferredOptions,
-  InferredResponse,
-  ShopwareClientOptions,
-  ShopwareOperationUrls
+  OperationOptions,
+  OperationResponse,
+  ShopwareClientOptions
 } from './types';
 
 export class ShopwareApiError extends Error {
@@ -18,15 +16,13 @@ export class ShopwareApiError extends Error {
   }
 }
 
-export const shopwareClientKey = Symbol('shopwareClient') as InjectionKey<ShopwareClient<any>>;
-
 const operationRegex = /^(?<name>\w+?)\s(?<method>get|post|put|patch|delete)\s+(?<url>\/.*)/i;
 
 export class ShopwareClient<Operations extends Record<string, { body?: unknown; response?: unknown }>> {
   private options: ShopwareClientOptions = {
     baseURL: '',
     apiKey: '',
-    language: 'de',
+    language: '',
     includeSeoUrls: false,
   };
 
@@ -95,15 +91,18 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
     });
   }
 
-  async query<URL extends ShopwareOperationUrls<Operations>, Method extends HttpMethod>(
-    endpoint: URL,
-    options: InferredOptions<Operations, URL, Method>,
-  ): Promise<InferredResponse<Operations, URL, Method>> {
+  async query<OperationKey extends keyof Operations & string>(
+    operation: OperationKey,
+    options: OperationOptions<Operations, OperationKey>,
+  ): Promise<OperationResponse<Operations, OperationKey>> {
     try {
-      const interpolatedUrl = this.interpolateUrl(endpoint, options.params);
+      const { method, url } = this.parseOperation(operation);
+
+      const interpolatedUrl = this.interpolateUrl(url, options.params);
 
       const response = await fetch(`${this.options.baseURL}/store-api${interpolatedUrl}`, {
         ...options,
+        method,
         headers: {
           'Content-Type': 'application/json',
           'sw-access-key': this.options.apiKey,

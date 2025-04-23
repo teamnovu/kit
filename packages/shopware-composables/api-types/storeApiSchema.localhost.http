@@ -1,0 +1,1043 @@
+@baseUrl = http://localhost:8500/store-api
+@swLanguageId = 2fbb5fe2e29a4d70aa5854ce7ce3e20b
+@swIncludeSeoUrls = true
+
+
+###
+
+# Fetch sitemaps
+# Fetches a list of compressed sitemap files, which are often used by search engines.
+# @name readSitemap
+GET {{baseUrl}}/sitemap HTTP/1.1
+Sw-Language-Id: {{swLanguageId}}
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Download sitemap file
+# Downloads the sitemap file from the configured sitemap storage.
+# @name getSitemapFile
+GET {{baseUrl}}/sitemap/{filePath} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Sw-Language-Id: {{swLanguageId}}
+
+###
+
+# Fetch and resolve Media Entities
+# Fetch one or multiple Media Entities with the corresponding Identifier.
+# @name readMedia
+POST {{baseUrl}}/media HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "ids": []
+}
+
+###
+
+# Initiate a payment for an order
+# This generic endpoint is should be called to initiate a payment flow after an order has been created. The details of the payment flow can differ depending on the payment integration and might require calling additional operations or the setup of webhooks.
+# 
+# The endpoint internally calls the payment handler of the payment method currently set for the order.
+# @name handlePaymentMethod
+POST {{baseUrl}}/handle-payment HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "orderId": "string",
+  "finishUrl": "string",
+  "errorUrl": "string"
+}
+
+###
+
+# Fetch languages
+# Perform a filtered search for languages.
+# @name readLanguages
+POST {{baseUrl}}/language HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Add a product to a wishlist
+# Adds a product to a customers wishlist.
+# 
+#     **Important constraints**
+# 
+#     * Anonymous (not logged-in) customers can not have wishlists.
+#     * The wishlist feature has to be activated.
+# @name addProductOnWishlist
+POST {{baseUrl}}/customer/wishlist/add/{productId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Fetch a wishlist
+# Fetch a customer's wishlist. Products on the wishlist can be filtered using a criteria object.
+# 
+#     **Important constraints**
+# 
+#     * Anonymous (not logged-in) customers can not have wishlists.
+#     * The wishlist feature has to be activated.
+# @name readCustomerWishlist
+POST {{baseUrl}}/customer/wishlist HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Create a wishlist for a customer
+# Create a new wishlist for a logged in customer or extend the existing wishlist given a set of products.
+# 
+#     **Important constraints**
+# 
+#     * Anonymous (not logged-in) customers can not have wishlists.
+#     * A customer can only have a single wishlist.
+#     * The wishlist feature has to be activated.
+# @name mergeProductOnWishlist
+POST {{baseUrl}}/customer/wishlist/merge HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "productIds": []
+}
+
+###
+
+# Remove a product from a wishlist
+# Removes a product from a customer's wishlist.
+# 
+#     **Important constraints**
+# 
+#     * Anonymous (not logged-in) customers can not have wishlists.
+#     * The wishlist feature has to be activated.
+# @name deleteProductOnWishlist
+DELETE {{baseUrl}}/customer/wishlist/delete/{productId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Access point for different api logics which are provided by apps over script hooks
+# @name getScriptStoreApiRoute
+GET {{baseUrl}}/script/{hook} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Access point for different api logics which are provided by apps over script hooks
+# @name postScriptStoreApiRoute
+POST {{baseUrl}}/script/{hook} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Fetch a landing page with the resolved CMS page
+# Loads a landing page by its identifier and resolves the CMS page.
+# 
+# **Important notice**
+# 
+# The criteria passed with this route also affects the listing, if there is one within the cms page.
+# @name readLandingPage
+POST {{baseUrl}}/landing-page/{landingPageId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch SEO routes
+# Perform a filtered search for seo urls.
+# @name readSeoUrl
+POST {{baseUrl}}/seo-url HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch the current context
+# Fetches the current context. This includes for example the `customerGroup`, `currency`, `taxRules` and many more.
+# @name readContext
+GET {{baseUrl}}/context HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Modify the current context
+# Used for switching the context. A typical example would be changing the language or changing the currency.
+# @name updateContext
+PATCH {{baseUrl}}/context HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "currencyId": "string",
+  "languageId": "string",
+  "billingAddressId": "string",
+  "shippingAddressId": "string",
+  "paymentMethodId": "string",
+  "shippingMethodId": "string",
+  "countryId": "string",
+  "countryStateId": "string"
+}
+
+###
+
+# Search for products
+# Performs a search for products which can be used to display a product listing.
+# @name searchPage
+POST {{baseUrl}}/search HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+Sw-Include-Seo-Urls: {{swIncludeSeoUrls}}
+
+{}
+
+###
+
+# Submit a contact form message
+# Used for submitting contact forms. Be aware that there can be more required fields, depending on the system settings.
+# @name sendContactMail
+POST {{baseUrl}}/contact-form HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{
+  "salutationId": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
+  "phone": "string",
+  "subject": "string",
+  "comment": "string",
+  "navigationId": "string",
+  "slotId": "string",
+  "cmsPageType": "string",
+  "entityName": "string"
+}
+
+###
+
+# Get API routes
+# @name getRoutes
+GET {{baseUrl}}/_info/routes HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Fetch or create a cart
+# Used to fetch the current cart or for creating a new one.
+# @name readCart
+GET {{baseUrl}}/checkout/cart HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Sw-Language-Id: {{swLanguageId}}
+
+###
+
+# Delete a cart
+# This route deletes the cart of the customer.
+# @name deleteCart
+DELETE {{baseUrl}}/checkout/cart HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Add items to the cart
+# This route adds items to the cart. An item can be a product or promotion for example. They are referenced by the `referencedId`-parameter.
+# 
+# Example: [Working with the cart - Guide](https://developer.shopware.com/docs/guides/integrations-api/store-api-guide/work-with-the-cart#adding-new-items-to-the-cart)
+# @name addLineItem
+POST {{baseUrl}}/checkout/cart/line-item HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Remove items from the cart
+# DEPRECATED: use removeLineItem instead. This route removes items from the cart and recalculates it.
+# 
+# Example: [Working with the cart - Guide](https://developer.shopware.com/docs/guides/integrations-api/store-api-guide/work-with-the-cart#deleting-items-in-the-cart)
+# @name removeLineItemDeprecated
+DELETE {{baseUrl}}/checkout/cart/line-item HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Sw-Language-Id: {{swLanguageId}}
+
+###
+
+# Update items in the cart
+# This route updates items in the cart. A typical example is updating the quantity of an item.
+# 
+# Example: [Working with the cart - Guide](https://developer.shopware.com/docs/guides/integrations-api/store-api-guide/work-with-the-cart#updating-items-in-the-cart)
+# @name updateLineItem
+PATCH {{baseUrl}}/checkout/cart/line-item HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Remove items from the cart
+# This route removes items from the cart and recalculates it.
+# 
+# Example: [Working with the cart - Guide](https://developer.shopware.com/docs/guides/integrations-api/store-api-guide/work-with-the-cart#deleting-items-in-the-cart)
+# @name removeLineItem
+POST {{baseUrl}}/checkout/cart/line-item/delete HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{
+  "ids": []
+}
+
+###
+
+# Create an order from a cart
+# Creates a new order from the current cart and deletes the cart.
+# 
+# If you are using the [prepared payment flow](https://developer.shopware.com/docs/concepts/commerce/checkout-concept/payments#2.1-prepare-payment-optional), this endpoint also receives additional transaction details. The exact name of the parameters depends on the implementation of the corresponding *payment handler*.
+# @name createOrder
+POST {{baseUrl}}/checkout/order HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{
+  "customerComment": "string",
+  "affiliateCode": "string",
+  "campaignCode": "string"
+}
+
+###
+
+# Call the checkout gateway
+# Call the checkout gateway, which is used to manipulate certain aspects of the checkout process (e.g. available payment methods).
+# @name checkoutGateway
+GET {{baseUrl}}/checkout/gateway HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Fetch cross-selling groups of a product
+# This route is used to load the cross sellings for a product. A product has several cross selling definitions in which several products are linked. The route returns the cross sellings together with the linked products
+# @name readProductCrossSellings
+POST {{baseUrl}}/product/{productId}/cross-selling HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Sw-Language-Id: {{swLanguageId}}
+Sw-Include-Seo-Urls: {{swIncludeSeoUrls}}
+
+###
+
+# Fetch a single product
+# This route is used to load a single product with the corresponding details. In addition to loading the data, the best variant of the product is determined when a parent id is passed.
+# @name readProductDetail
+POST {{baseUrl}}/product/{productId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+Sw-Include-Seo-Urls: {{swIncludeSeoUrls}}
+
+{}
+
+###
+
+# Fetch a list of products
+# List products that match the given criteria. For performance reasons a limit should always be set.
+# @name readProduct
+POST {{baseUrl}}/product HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch product reviews
+# Perform a filtered search for product reviews.
+# @name readProductReviews
+POST {{baseUrl}}/product/{productId}/reviews HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Save a product review
+# Saves a review for a product. Reviews have to be activated in the settings.
+# @name saveProductReview
+POST {{baseUrl}}/product/{productId}/review HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{
+  "name": "string",
+  "email": "string",
+  "title": "string",
+  "content": "string",
+  "points": 0
+}
+
+###
+
+# Search for a matching variant by product options.
+# Performs a search for product variants and returns the best matching variant.
+# @name searchProductVariantIds
+POST {{baseUrl}}/product/{productId}/find-variant HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{
+  "options": null,
+  "switchedGroup": "string"
+}
+
+###
+
+# Fetch a navigation menu
+# This endpoint returns categories that can be used as a page navigation. You can either return them as a tree or as a flat list. You can also control the depth of the tree.
+# 
+#     Instead of passing uuids, you can also use one of the following aliases for the activeId and rootId parameters to get the respective navigations of your sales channel.
+# 
+#      * main-navigation
+#      * service-navigation
+#      * footer-navigation
+# @name readNavigation
+POST {{baseUrl}}/navigation/{activeId}/{rootId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Include-Seo-Urls: {{swIncludeSeoUrls}}
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Loads all available payment methods
+# @name readPaymentMethod
+POST {{baseUrl}}/payment-method HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Export product export
+# @name readProductExport
+GET {{baseUrl}}/product-export/{accessKey}/{fileName} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Fetch the states of a country
+# Perform a filtered search the states for a country
+# @name readCountryState
+POST {{baseUrl}}/country-state/{countryId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch a product listing by category
+# Fetches a product listing for a specific category. It also provides filters, sortings and property aggregations, analogous to the /search endpoint.
+# @name readProductListing
+POST {{baseUrl}}/product-listing/{categoryId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Include-Seo-Urls: {{swIncludeSeoUrls}}
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch newsletter recipients
+# Perform a filtered search for newsletter recipients.
+# @name readNewsletterRecipient
+POST {{baseUrl}}/account/newsletter-recipient HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Change the customer's information
+# Make changes to a customer's account, like changing their name, salutation or title.
+# @name changeProfile
+POST {{baseUrl}}/account/change-profile HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "salutationId": "string",
+  "title": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "birthdayDay": 0,
+  "birthdayMonth": 0,
+  "birthdayYear": 0
+}
+
+###
+
+# Change the customer's email address
+# Changes a customer's email address to a new email address, using their current password as a validation.
+# @name changeEmail
+POST {{baseUrl}}/account/change-email HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "email": "string",
+  "emailConfirmation": "string",
+  "password": "string"
+}
+
+###
+
+# Change the customer's language.
+# Changes the language of the logged in customer
+# @name changeLanguage
+POST {{baseUrl}}/account/change-language HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "language": "string"
+}
+
+###
+
+# Change the customer's password
+# Changes a customer's password using their current password as a validation.
+# @name changePassword
+POST {{baseUrl}}/account/change-password HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "password": "string",
+  "newPassword": "string",
+  "newPasswordConfirm": "string"
+}
+
+###
+
+# Checks if the customer recovery entry for a given hash is expired.
+# This can be used to validate a provided hash has a valid and not expired customer recovery hash.
+# @name getCustomerRecoveryIsExpired
+POST {{baseUrl}}/account/customer-recovery-is-expired HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "hash": "string"
+}
+
+###
+
+# Get information about current customer
+# Returns information about the current customer.
+# @name readCustomer
+POST {{baseUrl}}/account/customer HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Delete the customer's profile
+# Deletes a customer profile along with their addresses, wishlists and associated data. Created orders and their payment/shipping information (addresses) and reviews are not deleted.
+# @name deleteCustomer
+DELETE {{baseUrl}}/account/customer HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Delete an address of a customer
+# Delete an address of customer.
+# 
+#     Only addresses which are not set as default addresses for shipping or billing can be deleted. You can check the current default addresses of your customer using the profile information endpoint and change them using the default address endpoint.
+# 
+#     **A customer must have at least one address (which can be used for shipping and billing).**
+# 
+#     An automatic fallback is not applied.
+# @name deleteCustomerAddress
+DELETE {{baseUrl}}/account/address/{addressId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Modify an address of a customer
+# Modifies an existing address of a customer.
+# @name updateCustomerAddress
+PATCH {{baseUrl}}/account/address/{addressId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Fetch addresses of a customer
+# Lists all addresses of the current customer and allows filtering them based on a criteria.
+# @name listAddress
+POST {{baseUrl}}/account/list-address HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Log in a customer
+# Logs in customers given their credentials.
+# @name loginCustomer
+POST {{baseUrl}}/account/login HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "username": "string",
+  "password": "string"
+}
+
+###
+
+# Imitate the log in as a customer
+# Imitate the log in as a customer given a generated token.
+# @name imitateCustomerLogin
+POST {{baseUrl}}/account/login/imitate-customer HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "token": "string",
+  "customerId": "string",
+  "userId": "string"
+}
+
+###
+
+# Log out a customer
+# Logs out a customer.
+# @name logoutCustomer
+POST {{baseUrl}}/account/logout HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Confirm a customer registration
+# Confirms a customer registration when double opt-in is activated.
+# 
+# Learn more about double opt-in registration in our guide "Register a customer".
+# @name registerConfirm
+POST {{baseUrl}}/account/register-confirm HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "hash": "string",
+  "em": "string"
+}
+
+###
+
+# Register a customer
+# Registers a customer. Used both for normal customers and guest customers.See the Guide "Register a customer" for more information on customer registration.
+# @name register
+POST {{baseUrl}}/account/register HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "email": "string",
+  "password": "string",
+  "salutationId": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "acceptedDataProtection": false,
+  "storefrontUrl": "string",
+  "billingAddress": null,
+  "shippingAddress": null,
+  "guest": false,
+  "birthdayDay": 0,
+  "birthdayMonth": 0,
+  "birthdayYear": 0,
+  "title": "string",
+  "affiliateCode": "string",
+  "campaignCode": "string"
+}
+
+###
+
+# Reset a password with recovery credentials
+# This operation is Step 2 of the password reset flow. It is required to conduct Step 1 "Send a password recovery mail" in order to obtain the required credentials for this step.Resets a customer's password using credentials from a password recovery mail as a validation.
+# @name recoveryPassword
+POST {{baseUrl}}/account/recovery-password-confirm HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "hash": "string",
+  "newPassword": "string",
+  "newPasswordConfirm": "string"
+}
+
+###
+
+# Send a password recovery mail
+# This operation is Step 1 of the password reset flow. Make sure to implement Step 2 "Reset password with recovery credentials" in order to allow for the complete flow in your application. Sends a recovery mail containing a link with credentials that allows a customer to reset their password.
+# @name sendRecoveryMail
+POST {{baseUrl}}/account/recovery-password HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "email": "string",
+  "storefrontUrl": "string"
+}
+
+###
+
+# Change a customer's default shipping address
+# Updates the default (preselected) shipping addresses of a customer.
+# @name defaultShippingAddress
+PATCH {{baseUrl}}/account/address/default-shipping/{addressId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Change a customer's default billing address
+# Updates the default (preselected) billing addresses of a customer.
+# @name defaultBillingAddress
+PATCH {{baseUrl}}/account/address/default-billing/{addressId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Create a new address for a customer
+# Creates a new address for a customer.
+# @name createCustomerAddress
+POST {{baseUrl}}/account/address HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Fetch a breadcrumb
+# Perform search to get category or product breadcrumb. 
+# 
+# Experimental API, not part of our backwards compatibility promise, thus this API can introduce breaking changes at any time.
+# @name readBreadcrumb
+GET {{baseUrl}}/breadcrumb/{id} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Get OpenAPI Specification
+# Get information about the store API in OpenAPI format.
+# @name api-info
+GET {{baseUrl}}/_info/openapi3.json HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+
+###
+
+# Fetch and resolve a CMS page
+# Loads a content management page by its identifier and resolve the slot data. This could be media files, product listing and so on.
+# 
+# **Important notice**
+# 
+# The criteria passed with this route also affects the listing, if there is one within the cms page.
+# @name readCms
+POST {{baseUrl}}/cms/{id} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch countries
+# Perform a filtered search for countries
+# @name readCountry
+POST {{baseUrl}}/country HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch registration settings for customer group
+# @name getCustomerGroupRegistrationInfo
+GET {{baseUrl}}/customer-group-registration/config/{customerGroupId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Sw-Language-Id: {{swLanguageId}}
+
+###
+
+# Download generated document
+# Returns blob file of a generated document to download.
+# @name download
+POST {{baseUrl}}/document/download/{documentId}/{deepLinkCode} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Generate JWT token for app system backend
+# Generate JWT token for authenticated communication with the app server
+# @name generateJWTAppSystemAppServer
+POST {{baseUrl}}/app-system/{name}/generate-token HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{}
+
+###
+
+# Confirm a newsletter registration
+# You have to use the hash from the link sent out via email to confirm the user registration.
+# @name confirmNewsletter
+POST {{baseUrl}}/newsletter/confirm HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "hash": "string",
+  "em": "string"
+}
+
+###
+
+# Create or remove a newsletter subscription
+# This route is used to create/remove/confirm a newsletter subscription.
+# 
+# The `option` property controls what should happen:
+# * `direct`: The subscription is directly active and does not need a confirmation.
+# * `subscribe`: An email will be send to the provided email address containing a link to the /newsletter/confirm route.
+# The subscription is only successful, if the /newsletter/confirm route is called with the generated hashes.
+# * `unsubscribe`: The email address will be removed from the newsletter subscriptions.
+# * `confirmSubscribe`: Confirms the newsletter subscription for the provided email address.
+# @name subscribeToNewsletter
+POST {{baseUrl}}/newsletter/subscribe HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "email": "string",
+  "option": "string",
+  "storefrontUrl": "string",
+  "salutationId": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "street": "string",
+  "city": "string",
+  "zipCode": "string",
+  "tags": "string",
+  "languageId": "string",
+  "customFields": "string"
+}
+
+###
+
+# Remove a newsletter subscription
+# Removes a newsletter recipient from the mailing lists.
+# @name unsubscribeToNewsletter
+POST {{baseUrl}}/newsletter/unsubscribe HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+
+{
+  "email": "string"
+}
+
+###
+
+# Fetch a list of categories
+# Perform a filtered search for categories.
+# @name readCategoryList
+POST {{baseUrl}}/category HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch a single category
+# This endpoint returns information about the category, as well as a fully resolved (hydrated with mapping values) CMS page, if one is assigned to the category. You can pass slots which should be resolved exclusively.
+# @name readCategory
+POST {{baseUrl}}/category/{navigationId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Include-Seo-Urls: {{swIncludeSeoUrls}}
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch currencies
+# Perform a filtered search for currencies.
+# @name readCurrency
+POST {{baseUrl}}/currency HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch shipping methods
+# Perform a filtered search for shipping methods.
+# @name readShippingMethod
+POST {{baseUrl}}/shipping-method HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Cancel an order
+# Cancels an order. The order state will be set to 'cancelled'.
+# @name cancelOrder
+POST {{baseUrl}}/order/state/cancel HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{
+  "orderId": "string"
+}
+
+###
+
+# Fetch a list of orders
+# List orders of a customer.
+# @name readOrder
+POST {{baseUrl}}/order HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Update the payment method of an order
+# Changes the payment method of a specific order. You can use the /order route to find out if the payment method of an order can be changed - take a look at the `paymentChangeable`- array in the response.
+# @name orderSetPayment
+POST {{baseUrl}}/order/payment HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{
+  "paymentMethodId": "string",
+  "orderId": "string"
+}
+
+###
+
+# Download a purchased file
+# Download a file included in the given order and with the given id. Access must be granted.
+# @name orderDownloadFile
+GET {{baseUrl}}/order/download/{orderId}/{downloadId} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Sw-Language-Id: {{swLanguageId}}
+
+###
+
+# Fetch salutations
+# Perform a filtered search for salutations.
+# @name readSalutation
+POST {{baseUrl}}/salutation HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Search for products (suggest)
+# Can be used to implement search previews or suggestion listings, that don’t require any interaction.
+# @name searchSuggest
+POST {{baseUrl}}/search-suggest HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+
+{}
+
+###
+
+# Fetch a single product by SEO URL with cross-selling and custom fields
+# This route is used to load a single product with the corresponding details using its SEO URL. In addition to loading the data, this route fetches cross-selling products and custom field labels.
+# @name readCustomProductDetail
+POST {{baseUrl}}/novu/headless/product/{{seoUrl}} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Language-Id: {{swLanguageId}}
+Sw-Include-Seo-Urls: {{swIncludeSeoUrls}}
+
+{}
+
+###
+
+# Fetch a compact product listing by SEO URL
+# Fetches a product listing for a specific category identified by SEO URL. It also provides filters, sortings and property aggregations, similar to the standard product-listing endpoint, but includes the complete category data in the response.
+# @name readCompactProductListing
+@seoUrl = Food/Sweets/
+POST {{baseUrl}}/novu/headless/product-listing/{{seoUrl}} HTTP/1.1
+Sw-access-key: {{OPENAPI_ACCESS_KEY}}
+Content-Type: application/json
+Sw-Include-Seo-Urls: {{swIncludeSeoUrls}}
+Sw-Language-Id: {{swLanguageId}}
+
+{}

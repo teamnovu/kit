@@ -115,7 +115,7 @@ watch(show, async (newShow, prevShow) => {
 
   if (newShow) await openDialog();
   else await handleClose();
-});
+}, { immediate: true });
 
 // # endregion
 </script>
