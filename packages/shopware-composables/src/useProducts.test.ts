@@ -1,4 +1,4 @@
-import { useQueryClient, VueQueryPlugin } from '@tanstack/vue-query'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import { ShopwareClient } from '@teamnovu/kit-shopware-api-client'
 import { createApp } from 'vue'
 import useProducts from './useProducts'
@@ -15,11 +15,9 @@ test('useProducts receives products', async () => {
   app.use(VueQueryPlugin)
 
   await app.runWithContext(async () => {
-    const client = useQueryClient()
+    const { data, suspense } = useProducts('/Food/Bakery-products/')
 
-    const data = await client.fetchQuery(
-      useProducts('/Food/Bakery-products/'),
-    )
+    await suspense()
 
     expect(data).toBeTruthy()
   })

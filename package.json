@@ -12,7 +12,7 @@
     "build": "pnpm -r build",
     "watch": "pnpm -r run build && esno ./scripts/runAll watch",
     "typecheck": "tsc --noEmit",
-    "docs:dev": "vitepress dev --port 3000",
+    "docs:dev": "vitepress dev --port 3005",
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview"
   },
