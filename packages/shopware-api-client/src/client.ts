@@ -1,7 +1,8 @@
 import { InjectionKey } from 'vue';
 import type {
+  Operation,
   OperationOptions,
-  OperationResponse,
+  OperationProp,
   ShopwareClientOptions
 } from './types';
 
@@ -91,10 +92,10 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
     });
   }
 
-  async query<OperationKey extends keyof Operations & string>(
+  async query<OperationKey extends (keyof Operations) & string>(
     operation: OperationKey,
     options: OperationOptions<Operations, OperationKey>,
-  ): Promise<OperationResponse<Operations, OperationKey>> {
+  ): Promise<OperationProp<Operations, OperationKey, 'response'>> {
     try {
       const { method, url } = this.parseOperation(operation);
 

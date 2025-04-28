@@ -25,7 +25,7 @@ const packageNamesWithWatch = packages
   .map((pkg) => pkg.name);
 
 const commands = packageNamesWithWatch.map((pkg) => ({
-  command: `"npm run ${process.argv.at(-1)} -w ${pkg}"`,
+  command: `"pnpm --filter ${pkg} ${process.argv.at(-1)}"`,
   name: pkg,
 }));
 

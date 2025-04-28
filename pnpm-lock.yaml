@@ -204,8 +204,8 @@ importers:
   packages/shopware-composables:
     dependencies:
       '@tanstack/vue-query':
-        specifier: ^4.x || ^5.x
-        version: 5.74.4(vue@3.5.13(typescript@5.8.3))
+        specifier: ^5.0.0
+        version: 5.74.7(vue@3.5.13(typescript@5.8.3))
       '@teamnovu/kit-shopware-api-client':
         specifier: workspace:*
         version: link:../shopware-api-client
@@ -1778,11 +1778,11 @@ packages:
     resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
     engines: {node: '>=12'}
 
-  '@tanstack/query-core@5.74.4':
-    resolution: {integrity: sha512-YuG0A0+3i9b2Gfo9fkmNnkUWh5+5cFhWBN0pJAHkHilTx6A0nv8kepkk4T4GRt4e5ahbtFj2eTtkiPcVU1xO4A==}
+  '@tanstack/query-core@5.74.7':
+    resolution: {integrity: sha512-X3StkN/Y6KGHndTjJf8H8th7AX4bKfbRpiVhVqevf0QWlxl6DhyJ0TYG3R0LARa/+xqDwzU9mA4pbJxzPCI29A==}
 
-  '@tanstack/vue-query@5.74.4':
-    resolution: {integrity: sha512-esrdGp8/GZ2GXXBQvqz4QU/q0HPL6yCgW8pizby4EwbU16x1dtYRN/6YPPio/Ay4OLHp+zQcPixf88g6eLuhHQ==}
+  '@tanstack/vue-query@5.74.7':
+    resolution: {integrity: sha512-9QsGF1PyYa3jqCaPMlQgc5P9fxMaAnwiLVaiFnqJYmPdycDKrk0LuPJiEfAhY2eAgZ4adKtAPR1JTRaxKkiVmw==}
     peerDependencies:
       '@vue/composition-api': ^1.1.2
       vue: ^2.6.0 || ^3.3.0
@@ -5589,6 +5589,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch-native@1.6.6:
     resolution: {integrity: sha512-8Mc2HhqPdlIfedsuZoc3yioPuzp6b+L5jRCRY1QzuWZh2EGJVQrGppC6V6cF0bLdbW0+O2YpqCA25aF/1lvipQ==}
@@ -9726,12 +9727,12 @@ snapshots:
     dependencies:
       remove-accents: 0.5.0
 
-  '@tanstack/query-core@5.74.4': {}
+  '@tanstack/query-core@5.74.7': {}
 
-  '@tanstack/vue-query@5.74.4(vue@3.5.13(typescript@5.8.3))':
+  '@tanstack/vue-query@5.74.7(vue@3.5.13(typescript@5.8.3))':
     dependencies:
       '@tanstack/match-sorter-utils': 8.19.4
-      '@tanstack/query-core': 5.74.4
+      '@tanstack/query-core': 5.74.7
       '@vue/devtools-api': 6.6.4
       vue: 3.5.13(typescript@5.8.3)
       vue-demi: 0.14.10(vue@3.5.13(typescript@5.8.3))

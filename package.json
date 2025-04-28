@@ -21,7 +21,9 @@
     "packages/components",
     "packages/animations",
     "packages/nuxt",
-    "packages/cookieconsent"
+    "packages/cookieconsent",
+    "packages/shopware-api-client",
+    "packages/shopware-composables"
   ],
   "devDependencies": {
     "@types/lodash-es": "^4.17.6",

@@ -1,3 +1,5 @@
+import { operations } from "../../shopware-composables/api-types/storeApiTypes";
+
 export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
 // Extract URL parameters from a URL pattern
@@ -10,11 +12,16 @@ type UrlParamsRecord<URL extends string> = {
   [K in ExtractUrlParams<URL>]: string;
 };
 
-type InferBodyType<T> = T extends { body: infer TBody } ? TBody : never;
-type InferResponseType<T> = T extends { response: infer TResponse } ? TResponse : never;
+export type Operation<Operations, OperationKey extends keyof Operations> = Operations[OperationKey];
+export type OperationProp<
+  Operations,
+  OperationKey extends keyof Operations,
+  Prop extends string
+> = Operation<Operations, OperationKey> extends { [K in Prop]: infer T } ? T : unknown;
+
+export type InferParameters<T extends string> = UrlParamsRecord<ExtractUrlFromOperation<T>>;
 
 type OperationKey<Operations> = keyof Operations & string;
-
 type ExtractUrlFromOperation<K extends string> = K extends `${string} ${string} ${infer U}` ? U : never;
 
 export type OperationOptions<
@@ -22,14 +29,8 @@ export type OperationOptions<
   K extends OperationKey<Operations>,
 > = Omit<RequestInit, 'body' | 'method'> & {
   params: UrlParamsRecord<ExtractUrlFromOperation<K>>;
-  body?: InferBodyType<Operations[K]>;
+  body?: OperationProp<Operations, K, 'body'>;
 };
-
-// Type for the response from the query method
-export type OperationResponse<
-  Operations,
-  K extends OperationKey<Operations>,
-> = InferResponseType<Operations[K]>;
 
 export interface ShopwareClientOptions {
   baseURL: string;
