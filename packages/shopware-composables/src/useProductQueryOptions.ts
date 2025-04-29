@@ -13,7 +13,7 @@ const productKeys = {
 
 const readListingOperation = 'readCompactProductListing post /novu/headless/product-listing/{seoUrl}' satisfies OperationKey
 
-export function productQueryOptions<Operations extends operations>(
+export function useProductQueryOptions<Operations extends operations>(
   seoUrl: MaybeRef<string>,
   body?: MaybeRef<OperationBody<Operations, typeof readListingOperation>>,
 ) {

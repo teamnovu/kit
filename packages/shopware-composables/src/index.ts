@@ -1,10 +1,9 @@
 import { operations } from '#store-types'
-import { productQueryOptions } from './productQueryOptions'
+import { useProductQueryOptions } from './useProductQueryOptions'
 
 export * from './inject'
-
-export { usePagination } from './usePagination'
+export * from './usePagination'
 
 export default class ShopwareComposables<Client extends operations> {
-  productQueryOptions = productQueryOptions<Client>
+  useProductQueryOptions = useProductQueryOptions<Client>
 }

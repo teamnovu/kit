@@ -13,6 +13,7 @@
   },
   "peerDependencies": {
     "@tanstack/vue-query": "^5.0.0",
+    "@teamnovu/kit-shopware-api-client": "workspace:*",
     "vue": "^3.0.0"
   },
   "scripts": {
@@ -28,7 +29,6 @@
   "author": "Elias Bernhaut",
   "homepage": "https://kit.novu.ch/packages/shopware-composables/",
   "dependencies": {
-    "@teamnovu/kit-shopware-api-client": "workspace:*",
     "vite": "^6.2.5"
   },
   "devDependencies": {
