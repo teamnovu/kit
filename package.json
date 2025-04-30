@@ -10,7 +10,7 @@
   "packageManager": "pnpm@9.11.0",
   "scripts": {
     "build": "pnpm -r build",
-    "watch": "pnpm -r run build && esno ./scripts/runAll watch",
+    "watch": "pnpm -r run build && pnpm -r --parallel --if-present watch",
     "typecheck": "tsc --noEmit",
     "docs:dev": "vitepress dev --port 3005",
     "docs:build": "vitepress build",

@@ -11,6 +11,7 @@ export default defineConfig({
   plugins: [vue(), dts()],
   root: resolve(__dirname),
   build: {
+    emptyOutDir: false,
     lib: {
       formats: ["es"],
       // Could also be a dictionary or array of multiple entry points

@@ -1,7 +1,7 @@
 import { useQuery, VueQueryPlugin } from '@tanstack/vue-query'
 import { ShopwareClient } from '@teamnovu/kit-shopware-api-client'
 import { createApp } from 'vue'
-import { shopwareClientKey } from './inject'
+import { shopwareClientKey } from '../inject'
 import { useProductQueryOptions } from './useProductQueryOptions'
 
 test('useProducts receives products', async () => {

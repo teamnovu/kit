@@ -1,15 +1,9 @@
 import { operations } from '#store-types'
 import { queryOptions } from '@tanstack/vue-query'
 import { MaybeRef, unref } from 'vue'
-import { useShopwareQueryClient } from './inject'
-import { OperationBody, OperationKey } from './types/query'
-
-const productKeys = {
-  all: () => ['product'] as const,
-  lists: () => [...productKeys.all(), 'list'] as const,
-  list: (body: MaybeRef<unknown>) =>
-    [...productKeys.all(), 'list', { body }] as const,
-}
+import { useShopwareQueryClient } from '../inject'
+import { productKeys } from '../keys'
+import { OperationBody, OperationKey } from '../types/query'
 
 const readListingOperation = 'readCompactProductListing post /novu/headless/product-listing/{seoUrl}' satisfies OperationKey
 

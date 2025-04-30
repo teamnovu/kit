@@ -1,6 +1,4 @@
-import { InjectionKey } from 'vue';
 import type {
-  Operation,
   OperationOptions,
   OperationProp,
   ShopwareClientOptions
@@ -63,10 +61,6 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
     this.options.includeSeoUrls = includeSeoUrls;
   }
 
-  private isOperationKey(key: string): key is keyof Operations & string {
-    return operationRegex.test(key);
-  }
-
   private parseOperation(operation: keyof Operations & string): {
     name: string;
     method: string;
@@ -94,12 +88,12 @@ export class ShopwareClient<Operations extends Record<string, { body?: unknown; 
 
   async query<OperationKey extends (keyof Operations) & string>(
     operation: OperationKey,
-    options: OperationOptions<Operations, OperationKey>,
+    options?: OperationOptions<Operations, OperationKey>,
   ): Promise<OperationProp<Operations, OperationKey, 'response'>> {
     try {
       const { method, url } = this.parseOperation(operation);
 
-      const interpolatedUrl = this.interpolateUrl(url, options.params);
+      const interpolatedUrl = this.interpolateUrl(url, options?.params ?? {});
 
       const response = await fetch(`${this.options.baseURL}/store-api${interpolatedUrl}`, {
         ...options,

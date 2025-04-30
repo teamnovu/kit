@@ -36,7 +36,7 @@ export default tseslint.config(
       '@stylistic/max-len': [
         'warn',
         {
-          code: 110,
+          code: 150,
           tabWidth: 2,
         },
       ],
