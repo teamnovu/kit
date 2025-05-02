@@ -7,7 +7,9 @@ import pkg from './package.json'
 export default defineConfig({
   plugins: [
     vue(),
-    dts(),
+    dts({
+      staticImport: true,
+    }),
   ],
   build: {
     emptyOutDir: false,

@@ -5,7 +5,7 @@ import tseslint from 'typescript-eslint'
 export default tseslint.config(
   js.configs.recommended,
   tseslint.configs.recommended,
-  pluginStylistic.configs['recommended-flat'],
+  pluginStylistic.configs['recommended'],
   {
     rules: {
       // stylistic
