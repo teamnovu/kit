@@ -6,19 +6,19 @@ import { productKeys } from '../keys'
 import { OperationBody, OperationKey } from '../types/query'
 import { cleanSeoUrl } from '../util/url'
 
-const readCustomProductDetailOperation = 'readCustomProductDetail post /novu/headless/product/{seoUrl}' satisfies OperationKey
+const readListingOperation = 'readCompactProductListing post /novu/headless/product-listing/{seoUrl}' satisfies OperationKey
 
-export function useProductQueryOptions<Operations extends operations>(
+export function useProductListingQueryOptions<Operations extends operations>(
   seoUrl: MaybeRef<string>,
-  body?: MaybeRef<OperationBody<Operations, typeof readCustomProductDetailOperation>>,
+  body?: MaybeRef<OperationBody<Operations, typeof readListingOperation>>,
 ) {
   const client = useShopwareQueryClient<Operations>()
-  const queryKey = productKeys.detail(body)
+  const queryKey = productKeys.list(body)
 
   return queryOptions({
     queryKey,
     queryFn: async () => {
-      return client.query(readCustomProductDetailOperation, {
+      return client.query(readListingOperation, {
         params: { seoUrl: cleanSeoUrl(unref(seoUrl)) },
         body: unref(body),
       })

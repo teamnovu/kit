@@ -2,7 +2,7 @@ import { useQuery, VueQueryPlugin } from '@tanstack/vue-query'
 import { ShopwareClient } from '@teamnovu/kit-shopware-api-client'
 import { createApp } from 'vue'
 import { shopwareClientKey } from '../inject'
-import { useProductQueryOptions } from './useProductQueryOptions'
+import { useProductListingQueryOptions } from './useProductListingQueryOptions'
 
 test('useProducts receives products', async () => {
   const app = createApp({ template: '' })
@@ -15,7 +15,7 @@ test('useProducts receives products', async () => {
   app.use(VueQueryPlugin)
 
   await app.runWithContext(async () => {
-    const { data, suspense } = useQuery(useProductQueryOptions('/Food/Bakery-products/'))
+    const { data, suspense } = useQuery(useProductListingQueryOptions('/Food/Bakery-products/'))
 
     await suspense()
 

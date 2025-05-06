@@ -9,4 +9,7 @@ export const productKeys = {
   lists: () => [...productKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [...productKeys.all(), 'list', { body }] as const,
+  details: () => [...productKeys.all(), 'detail'] as const,
+  detail: (body: MaybeRef<unknown>) =>
+    [...productKeys.all(), 'detail', { body }] as const,
 }
