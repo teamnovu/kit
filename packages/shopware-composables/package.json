@@ -1,6 +1,6 @@
 {
   "name": "@teamnovu/kit-shopware-composables",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A collection of composables for the Shopware API",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
