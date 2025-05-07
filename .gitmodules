@@ -1,0 +1,4 @@
+[submodule "packages/shopware-composables/docker/custom/static-plugins/novu-shopware-headless-plugin"]
+	path = packages/shopware-composables/docker/custom/static-plugins/novu-shopware-headless-plugin
+	url = https://github.com/teamnovu/novu-shopware-headless-plugin
+	branch = shopware-6.7
