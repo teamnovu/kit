@@ -3895,7 +3895,10 @@
               },
               "translated": { "type": "object" },
               "extensions": {
-                "properties": { "novuSeoUrls": { "type": "object" } },
+                "properties": {
+                  "novuSeoUrls": { "type": "object" },
+                  "variants": { "type": "object" }
+                },
                 "type": "object"
               },
               "relationships": {
@@ -4767,7 +4770,10 @@
           },
           "translated": { "type": "object" },
           "extensions": {
-            "properties": { "novuSeoUrls": { "type": "object" } },
+            "properties": {
+              "novuSeoUrls": { "type": "object" },
+              "variants": { "type": "object" }
+            },
             "type": "object"
           },
           "downloads": {
@@ -8176,7 +8182,34 @@
         "type": "object",
         "description": "Represents a product along with detailed information, cross-sellings and custom fields",
         "properties": {
-          "product": { "$ref": "#/components/schemas/Product" },
+          "product": {
+            "allOf": [
+              { "$ref": "#/components/schemas/Product" },
+              {
+                "type": "object",
+                "properties": {
+                  "extensions": {
+                    "type": "object",
+                    "properties": {
+                      "variants": {
+                        "type": "array",
+                        "items": { "$ref": "#/components/schemas/Product" },
+                        "description": "Array of product variants."
+                      },
+                      "novuSeoUrls": {
+                        "type": "object",
+                        "description": "SEO URL information for the product"
+                      },
+                      "search": {
+                        "type": "object",
+                        "description": "Search related information for the product"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
           "configurator": {
             "type": "array",
             "description": "List of property groups with their corresponding options and information on how to display them.",

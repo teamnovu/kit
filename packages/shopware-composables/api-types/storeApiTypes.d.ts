@@ -1105,7 +1105,16 @@ export type Schemas = {
     cross_sellings: components["schemas"]["CrossSellingElementCollection"];
     /** Custom fields with their labels and values */
     custom_fields: GenericRecord;
-    product: components["schemas"]["Product"];
+    product: components["schemas"]["Product"] & {
+      extensions?: {
+        /** SEO URL information for the product */
+        novuSeoUrls?: GenericRecord;
+        /** Search related information for the product */
+        search?: GenericRecord;
+        /** Array of product variants. */
+        variants?: components["schemas"]["Product"][];
+      };
+    };
   };
   Customer: {
     active?: boolean;
@@ -2614,6 +2623,7 @@ export type Schemas = {
     ean?: string;
     extensions?: {
       novuSeoUrls?: GenericRecord;
+      variants?: GenericRecord;
     };
     /** Format: float */
     height?: number;
@@ -2830,6 +2840,7 @@ export type Schemas = {
     ean?: string;
     extensions?: {
       novuSeoUrls?: GenericRecord;
+      variants?: GenericRecord;
     };
     /** Format: float */
     height?: number;

@@ -13,7 +13,7 @@ export function useProductListingQueryOptions<Operations extends operations>(
   body?: MaybeRef<OperationBody<Operations, typeof readListingOperation>>,
 ) {
   const client = useShopwareQueryClient<Operations>()
-  const queryKey = productKeys.list(body)
+  const queryKey = productKeys.list(seoUrl, body)
 
   return queryOptions({
     queryKey,

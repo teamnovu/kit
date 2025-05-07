@@ -15,7 +15,7 @@ export type OperationProp<
   Operations,
   OperationKey extends keyof Operations,
   Prop extends string,
-> = Operation<Operations, OperationKey> extends { [K in Prop]: infer T } ? T : unknown
+> = Operation<Operations, OperationKey> extends { [K in Prop]?: unknown } ? Operation<Operations, OperationKey>[Prop] : never
 
 export type InferParameters<T extends string> = UrlParamsRecord<ExtractUrlFromOperation<T>>
 
