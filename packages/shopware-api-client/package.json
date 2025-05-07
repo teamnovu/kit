@@ -16,7 +16,8 @@
   },
   "scripts": {
     "build": "vite build",
-    "watch": "NODE_ENV=development vite build --watch"
+    "watch": "NODE_ENV=development vite build --watch",
+    "lint": "eslint --fix --ignore-pattern 'dist/**' ."
   },
   "repository": {
     "type": "git",

@@ -3,9 +3,11 @@
  * https://github.com/shopware/frontends/blob/main/packages/composables/src/useProductPrice/useProductPrice.ts#L7
  */
 
-import { Schemas } from '#store-types'
-import { getProductTierPrices, TierPrice } from '@shopware/helpers'
-import { computed, ComputedRef, Ref } from 'vue'
+import type { Schemas } from '#store-types'
+import type { TierPrice } from '@shopware/helpers'
+import { getProductTierPrices } from '@shopware/helpers'
+import type { ComputedRef, Ref } from 'vue'
+import { computed } from 'vue'
 
 export type UseProductPriceReturn = {
   /**

@@ -1,8 +1,8 @@
-import { operations } from '#store-types'
+import type { operations } from '#store-types'
 import { queryOptions } from '@tanstack/vue-query'
 import { useShopwareQueryClient } from '../inject'
 import { contextKeys } from '../keys'
-import { OperationKey } from '../types/query'
+import type { OperationKey } from '../types/query'
 
 const readContextOperation = 'readContext get /context' satisfies OperationKey
 

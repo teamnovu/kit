@@ -1,7 +1,7 @@
-import { operations } from '#store-types'
+import type { operations } from '#store-types'
 import { useMutation } from '@tanstack/vue-query'
 import { useShopwareQueryClient } from '../inject'
-import { OperationKey } from '../types/query'
+import type { OperationKey } from '../types/query'
 
 const updateContextOperation = 'updateContext patch /context' satisfies OperationKey
 

@@ -1,5 +1,6 @@
-import { Schemas } from '#store-types'
-import { computed, MaybeRef, unref } from 'vue'
+import type { Schemas } from '#store-types'
+import type { MaybeRef } from 'vue'
+import { computed, unref } from 'vue'
 
 type DetailProduct<S extends Schemas> = S['CustomProductDetailResponse']['product']
 

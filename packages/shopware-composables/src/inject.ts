@@ -1,6 +1,7 @@
-import { operations } from '#store-types'
-import { ShopwareClient } from '@teamnovu/kit-shopware-api-client'
-import { inject, InjectionKey } from 'vue'
+import type { operations } from '#store-types'
+import type { ShopwareClient } from '@teamnovu/kit-shopware-api-client'
+import type { InjectionKey } from 'vue'
+import { inject } from 'vue'
 
 export const shopwareClientKey = Symbol('shopwareClient') as InjectionKey<ShopwareClient<never>>
 

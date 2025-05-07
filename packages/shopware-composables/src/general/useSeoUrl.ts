@@ -1,5 +1,6 @@
 import type { GenericRecord } from '#store-types'
-import { computed, MaybeRef, unref } from 'vue'
+import type { MaybeRef } from 'vue'
+import { computed, unref } from 'vue'
 import { cleanSeoUrl } from '../util/url'
 
 interface SeoUrlEntity {

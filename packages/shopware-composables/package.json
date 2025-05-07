@@ -19,7 +19,8 @@
   "scripts": {
     "build": "vite build",
     "watch": "NODE_ENV=development vite build --watch",
-    "gen-types": "bash ./docker/types.sh"
+    "gen-types": "bash ./docker/types.sh",
+    "lint": "eslint --fix --ignore-pattern 'dist/**' ."
   },
   "repository": {
     "type": "git",

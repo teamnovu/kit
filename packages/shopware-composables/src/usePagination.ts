@@ -1,5 +1,6 @@
-import { Schemas } from '#store-types'
-import { computed, MaybeRef, reactive, toRef, unref, watch } from 'vue'
+import type { Schemas } from '#store-types'
+import type { MaybeRef } from 'vue'
+import { computed, reactive, toRef, unref, watch } from 'vue'
 
 interface PaginationOptions {
   page?: MaybeRef<number>

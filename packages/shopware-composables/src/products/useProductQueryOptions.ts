@@ -1,9 +1,10 @@
-import { operations } from '#store-types'
+import type { operations } from '#store-types'
 import { queryOptions } from '@tanstack/vue-query'
-import { MaybeRef, unref } from 'vue'
+import type { MaybeRef } from 'vue'
+import { unref } from 'vue'
 import { useShopwareQueryClient } from '../inject'
 import { productKeys } from '../keys'
-import { OperationBody, OperationKey } from '../types/query'
+import type { OperationBody, OperationKey } from '../types/query'
 import { cleanSeoUrl } from '../util/url'
 
 const readCustomProductDetailOperation = 'readCustomProductDetail post /novu/headless/product/{seoUrl}' satisfies OperationKey

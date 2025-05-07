@@ -1,6 +1,6 @@
-import { operations } from '#store-types'
-import { QueryKey, UseQueryOptions } from '@tanstack/vue-query'
-import { OperationProp } from '@teamnovu/kit-shopware-api-client'
+import type { operations } from '#store-types'
+import type { QueryKey, UseQueryOptions } from '@tanstack/vue-query'
+import type { OperationProp } from '@teamnovu/kit-shopware-api-client'
 
 export type OperationKey = keyof operations
 export type OperationBody<Operations extends operations, K extends OperationKey> =

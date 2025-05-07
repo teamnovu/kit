@@ -1,4 +1,4 @@
-import { MaybeRef } from 'vue'
+import type { MaybeRef } from 'vue'
 
 export const contextKeys = {
   all: () => ['context'] as const,

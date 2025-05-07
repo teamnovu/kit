@@ -1,4 +1,4 @@
-import { Schemas as BaseSchemas, operations } from '#store-types'
+import type { Schemas as BaseSchemas, operations } from '#store-types'
 import { useContextOptions } from './context/useContextOptions'
 import { useContextUpdate } from './context/useContextUpdate'
 import { useCategoryQueryOptions } from './products/useCategoryQueryOptions'
