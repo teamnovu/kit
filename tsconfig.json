@@ -12,8 +12,13 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "typeRoots": ["node_modules/@types", "./node_modules"],
-    "types": ["vite/client"],
+    "typeRoots": [
+      "node_modules/@types",
+      "./node_modules"
+    ],
+    "types": [
+      "vite/client"
+    ],
   },
   "include": [
     "packages",
