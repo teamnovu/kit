@@ -1,10 +1,15 @@
 <template>
-  <template v-if="isServer"></template>
+  <template v-if="isServer" />
   <slot v-else-if="allowed" name="default" />
-  <slot v-else name="rejected" :serviceName="serviceName" :acceptService="CookieConsent?.acceptService">
+  <slot
+    v-else
+    name="rejected"
+    :service-name="serviceName"
+    :accept-service="CookieConsent?.acceptService"
+  >
     <div class="cc-rejected">
       <div>{{ rejectText.replace('{service}', serviceName) }}</div>
-      <button @click="() => CookieConsent?.acceptService(service)">
+      <button type="button" @click="() => CookieConsent?.acceptService(service)">
         {{ buttonText.replace('{service}', serviceName) }}
       </button>
     </div>
@@ -12,19 +17,22 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useCookieGuard, useCookieConsent } from '../index';
+import { onMounted, ref } from 'vue'
+import { useCookieGuard, useCookieConsent } from '../index'
 
-const props = withDefaults(defineProps<{
-  service: string
-  rejectText?: string
-  buttonText?: string
-}>(), {
-  rejectText: 'You have not accepted the usage of {service}.',
-  buttonText: 'Accept {service}'
-})
+const props = withDefaults(
+  defineProps<{
+    service: string
+    rejectText?: string
+    buttonText?: string
+  }>(),
+  {
+    rejectText: 'You have not accepted the usage of {service}.',
+    buttonText: 'Accept {service}',
+  },
+)
 
-const CookieConsent = useCookieConsent();
+const CookieConsent = useCookieConsent()
 
 const { allowed } = useCookieGuard(props.service)
 
@@ -36,5 +44,4 @@ onMounted(() => {
   const [category, service] = props.service.split('.')
   serviceName.value = CookieConsent?.getConfig().categories[category].services?.[service]?.label ?? ''
 })
-
 </script>

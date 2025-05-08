@@ -7,18 +7,18 @@
 </template>
 
 <script setup lang="ts">
-import HAccordion from './HAccordion.vue';
-import AccessibleComponent from '../AccessibleComponent.vue';
+import HAccordion from './HAccordion.vue'
+import AccessibleComponent from '../AccessibleComponent.vue'
 
 interface Props {
-  is: any;
+  is: any
 }
 
 // #region Definitions
 
 withDefaults(defineProps<Props>(), {
-  is: "section"
-});
+  is: 'section',
+})
 
 // #endregion
 </script>

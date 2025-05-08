@@ -1,6 +1,6 @@
 /**
  * Copied from:
- * https://github.com/shopware/frontends/blob/main/packages/composables/src/useProductPrice/useProductPrice.ts#L7
+ * https://github.com/shopware/frontends/blob/main/packages/composables/src/useProductPrice/useProductPrice.ts
  */
 
 import type { Schemas } from '#store-types'
@@ -51,7 +51,8 @@ export type UseProductPriceReturn = {
 }
 
 /**
- * The purpose of the `useProductPrice` function is to abstract the logic to expose most useful helpers for price displaying.
+ * The purpose of the `useProductPrice` function is to abstract the logic
+ * to expose most useful helpers for price displaying.
  *
  * @public
  * @category Product

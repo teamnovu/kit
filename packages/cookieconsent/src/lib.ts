@@ -1,8 +1,6 @@
-/* eslint-disable import/prefer-default-export */
+import type { InjectionKey } from 'vue'
+import type { CookieConsent } from './types'
 
-import type { InjectionKey } from 'vue';
-import type { CookieConsent } from './types';
+export const CookieConsentSymbol: InjectionKey<CookieConsent | undefined> = Symbol('CookieConsent')
 
-export const CookieConsentSymbol: InjectionKey<CookieConsent | undefined> = Symbol('CookieConsent');
-
-export const isServer = typeof window === 'undefined';
+export const isServer = typeof window === 'undefined'

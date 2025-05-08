@@ -1,22 +1,18 @@
-import animate, {
-  type Instance,
-  type Options as AnimationsOptions,
-} from '@teamnovu/kit-animations';
-// @ts-expect-error no types
-// eslint-disable-next-line import/no-unresolved
-import { defineNuxtPlugin, inject, useRuntimeConfig } from '#imports';
+import animate from '@teamnovu/kit-animations'
+import type { Instance, Options as AnimationsOptions } from '@teamnovu/kit-animations'
+import { defineNuxtPlugin, inject, useRuntimeConfig } from '#imports'
 
-export default defineNuxtPlugin(({ vueApp, hook }: any) => {
-  const runtimeConfig = useRuntimeConfig();
-  const config = (runtimeConfig?.public?.kit.animations ?? {}) as AnimationsOptions;
+export default defineNuxtPlugin(({ vueApp, hook }) => {
+  const runtimeConfig = useRuntimeConfig()
+  const config = (runtimeConfig?.public?.kit.animations ?? {}) as AnimationsOptions
 
-  vueApp.use(animate, config);
+  vueApp.use(animate, config)
 
-  const anim = inject('@teamnovu/kit-animations') as Instance;
+  const anim = inject('@teamnovu/kit-animations') as Instance
 
   hook('page:transition:finish', () => {
     for (const node of Object.values(anim.context.nodes)) {
-      anim.applyAnimations(node);
+      anim.applyAnimations(node)
     }
-  });
-});
+  })
+})

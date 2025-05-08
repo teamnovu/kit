@@ -4,7 +4,10 @@ import { computed, unref } from 'vue'
 
 type DetailProduct<S extends Schemas> = S['CustomProductDetailResponse']['product']
 
-export function getProductVariantForOptions<S extends Schemas>(product: DetailProduct<S>, optionIds: string[]) {
+export function getProductVariantForOptions<S extends Schemas>(
+  product: DetailProduct<S>,
+  optionIds: string[],
+) {
   const variants = product.extensions?.variants
 
   if (optionIds.length === 0) {
@@ -16,6 +19,9 @@ export function getProductVariantForOptions<S extends Schemas>(product: DetailPr
   return variants?.find(v => v.optionIds?.every(optId => optionIds.includes(optId)))
 }
 
-export function useProductVariantForOptions<S extends Schemas>(product: MaybeRef<DetailProduct<S>>, optionIds: MaybeRef<string[]>) {
+export function useProductVariantForOptions<S extends Schemas>(
+  product: MaybeRef<DetailProduct<S>>,
+  optionIds: MaybeRef<string[]>,
+) {
   return computed(() => getProductVariantForOptions(unref(product), unref(optionIds)))
 }

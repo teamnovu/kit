@@ -9,19 +9,19 @@
 </template>
 
 <script lang="ts" setup>
-import { useCollapseContext } from '@teamnovu/kit-composables';
+import { useCollapseContext } from '@teamnovu/kit-composables'
 
 // #region Definitions
 
 interface Props {
-  is?: any;
+  is?: any
 }
 
 withDefaults(defineProps<Props>(), {
   is: 'section',
-});
+})
 
-const toggleController = useCollapseContext();
+const toggleController = useCollapseContext()
 
 // #endregion
 </script>

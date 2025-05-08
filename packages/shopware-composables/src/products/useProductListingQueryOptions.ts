@@ -7,6 +7,7 @@ import { productKeys } from '../keys'
 import type { OperationBody, OperationKey } from '../types/query'
 import { relativizeSeoUrl } from '../util/url'
 
+// eslint-disable-next-line @stylistic/max-len
 const readListingOperation = 'readCompactProductListing post /novu/headless/product-listing/{seoUrl}' satisfies OperationKey
 
 export function useProductListingQueryOptions<Operations extends operations>(

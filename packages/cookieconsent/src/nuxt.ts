@@ -2,9 +2,9 @@ import {
   addComponent,
   addImports,
   defineNuxtModule,
-} from '@nuxt/kit';
-import type { NuxtModule } from '@nuxt/schema';
-import type { CookieConsentConfig } from './types';
+} from '@nuxt/kit'
+import type { NuxtModule } from '@nuxt/schema'
+import type { CookieConsentConfig } from './types'
 
 const module: NuxtModule<CookieConsentConfig> = defineNuxtModule<CookieConsentConfig>({
 
@@ -14,10 +14,9 @@ const module: NuxtModule<CookieConsentConfig> = defineNuxtModule<CookieConsentCo
   },
 
   setup(options, nuxt) {
-    // eslint-disable-next-line no-param-reassign
     nuxt.options.runtimeConfig.public.cookieconsent = {
       ...options,
-    };
+    }
 
     // auto import composables
     addImports([
@@ -29,16 +28,16 @@ const module: NuxtModule<CookieConsentConfig> = defineNuxtModule<CookieConsentCo
         name: 'useCookieGuard',
         from: '@teamnovu/kit-cookieconsent',
       },
-    ]);
+    ])
 
     // auto import components
     addComponent({
       name: 'CookieGuard',
       export: 'CookieGuard',
       filePath: '@teamnovu/kit-cookieconsent',
-    });
+    })
   },
 
-});
+})
 
-export default module;
+export default module

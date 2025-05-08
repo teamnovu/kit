@@ -30,12 +30,15 @@ importers:
         specifier: ^22.14.1
         version: 22.14.1
     devDependencies:
+      '@eslint/compat':
+        specifier: ^1.2.9
+        version: 1.2.9(eslint@9.25.0(jiti@2.4.2))
       '@eslint/js':
         specifier: ^9.25.0
         version: 9.25.0
       '@teamnovu/eslint-config-vue':
-        specifier: ^9.0.11
-        version: 9.0.11(eslint@9.25.0(jiti@2.4.2))(tailwindcss@3.4.17)(typescript@5.8.3)
+        specifier: ^9.0.13
+        version: 9.0.13(eslint@9.25.0(jiti@2.4.2))(tailwindcss@3.4.17)(typescript@5.8.3)
       '@types/lodash-es':
         specifier: ^4.17.6
         version: 4.17.12
@@ -1109,6 +1112,15 @@ packages:
     resolution: {integrity: sha512-CCZCDJuduB9OUkFkY2IgppNZMi2lBQgD2qzwXkEia16cge2pijY/aXi96CJMquDMn3nJdlPV1A5KrJEXwfLNzQ==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
 
+  '@eslint/compat@1.2.9':
+    resolution: {integrity: sha512-gCdSY54n7k+driCadyMNv8JSPzYLeDVM/ikZRtvtROBpRdFSkS8W9A82MqsaY7lZuwL0wiapgD0NT1xT0hyJsA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: ^9.10.0
+    peerDependenciesMeta:
+      eslint:
+        optional: true
+
   '@eslint/config-array@0.20.0':
     resolution: {integrity: sha512-fxlS1kkIjx8+vy2SjuCB94q3htSNrufYTXubwiBFeaQHbH6Ipi43gFJq2zCMt6PHhImH3Xmr0NksKDvchWlpQQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -1824,8 +1836,8 @@ packages:
       '@vue/composition-api':
         optional: true
 
-  '@teamnovu/eslint-config-vue@9.0.11':
-    resolution: {integrity: sha512-s+NiRVY5hruFnr75dx9t30tpwA4c1RL7AYR5V8oHg0QJ95XtTEDHjlKGsvDVj8eE7Q0MgPdSotRkeQ4RZZNyWA==}
+  '@teamnovu/eslint-config-vue@9.0.13':
+    resolution: {integrity: sha512-0qZh1I7wrBEi5Sai+Jwp+QWAravE3lbnuBIN2CjGiVwqK3wYVyUe1atQ37kLuavNkFxB21T3VkuzYWYXDJxLlA==}
     peerDependencies:
       eslint: '>= 9'
 
@@ -8996,6 +9008,10 @@ snapshots:
 
   '@eslint-community/regexpp@4.12.1': {}
 
+  '@eslint/compat@1.2.9(eslint@9.25.0(jiti@2.4.2))':
+    optionalDependencies:
+      eslint: 9.25.0(jiti@2.4.2)
+
   '@eslint/config-array@0.20.0':
     dependencies:
       '@eslint/object-schema': 2.1.6
@@ -9932,7 +9948,7 @@ snapshots:
       vue: 3.5.13(typescript@5.8.3)
       vue-demi: 0.14.10(vue@3.5.13(typescript@5.8.3))
 
-  '@teamnovu/eslint-config-vue@9.0.11(eslint@9.25.0(jiti@2.4.2))(tailwindcss@3.4.17)(typescript@5.8.3)':
+  '@teamnovu/eslint-config-vue@9.0.13(eslint@9.25.0(jiti@2.4.2))(tailwindcss@3.4.17)(typescript@5.8.3)':
     dependencies:
       '@stylistic/eslint-plugin': 2.13.0(eslint@9.25.0(jiti@2.4.2))(typescript@5.8.3)
       eslint: 9.25.0(jiti@2.4.2)

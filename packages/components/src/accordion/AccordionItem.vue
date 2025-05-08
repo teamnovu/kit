@@ -22,50 +22,53 @@ import {
   useVModel,
   type CubicBezierPoints,
   type EasingFunction,
-} from "@vueuse/core";
-import type { MaybeRef } from "@vueuse/shared";
-import HAccordionItem from "./HAccordionItem.vue";
-import AccessibleComponent from "../AccessibleComponent.vue";
-import { omit } from "lodash-es";
+} from '@vueuse/core'
+import type { MaybeRef } from '@vueuse/shared'
+import HAccordionItem from './HAccordionItem.vue'
+import AccessibleComponent from '../AccessibleComponent.vue'
+import { omit } from 'lodash-es'
 
 // #region Types
 
 interface Props {
-  is?: any;
-  open?: boolean;
-  dimension?: "width" | "height";
-  duration?: number;
-  transition?: MaybeRef<EasingFunction | CubicBezierPoints>;
-  initiallyClosed?: boolean;
-  controlled?: boolean;
+  is?: any
+  open?: boolean
+  dimension?: 'width' | 'height'
+  duration?: number
+  transition?: MaybeRef<EasingFunction | CubicBezierPoints>
+  initiallyClosed?: boolean
+  controlled?: boolean
 }
 
 // #endregion
 
 // #region Definitions
 
-const emit = defineEmits(["update:open"]);
+const emit = defineEmits(['update:open'])
 const props = withDefaults(defineProps<Props>(), {
-  is: "details",
+  is: 'details',
   initiallyClosed: true,
   controlled: true,
   open: undefined,
-});
+})
 
-const isOpen = useVModel(props, "open", emit, { passive: true, defaultValue: !props.initiallyClosed });
+const isOpen = useVModel(props, 'open', emit, {
+  passive: true,
+  defaultValue: !props.initiallyClosed,
+})
 
 // #endregion
 
 // #region Methods
 
 type AccordionItemSlotProps = Parameters<
-  NonNullable<InstanceType<typeof HAccordionItem>["$slots"]["default"]>
->[0];
+  NonNullable<InstanceType<typeof HAccordionItem>['$slots']['default']>
+>[0]
 
 const shouldShowOpenAttribute = (collapseProps: AccordionItemSlotProps) =>
-  props.is === "details"
+  props.is === 'details'
     ? collapseProps.isTransitioning || collapseProps.isOpen
-    : false;
+    : false
 
 // #endregion
 </script>

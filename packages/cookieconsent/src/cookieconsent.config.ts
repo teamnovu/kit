@@ -1,4 +1,4 @@
-import { CookieConsentConfig } from './types';
+import { CookieConsentConfig } from './types'
 
 const consentConfig: CookieConsentConfig = {
 
@@ -99,16 +99,18 @@ const consentConfig: CookieConsentConfig = {
                   expiration: 'Gültigkeit',
                 },
                 body: [
-                  // {
-                  //   name: 'Google Analytics',
-                  //   description: 'Cookies von Google Analytics',
-                  //   expiration: '2 Wochen',
-                  // },
-                  // {
-                  //   name: 'Facebook',
-                  //   description: 'Cookies von Facebook',
-                  //   expiration: '2 Wochen',
-                  // },
+                  /*
+                    {
+                      name: 'Google Analytics',
+                      description: 'Cookies von Google Analytics',
+                      expiration: '2 Wochen',
+                    },
+                    {
+                      name: 'Facebook',
+                      description: 'Cookies von Facebook',
+                      expiration: '2 Wochen',
+                    },
+                  */
                 ],
               },
             },
@@ -117,6 +119,6 @@ const consentConfig: CookieConsentConfig = {
       },
     },
   },
-};
+}
 
-export default consentConfig;
+export default consentConfig

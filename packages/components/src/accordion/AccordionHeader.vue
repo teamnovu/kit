@@ -16,37 +16,37 @@
 </template>
 
 <script lang="ts" setup>
-import { unref } from 'vue';
-import AccessibleComponent from '../AccessibleComponent.vue';
-import { useCollapseContext } from '@teamnovu/kit-composables';
+import { unref } from 'vue'
+import AccessibleComponent from '../AccessibleComponent.vue'
+import { useCollapseContext } from '@teamnovu/kit-composables'
 
 // #region Definitions
 
 interface Props {
-  is?: any;
+  is?: any
 }
 
 const props = withDefaults(defineProps<Props>(), {
   is: 'summary',
-});
+})
 
-const toggleController = useCollapseContext();
+const toggleController = useCollapseContext()
 
-const accessibleComponents = ['button', 'summary'];
+const accessibleComponents = ['button', 'summary']
 
 // #endregion
 
 // #region Methods
 
 const toggle = () => {
-  if (!toggleController) return;
-  toggleController.toggle.value = !unref(toggleController.toggle);
-};
+  if (!toggleController) return
+  toggleController.toggle.value = !unref(toggleController.toggle)
+}
 
 const keydown = (e: KeyboardEvent) => {
-  if (accessibleComponents.includes(props.is)) return;
-  if (e.key === "Enter") {
-    toggle();
+  if (accessibleComponents.includes(props.is)) return
+  if (e.key === 'Enter') {
+    toggle()
   }
 }
 

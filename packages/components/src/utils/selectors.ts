@@ -8,4 +8,4 @@ export const selectFocussableElement = `a[href],
    object,
    embed,
    *[tabindex],
-   *[contenteditable]`;
+   *[contenteditable]`

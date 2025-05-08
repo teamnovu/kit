@@ -5,11 +5,11 @@ import {
   addPlugin,
   createResolver,
   addImportsDir,
-} from '@nuxt/kit';
-import type { NuxtModule } from '@nuxt/schema';
-import * as Components from '@teamnovu/kit-components';
-import * as Composables from '@teamnovu/kit-composables';
-import { type Options as AnimationsOptions } from '@teamnovu/kit-animations';
+} from '@nuxt/kit'
+import type { NuxtModule } from '@nuxt/schema'
+import * as Components from '@teamnovu/kit-components'
+import * as Composables from '@teamnovu/kit-composables'
+import { type Options as AnimationsOptions } from '@teamnovu/kit-animations'
 
 export interface NovuKitNuxtOptions {
   prefix?: string
@@ -36,44 +36,43 @@ const module: NuxtModule<NovuKitNuxtOptions> = defineNuxtModule<NovuKitNuxtOptio
     prefix: '',
   },
   setup(options, nuxt) {
-    const { resolve } = createResolver(import.meta.url);
+    const { resolve } = createResolver(import.meta.url)
 
-    // eslint-disable-next-line no-param-reassign
     nuxt.options.runtimeConfig.public.kit = {
       ...options,
-    };
+    }
 
     // auto import composables
     addImports(Object.keys(Composables).map((name: string) => ({
       name,
       as: `use${options.prefix}${name.substring(3)}`,
       from: '@teamnovu/kit-composables',
-    })));
-    addImportsDir(resolve('./runtime/composables'));
+    })))
+    addImportsDir(resolve('./runtime/composables'))
 
     // auto import components
     Object.keys(Components).forEach((name: string) => addComponent({
       name: options.prefix + name,
       export: name,
       filePath: '@teamnovu/kit-components',
-    }));
+    }))
 
     // auto import plugins
     addPlugin({
       src: resolve('./runtime/animations.ts'),
-    });
+    })
   },
-});
+})
 
 declare module '@nuxt/schema' {
-  // eslint-disable-next-line no-unused-vars
+
   interface NuxtConfig {
     kit?: NovuKitNuxtOptions
   }
-  // eslint-disable-next-line no-unused-vars
+
   interface NuxtOptions {
     kit?: NovuKitNuxtOptions
   }
 }
 
-export default module;
+export default module
