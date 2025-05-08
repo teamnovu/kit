@@ -2,7 +2,6 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
     "useDefineForClassFields": true,
     "noImplicitThis": true,
     "strict": true,
@@ -13,13 +12,13 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": ["node_modules/@types", "./node_modules"],
     "types": ["vite/client"],
   },
   "include": [
     "packages",
     ".vitepress/components/*.vue",
-    ".vitepress/*.ts"
+    ".vitepress/*.ts",
   ],
   "exclude": [
     "node_modules",

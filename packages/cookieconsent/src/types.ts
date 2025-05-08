@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
-import type { Ref } from 'vue';
 import * as VanillaConsent from 'vanilla-cookieconsent/types';
+import type { Ref } from 'vue';
 
 declare global {
     interface Window {
@@ -17,7 +17,7 @@ export interface CookieConsentConfig extends VanillaConsent.CookieConsentConfig 
         onChange?: never
     }
 
-export type CookieConsent = typeof VanillaConsent & {
+export type CookieConsent = Omit<typeof VanillaConsent, 'acceptService'> & {
         services: Ref<Services>
-        acceptService: (service: string, category?: string) => void
+        acceptService: (category: string, service?: string) => void
     }

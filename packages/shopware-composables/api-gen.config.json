@@ -1,0 +1,5 @@
+{
+  "$schema": "./api-types/storeApiSchema.json",
+  "patches": []
+}
+

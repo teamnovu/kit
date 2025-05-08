@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "types": [
+      "vue",
+      "vite/client",
+      "vitest/globals"
+    ],
+    "paths": {
+      "#store-types": [
+        "./api-types/storeApiTypes.d.ts"
+      ]
+    },
+    "typeRoots": [
+      "./node_modules"
+    ],
+  },
+  "include": [
+    "src/**/*",
+    "../components/src/injects"
+  ]
+}
