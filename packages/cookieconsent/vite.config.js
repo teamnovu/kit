@@ -2,9 +2,9 @@
 /* eslint-disable global-require */
 
 import vue from '@vitejs/plugin-vue';
-import dts from 'vite-plugin-dts';
-import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 import pkg from './package.json';
 
 export default defineConfig({
@@ -17,6 +17,7 @@ export default defineConfig({
         index: resolve(__dirname, 'src/index.ts'),
         nuxt: resolve(__dirname, 'src/nuxt.ts'),
       },
+      cssFileName: "style",
     },
     declarationMap: true,
     sourcemap: true,
