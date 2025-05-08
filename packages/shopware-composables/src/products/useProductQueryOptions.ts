@@ -5,7 +5,7 @@ import { unref } from 'vue'
 import { useShopwareQueryClient } from '../inject'
 import { productKeys } from '../keys'
 import type { OperationBody, OperationKey } from '../types/query'
-import { cleanSeoUrl } from '../util/url'
+import { relativizeSeoUrl } from '../util/url'
 
 const readCustomProductDetailOperation = 'readCustomProductDetail post /novu/headless/product/{seoUrl}' satisfies OperationKey
 
@@ -20,7 +20,7 @@ export function useProductQueryOptions<Operations extends operations>(
     queryKey,
     queryFn: async () => {
       return client.query(readCustomProductDetailOperation, {
-        params: { seoUrl: cleanSeoUrl(unref(seoUrl)) },
+        params: { seoUrl: relativizeSeoUrl(unref(seoUrl)) },
         body: unref(body),
       })
     },

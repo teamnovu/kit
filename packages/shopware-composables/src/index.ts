@@ -12,6 +12,7 @@ export * from './keys'
 export * from './products/useProductPrice'
 export * from './products/useProductVariantForOptions'
 export * from './usePagination'
+export * from './util/url'
 
 export default class ShopwareComposables<Operations extends operations, Schemas extends BaseSchemas> {
   useProductListingQueryOptions = useProductListingQueryOptions<Operations>
