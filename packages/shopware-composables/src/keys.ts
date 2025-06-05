@@ -40,3 +40,7 @@ export const productKeys = {
       },
     ] as const,
 }
+
+export const cartKeys = {
+  get: () => ['cart'] as const,
+}

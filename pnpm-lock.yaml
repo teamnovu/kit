@@ -4080,6 +4080,7 @@ packages:
   eslint-plugin-readable-tailwind@1.9.1:
     resolution: {integrity: sha512-vZtTdQ2pDZt1cr0IeYQCI6lR0HANbOzfokEIVI9qqByZ0jUDiwxkFIDue/XXpGL3EdLVM8my7hoLKCJzgbSgWQ==}
     engines: {node: '>=16'}
+    deprecated: This plugin has been renamed to eslint-plugin-better-tailwindcss
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
       tailwindcss: '>=3.3.0'
@@ -12601,7 +12602,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.30.1(eslint@9.25.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.3.3)(eslint@9.25.0(jiti@2.4.2)):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.30.1(eslint@9.25.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.3.3(eslint-plugin-import@2.31.0)(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -12652,7 +12653,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.25.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.30.1(eslint@9.25.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.3.3)(eslint@9.25.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.30.1(eslint@9.25.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.3.3(eslint-plugin-import@2.31.0)(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3

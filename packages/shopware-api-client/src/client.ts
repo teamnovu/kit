@@ -1,3 +1,4 @@
+import { EventEmitter } from './eventEmitter'
 import type {
   OperationOptions,
   OperationProp,
@@ -20,20 +21,25 @@ const operationRegex = /^(?<name>\w+?)\s(?<method>get|post|put|patch|delete)\s+(
 export class ShopwareClient<Operations extends Record<string, {
   body?: unknown
   response?: unknown
-}>> {
+}>> extends EventEmitter {
   private options: ShopwareClientOptions = {
     baseURL: '',
     apiKey: '',
     language: '',
+    contextToken: '',
     includeSeoUrls: false,
+    reflectContextToken: true,
   }
 
   constructor(options: ShopwareClientOptions) {
-    this.setBaseURL(options.baseURL)
-    this.setApiKey(options.apiKey)
-    this.setLanguage(options.language)
-    this.setIncludeSeoUrls(options.includeSeoUrls)
-    this.options = options
+    super()
+
+    this.setBaseURL(options.baseURL ?? this.options.baseURL)
+    this.setApiKey(options.apiKey ?? this.options.apiKey)
+    this.setLanguage(options.language ?? this.options.language)
+    this.setContextToken(options.contextToken ?? this.options.contextToken)
+    this.setIncludeSeoUrls(options.includeSeoUrls ?? this.options.includeSeoUrls)
+    this.setReflectContextToken(options.reflectContextToken ?? this.options.reflectContextToken)
   }
 
   public setBaseURL(baseURL: string) {
@@ -60,8 +66,20 @@ export class ShopwareClient<Operations extends Record<string, {
     this.options.language = language
   }
 
+  public setContextToken(contextToken: string | undefined) {
+    if (contextToken && typeof contextToken !== 'string') {
+      throw new Error('Invalid contextToken: If provided, it must be a string.')
+    }
+
+    this.options.contextToken = contextToken
+  }
+
   public setIncludeSeoUrls(includeSeoUrls: boolean = true) {
     this.options.includeSeoUrls = includeSeoUrls
+  }
+
+  public setReflectContextToken(reflectContextToken: boolean = true) {
+    this.options.reflectContextToken = reflectContextToken
   }
 
   private parseOperation(operation: keyof Operations & string): {
@@ -104,6 +122,7 @@ export class ShopwareClient<Operations extends Record<string, {
         headers: {
           'Content-Type': 'application/json',
           'sw-access-key': this.options.apiKey,
+          ...(this.options.contextToken && { 'sw-context-token': this.options.contextToken }),
           ...(this.options.includeSeoUrls && { 'sw-include-seo-urls': 'true' }),
           ...(this.options.language && { 'sw-language-id': this.options.language }),
           ...options?.headers,
@@ -117,6 +136,14 @@ export class ShopwareClient<Operations extends Record<string, {
           response.status,
           await response.json().catch(() => undefined),
         )
+      }
+
+      if (this.options.reflectContextToken) {
+        const contextToken = response.headers.get('sw-context-token')
+        if (contextToken) {
+          this.setContextToken(contextToken)
+          this.emit('contextToken', contextToken)
+        }
       }
 
       const data = await response.json()

@@ -1,4 +1,8 @@
 import type { Schemas as BaseSchemas, operations } from '#store-types'
+import { useCartAddItemMutation } from './cart/useCartAddItemMutation'
+import { useCartQueryOptions } from './cart/useCartQueryOptions'
+import { useCartRemoveItemMutation } from './cart/useCartRemoveItemMutation'
+import { useCartUpdateItemMutation } from './cart/useCartUpdateItemMutation'
 import { useContextOptions } from './context/useContextOptions'
 import { useContextUpdate } from './context/useContextUpdate'
 import { useCategoryQueryOptions } from './products/useCategoryQueryOptions'
@@ -21,4 +25,8 @@ export default class ShopwareComposables<Operations extends operations, Schemas 
   useContextUpdate = useContextUpdate<Operations>
   useProductQueryOptions = useProductQueryOptions<Operations>
   useProductVariantForOptions = useProductVariantForOptions<Schemas>
+  useCartQueryOptions = useCartQueryOptions<Operations>
+  useCartUpdateItemMutation = useCartUpdateItemMutation<Operations>
+  useCartRemoveItemMutation = useCartRemoveItemMutation<Operations>
+  useCartAddItemMutation = useCartAddItemMutation<Operations>
 }

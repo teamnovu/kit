@@ -39,4 +39,18 @@ export interface ShopwareClientOptions {
   apiKey: string
   includeSeoUrls?: boolean
   language?: string
+
+  /**
+   * If true, the context token will be reflected in the response headers.
+   * @default true
+   */
+  reflectContextToken?: boolean
+
+  /**
+   * If provided, it will be used as the context token.
+   * If reflectContextToken is true, this token will be used only until the first response
+   * sends a new context token.
+   * @default undefined
+   */
+  contextToken?: string
 }
