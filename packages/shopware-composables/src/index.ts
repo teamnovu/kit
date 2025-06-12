@@ -5,6 +5,8 @@ import { useCartRemoveItemMutation } from './cart/useCartRemoveItemMutation'
 import { useCartUpdateItemMutation } from './cart/useCartUpdateItemMutation'
 import { useContextOptions } from './context/useContextOptions'
 import { useContextUpdate } from './context/useContextUpdate'
+import useIsLoggedIn from './customer/useIsLoggedIn'
+import { useLoginMutation } from './customer/useLoginMutation'
 import { useCategoryQueryOptions } from './products/useCategoryQueryOptions'
 import { useProductListingQueryOptions } from './products/useProductListingQueryOptions'
 import { useProductQueryOptions } from './products/useProductQueryOptions'
@@ -20,13 +22,20 @@ export * from './util/url'
 
 export default class ShopwareComposables<Operations extends operations, Schemas extends BaseSchemas> {
   useProductListingQueryOptions = useProductListingQueryOptions<Operations>
+
   useCategoryQueryOptions = useCategoryQueryOptions<Operations>
+
   useContextOptions = useContextOptions<Operations>
   useContextUpdate = useContextUpdate<Operations>
+
   useProductQueryOptions = useProductQueryOptions<Operations>
   useProductVariantForOptions = useProductVariantForOptions<Schemas>
+
   useCartQueryOptions = useCartQueryOptions<Operations>
   useCartUpdateItemMutation = useCartUpdateItemMutation<Operations>
   useCartRemoveItemMutation = useCartRemoveItemMutation<Operations>
   useCartAddItemMutation = useCartAddItemMutation<Operations>
+
+  useIsLoggedIn = useIsLoggedIn<Operations>
+  useLoginMutation = useLoginMutation<Operations>
 }

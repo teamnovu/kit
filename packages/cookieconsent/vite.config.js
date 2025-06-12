@@ -5,7 +5,12 @@ import dts from 'vite-plugin-dts'
 import pkg from './package.json'
 
 export default defineConfig({
-  plugins: [vue(), dts()],
+  plugins: [
+    vue(),
+    dts({
+      staticImport: true,
+    }),
+  ],
   build: {
     lib: {
       formats: ['es'],

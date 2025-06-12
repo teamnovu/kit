@@ -1,6 +1,6 @@
-import animate from '@teamnovu/kit-animations'
-import type { Instance, Options as AnimationsOptions } from '@teamnovu/kit-animations'
 import { defineNuxtPlugin, inject, useRuntimeConfig } from '#imports'
+import type { Options as AnimationsOptions, Instance } from '@teamnovu/kit-animations'
+import animate from '@teamnovu/kit-animations'
 
 export default defineNuxtPlugin(({ vueApp, hook }) => {
   const runtimeConfig = useRuntimeConfig()

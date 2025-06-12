@@ -72,6 +72,7 @@ export class ShopwareClient<Operations extends Record<string, {
     }
 
     this.options.contextToken = contextToken
+    this.emit('contextToken', contextToken)
   }
 
   public setIncludeSeoUrls(includeSeoUrls: boolean = true) {
@@ -107,10 +108,10 @@ export class ShopwareClient<Operations extends Record<string, {
     })
   }
 
-  async query<OperationKey extends (keyof Operations) & string>(
+  async queryRaw<OperationKey extends (keyof Operations) & string>(
     operation: OperationKey,
     options?: OperationOptions<Operations, OperationKey>,
-  ): Promise<OperationProp<Operations, OperationKey, 'response'>> {
+  ): Promise<Response> {
     try {
       const { method, url } = this.parseOperation(operation)
 
@@ -142,12 +143,10 @@ export class ShopwareClient<Operations extends Record<string, {
         const contextToken = response.headers.get('sw-context-token')
         if (contextToken) {
           this.setContextToken(contextToken)
-          this.emit('contextToken', contextToken)
         }
       }
 
-      const data = await response.json()
-      return data
+      return response
     } catch (error) {
       if (error instanceof ShopwareApiError) {
         throw error
@@ -159,5 +158,14 @@ export class ShopwareClient<Operations extends Record<string, {
         error instanceof Error ? error.message : undefined,
       )
     }
+  }
+
+  async query<OperationKey extends (keyof Operations) & string>(
+    operation: OperationKey,
+    options?: OperationOptions<Operations, OperationKey>,
+  ): Promise<OperationProp<Operations, OperationKey, 'response'>> {
+    const response = await this.queryRaw(operation, options)
+
+    return response.json()
   }
 }

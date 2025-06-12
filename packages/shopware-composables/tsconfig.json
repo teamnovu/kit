@@ -10,7 +10,7 @@
     "paths": {
       "#store-types": [
         "./api-types/storeApiTypes.d.ts"
-      ]
+      ],
     },
     "typeRoots": [
       "./node_modules"
