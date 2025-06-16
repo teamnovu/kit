@@ -44,3 +44,30 @@ export const productKeys = {
 export const cartKeys = {
   get: () => ['cart'] as const,
 }
+
+export const customerKeys = {
+  get: () => ['customer'] as const,
+}
+
+export const addressKeys = {
+  all: () => ['address'] as const,
+  lists: () => [...addressKeys.all(), 'list'] as const,
+  list: (body: MaybeRef<unknown>) =>
+    [
+      ...addressKeys.all(),
+      'list',
+      {
+        body,
+      },
+    ] as const,
+  details: () => [...addressKeys.all(), 'detail'] as const,
+  detail: (url: MaybeRef<string>, body: MaybeRef<unknown>) =>
+    [
+      ...addressKeys.all(),
+      'detail',
+      {
+        url,
+        body,
+      },
+    ] as const,
+}
