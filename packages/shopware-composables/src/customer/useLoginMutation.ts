@@ -17,6 +17,7 @@ export function useLoginMutation<Operations extends operations>(
   const queryClient = useQueryClient()
 
   return useMutation({
+    ...mutationOptions,
     mutationFn: async (body: OperationBody<Operations, typeof loginCustomerOperation>) => {
       const response = await client.queryRaw(loginCustomerOperation, {
         body,
