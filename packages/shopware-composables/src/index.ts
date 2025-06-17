@@ -1,5 +1,6 @@
 import type { Schemas as BaseSchemas, operations } from '#store-types'
-import { useListAddressesQueryOptions } from './address/listAddressesQueryOptions'
+import { useCheckoutAddresses } from './address/useCheckoutAddresses'
+import { useListAddressesQueryOptions } from './address/useListAddressesQueryOptions'
 import { useCartAddItemMutation } from './cart/useCartAddItemMutation'
 import { useCartQueryOptions } from './cart/useCartQueryOptions'
 import { useCartRemoveItemMutation } from './cart/useCartRemoveItemMutation'
@@ -13,6 +14,8 @@ import { useCategoryQueryOptions } from './products/useCategoryQueryOptions'
 import { useProductListingQueryOptions } from './products/useProductListingQueryOptions'
 import { useProductQueryOptions } from './products/useProductQueryOptions'
 import { useProductVariantForOptions } from './products/useProductVariantForOptions'
+import { useShippingMethods } from './shipping/useShippingMethods'
+import './types/operations'
 
 export * from './general/useSeoUrl'
 export * from './inject'
@@ -44,4 +47,8 @@ export default class ShopwareComposables<Operations extends operations, Schemas 
   useReadCustomerQueryOptions = useReadCustomerQueryOptions<Operations>
 
   useListAddressesQueryOptions = useListAddressesQueryOptions<Operations>
+
+  useCheckoutAddresses = useCheckoutAddresses
+
+  useShippingMethods = useShippingMethods
 }

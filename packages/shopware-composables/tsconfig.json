@@ -8,13 +8,16 @@
       "vitest/globals"
     ],
     "paths": {
+      "#types": [
+        "./src/types.d.ts"
+      ],
       "#store-types": [
         "./api-types/storeApiTypes.d.ts"
-      ],
+      ]
     },
     "typeRoots": [
       "./node_modules"
-    ],
+    ]
   },
   "include": [
     "src/**/*",

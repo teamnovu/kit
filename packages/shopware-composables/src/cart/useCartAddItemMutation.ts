@@ -1,8 +1,9 @@
 import { operations } from '#store-types'
-import { MutationOptions, useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
 import { useShopwareQueryClient } from '../inject'
 import { cartKeys } from '../keys'
 import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
+import { unref } from 'vue'
 
 const addCartItemOperation = 'addLineItem post /checkout/cart/line-item' satisfies OperationKey
 
@@ -23,7 +24,7 @@ type Body<Operations extends operations> = Omit<
 }
 
 export function useCartAddItemMutation<Operations extends operations>(
-  mutationOptions: MutationOptions<
+  mutationOptions: UseMutationOptions<
     OperationResponse<Operations, typeof addCartItemOperation>,
     unknown,
     Body<Operations>
@@ -42,7 +43,7 @@ export function useCartAddItemMutation<Operations extends operations>(
     onSuccess: (newCart, variables, context) => {
       queryClient.setQueryData(cartKeys.get(), newCart)
       // queryClient.invalidateQueries({ queryKey: cartKeys.get() })
-      mutationOptions.onSuccess?.(newCart, variables, context)
+      unref(unref(mutationOptions).onSuccess)?.(newCart, variables, context)
     },
   })
 }

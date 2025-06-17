@@ -9,6 +9,9 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
+    },
+    "./operations": {
+      "types": "./dist/types/operations.d.ts"
     }
   },
   "peerDependencies": {
@@ -30,6 +33,7 @@
   "author": "Elias Bernhaut",
   "homepage": "https://kit.novu.ch/packages/shopware-composables/",
   "dependencies": {
+    "@vueuse/core": "^13.3.0",
     "vite": "^6.2.5"
   },
   "devDependencies": {

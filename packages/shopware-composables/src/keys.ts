@@ -60,13 +60,16 @@ export const addressKeys = {
         body,
       },
     ] as const,
-  details: () => [...addressKeys.all(), 'detail'] as const,
-  detail: (url: MaybeRef<string>, body: MaybeRef<unknown>) =>
+}
+
+export const shippingKeys = {
+  all: () => ['shippingMethod'] as const,
+  lists: () => [...addressKeys.all(), 'list'] as const,
+  list: (body: MaybeRef<unknown>) =>
     [
       ...addressKeys.all(),
-      'detail',
+      'list',
       {
-        url,
         body,
       },
     ] as const,

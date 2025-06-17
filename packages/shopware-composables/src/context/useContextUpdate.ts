@@ -1,13 +1,14 @@
 import type { operations } from '#store-types'
-import { MutationOptions, useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
 import { useShopwareQueryClient } from '../inject'
 import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 import { contextKeys } from '../keys'
+import { unref } from 'vue'
 
 const updateContextOperation = 'updateContext patch /context' satisfies OperationKey
 
 export function useContextUpdate<Operations extends operations>(
-  mutationOptions?: MutationOptions<
+  mutationOptions?: UseMutationOptions<
     OperationResponse<Operations, typeof updateContextOperation>,
     unknown,
     OperationBody<Operations, typeof updateContextOperation>
@@ -26,7 +27,8 @@ export function useContextUpdate<Operations extends operations>(
 
     onSuccess: (newContext, variables, context) => {
       queryClient.invalidateQueries({ queryKey: contextKeys.all() })
-      mutationOptions?.onSuccess?.(newContext, variables, context)
+
+      unref(unref(mutationOptions)?.onSuccess)?.(newContext, variables, context)
     },
   })
 }

@@ -1,13 +1,14 @@
 import { operations } from '#store-types'
-import { MutationOptions, useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
 import { useShopwareQueryClient } from '../inject'
 import { cartKeys, contextKeys } from '../keys'
 import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
+import { unref } from 'vue'
 
 const loginCustomerOperation = 'loginCustomer post /account/login' satisfies OperationKey
 
 export function useLoginMutation<Operations extends operations>(
-  mutationOptions?: MutationOptions<
+  mutationOptions?: UseMutationOptions<
     OperationResponse<Operations, typeof loginCustomerOperation>,
     unknown,
     OperationBody<Operations, typeof loginCustomerOperation>
@@ -35,7 +36,7 @@ export function useLoginMutation<Operations extends operations>(
       queryClient.invalidateQueries({ queryKey: contextKeys.all() })
       queryClient.invalidateQueries({ queryKey: cartKeys.get() })
 
-      mutationOptions?.onSuccess?.(newCustomer, variables, context)
+      unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, context)
     },
   })
 }
