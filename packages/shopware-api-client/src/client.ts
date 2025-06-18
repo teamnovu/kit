@@ -1,4 +1,5 @@
 import { EventEmitter } from './eventEmitter'
+import { createQueryParams } from './query'
 import type {
   OperationOptions,
   OperationProp,
@@ -117,7 +118,9 @@ export class ShopwareClient<Operations extends Record<string, {
 
       const interpolatedUrl = this.interpolateUrl(url, options?.params ?? {})
 
-      const response = await fetch(`${this.options.baseURL}/store-api${interpolatedUrl}`, {
+      const query = options?.query ? `?${createQueryParams(options.query)}` : ''
+
+      const response = await fetch(`${this.options.baseURL}/store-api${interpolatedUrl}${query}`, {
         ...options,
         method,
         headers: {

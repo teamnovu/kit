@@ -33,6 +33,9 @@ export type OperationOptions<
 (UrlParamsRecord<ExtractUrlFromOperation<K>> extends infer T
   ? (keyof T extends never ? { params?: void } : { params: T })
   : never)
+& {
+  query?: Record<string, unknown>
+}
 
 export interface ShopwareClientOptions {
   baseURL: string
