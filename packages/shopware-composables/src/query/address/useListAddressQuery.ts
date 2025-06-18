@@ -15,7 +15,10 @@ export function useListAddressQueryOptions(
 
   return queryOptions({
     queryKey,
-    queryFn: () => client.query(listAddressOperation, unrefOptions(options)),
+    queryFn: ({ signal }) => client.query(listAddressOperation, {
+      ...unrefOptions(options),
+      signal,
+    }),
   })
 }
 

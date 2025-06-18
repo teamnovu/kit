@@ -1,8 +1,8 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
-import type { OperationKey, OperationOptions } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
-import { unrefOptions } from '../../util/unrefOptions'
 import { categoryKeys } from '../../keys'
+import { unrefOptions } from '../../util/unrefOptions'
+import type { OperationKey, OperationOptions } from '../types/query'
 
 const readCategoryListOperation = 'readCategoryList post /category' satisfies OperationKey
 
@@ -14,8 +14,11 @@ export const useReadCategoryListQueryOptions = function useReadCategoryListQuery
 
   return queryOptions({
     queryKey,
-    queryFn: async () => {
-      return client.query(readCategoryListOperation, unrefOptions(options))
+    queryFn: async ({ signal }) => {
+      return client.query(readCategoryListOperation, {
+        ...unrefOptions(options),
+        signal,
+      })
     },
   })
 }

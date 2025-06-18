@@ -19,6 +19,9 @@ export function useUpdateContextMutation(
   return useMutation({
     ...mutationOptions,
     mutationFn: async (body: OperationBody<typeof updateContextOperation>) => {
+      // Prevent race condition by cancelling the query before the mutation is executed
+      queryClient.cancelQueries({ queryKey: contextKeys.all() })
+
       return client.query(updateContextOperation, {
         body,
       })

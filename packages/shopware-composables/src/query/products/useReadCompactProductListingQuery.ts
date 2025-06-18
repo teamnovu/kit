@@ -3,9 +3,9 @@ import type { MaybeRef } from 'vue'
 import { unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
 import { productKeys } from '../../keys'
+import { unrefOptions } from '../../util/unrefOptions'
 import { relativizeSeoUrl } from '../../util/url'
 import type { OperationKey, OperationOptions } from '../types/query'
-import { unrefOptions } from '../../util/unrefOptions'
 
 // eslint-disable-next-line @stylistic/max-len
 const readListingOperation = 'readCompactProductListing post /novu/headless/product-listing/{seoUrl}' satisfies OperationKey
@@ -19,7 +19,7 @@ export function useReadCompactProductListingQueryOptions(
 
   return queryOptions({
     queryKey,
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       const opts = unrefOptions(options)
       return client.query(readListingOperation, {
         ...opts,
@@ -27,6 +27,7 @@ export function useReadCompactProductListingQueryOptions(
           ...opts.params,
           seoUrl: relativizeSeoUrl(unref(seoUrl)),
         },
+        signal,
       })
     },
   })

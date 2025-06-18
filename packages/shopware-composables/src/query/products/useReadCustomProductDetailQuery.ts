@@ -19,7 +19,7 @@ export function useReadCustomProductDetailOptions(
 
   return queryOptions({
     queryKey,
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       const opts = unrefOptions(body)
       return client.query(readCustomProductDetailOperation, {
         ...opts,
@@ -27,6 +27,7 @@ export function useReadCustomProductDetailOptions(
           ...opts.params,
           seoUrl: relativizeSeoUrl(unref(seoUrl)),
         },
+        signal,
       })
     },
   })

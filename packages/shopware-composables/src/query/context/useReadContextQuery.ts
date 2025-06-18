@@ -10,7 +10,7 @@ export function useReadContext() {
 
   return queryOptions({
     queryKey: contextKeys.all(),
-    queryFn: () => client.query(readContextOperation),
+    queryFn: ({ signal }) => client.query(readContextOperation, { signal }),
   })
 }
 

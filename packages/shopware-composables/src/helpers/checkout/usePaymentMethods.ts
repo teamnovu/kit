@@ -1,12 +1,12 @@
 import { computed } from 'vue'
-import { useReadShippingMethodQuery } from '../../query'
+import { useReadPaymentMethodQuery } from '../../query'
 import { useReadContextQuery } from '../../query/context/useReadContextQuery'
 import { useUpdateContextMutation } from '../../query/context/useUpdateContextMutation'
 
-export function useShippingMethods() {
+export function usePaymentMethods() {
   const contextQuery = useReadContextQuery()
   const contextUpdateMutation = useUpdateContextMutation()
-  const shippingMethodsQuery = useReadShippingMethodQuery({
+  const paymentMethodsQuery = useReadPaymentMethodQuery({
     query: {
       onlyActive: true,
     },
@@ -14,22 +14,22 @@ export function useShippingMethods() {
 
   const isSaving = computed(() => contextUpdateMutation.isPending.value)
 
-  const setShippingMethod = async (shippingMethodId: string) => {
+  const setPaymentMethod = async (paymentMethodId: string) => {
     return contextUpdateMutation.mutateAsync({
-      shippingMethodId,
+      paymentMethodId,
     })
   }
 
-  const activeShippingMethod = computed(() => contextQuery.data?.value?.shippingMethod)
-  const shippingMethods = computed(() => shippingMethodsQuery.data?.value?.elements)
+  const activePaymentMethod = computed(() => contextQuery.data?.value?.paymentMethod)
+  const paymentMethods = computed(() => paymentMethodsQuery.data?.value?.elements)
 
   return {
     contextUpdateMutation,
     contextQuery,
-    shippingMethodsQuery,
-    activeShippingMethod,
-    setShippingMethod,
+    paymentMethodsQuery,
+    activePaymentMethod,
+    setPaymentMethod,
     isSaving,
-    shippingMethods,
+    paymentMethods,
   }
 }

@@ -64,10 +64,23 @@ export const addressKeys = {
 
 export const shippingKeys = {
   all: () => ['shippingMethod'] as const,
-  lists: () => [...addressKeys.all(), 'list'] as const,
+  lists: () => [...shippingKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [
-      ...addressKeys.all(),
+      ...shippingKeys.all(),
+      'list',
+      {
+        body,
+      },
+    ] as const,
+}
+
+export const paymentKeys = {
+  all: () => ['paymentMethod'] as const,
+  lists: () => [...paymentKeys.all(), 'list'] as const,
+  list: (body: MaybeRef<unknown>) =>
+    [
+      ...paymentKeys.all(),
       'list',
       {
         body,

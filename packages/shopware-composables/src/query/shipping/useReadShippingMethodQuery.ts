@@ -1,9 +1,9 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
+import { computed } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
 import { shippingKeys } from '../../keys'
-import type { OperationKey, OperationOptions } from '../types/query'
 import { unrefOptions } from '../../util/unrefOptions'
-import { computed } from 'vue'
+import type { OperationKey, OperationOptions } from '../types/query'
 
 export const readShippingMethodOperation = 'readShippingMethod post /shipping-method' satisfies OperationKey
 
@@ -15,7 +15,10 @@ export function useReadShippingMethodQueryOptions(
 
   return queryOptions({
     queryKey,
-    queryFn: () => client.query(readShippingMethodOperation, unrefOptions(options)),
+    queryFn: ({ signal }) => client.query(readShippingMethodOperation, {
+      ...unrefOptions(options),
+      signal,
+    }),
   })
 }
 
