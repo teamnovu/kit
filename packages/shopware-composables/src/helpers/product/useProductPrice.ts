@@ -4,51 +4,9 @@
  */
 
 import type { Schemas } from '#store-types'
-import type { TierPrice } from '@shopware/helpers'
 import { getProductTierPrices } from '@shopware/helpers'
 import type { ComputedRef, Ref } from 'vue'
 import { computed } from 'vue'
-
-export type UseProductPriceReturn = {
-  /**
-   * Whole calculated price object
-   */
-  price: ComputedRef<Schemas['CalculatedPrice'] | undefined>
-  /**
-   * Calculated price value for one selling unit
-   */
-  totalPrice: ComputedRef<number | undefined>
-  /**
-   * Current unit price value
-   */
-  unitPrice: ComputedRef<number | undefined>
-  /**
-   * Can be used if isListPrice is set to true
-   */
-  referencePrice: ComputedRef<
-    Schemas['CalculatedPrice']['referencePrice'] | undefined
-  >
-  /**
-   * determines if `price` contains the minimum tier price
-   */
-  displayFrom: ComputedRef<boolean>
-  /**
-   * cheapest price value for a variant if exists
-   */
-  displayFromVariants: ComputedRef<number | false | undefined>
-  /**
-   * array of TierPrice object
-   */
-  tierPrices: ComputedRef<TierPrice[]>
-  /**
-   * determines whether a discount price is set
-   */
-  isListPrice: ComputedRef<boolean>
-  /**
-   * price for products with regulation price
-   */
-  regulationPrice: ComputedRef<number | undefined>
-}
 
 /**
  * The purpose of the `useProductPrice` function is to abstract the logic
@@ -59,7 +17,7 @@ export type UseProductPriceReturn = {
  */
 export function useProductPrice(
   product: Ref<Schemas['Product'] | undefined>,
-): UseProductPriceReturn {
+) {
   const _cheapest: ComputedRef<
     Schemas['Product']['calculatedCheapestPrice'] | undefined
   > = computed(() => product.value?.calculatedCheapestPrice)

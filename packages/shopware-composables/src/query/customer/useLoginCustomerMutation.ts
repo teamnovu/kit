@@ -2,7 +2,7 @@ import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-q
 import { unref } from 'vue'
 import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
-import { contextKeys, cartKeys } from '../../keys'
+import { contextKeys, cartKeys, customerKeys } from '../../keys'
 
 const loginCustomerOperation = 'loginCustomer post /account/login' satisfies OperationKey
 
@@ -34,6 +34,7 @@ export function useLoginCustomerMutation(
     onSuccess: (newCustomer, variables, context) => {
       queryClient.invalidateQueries({ queryKey: contextKeys.all() })
       queryClient.invalidateQueries({ queryKey: cartKeys.get() })
+      queryClient.invalidateQueries({ queryKey: customerKeys.get() })
 
       unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, context)
     },

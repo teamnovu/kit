@@ -87,3 +87,17 @@ export const paymentKeys = {
       },
     ] as const,
 }
+
+export const orderKeys = {
+  all: () => ['order'] as const,
+  lists: () => [...orderKeys.all(), 'list'] as const,
+  details: () => [...orderKeys.all(), 'detail'] as const,
+  detail: (body: MaybeRef<unknown>) =>
+    [
+      ...orderKeys.all(),
+      'detail',
+      {
+        body,
+      },
+    ] as const,
+}

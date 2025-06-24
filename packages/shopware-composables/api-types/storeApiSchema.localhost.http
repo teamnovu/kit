@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:8500/store-api
+@baseUrl = http://localhost:81/store-api
 @swLanguageId = 2fbb5fe2e29a4d70aa5854ce7ce3e20b
 @swIncludeSeoUrls = true
 

@@ -1,3 +1,5 @@
 export * from './useAddresses'
+export * from './useOrderDetails'
+export * from './useOrderPayment'
 export * from './usePaymentMethods'
 export * from './useShippingMethods'

@@ -1,0 +1,35 @@
+import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { unref } from 'vue'
+import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
+import { useShopwareQueryClient } from '../../inject'
+import { cartKeys, orderKeys } from '../../keys'
+import { unrefOptions } from '../../util/unrefOptions'
+
+const createOrderOperation = 'createOrder post /checkout/order' satisfies OperationKey
+
+export function useCreateOrderMutation(
+  mutationOptions?: UseMutationOptions<
+    OperationResponse<typeof createOrderOperation>,
+    unknown,
+    OperationOptions<typeof createOrderOperation>
+  >,
+) {
+  const client = useShopwareQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    ...mutationOptions,
+    mutationFn: async (options?: OperationOptions<typeof createOrderOperation>) => {
+      return client.query(createOrderOperation, unrefOptions(options))
+    },
+    onSuccess: (data, variables, context) => {
+      // Clear cart after successful order creation
+      queryClient.invalidateQueries({ queryKey: cartKeys.get() })
+
+      // Invalidate order list to refetch data
+      queryClient.invalidateQueries({ queryKey: orderKeys.lists() })
+
+      unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+    },
+  })
+}
