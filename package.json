@@ -23,7 +23,8 @@
     "packages/nuxt",
     "packages/cookieconsent",
     "packages/shopware-api-client",
-    "packages/shopware-composables"
+    "packages/shopware-composables",
+    "packages/api-platform-types"
   ],
   "devDependencies": {
     "@eslint/compat": "^1.2.9",
@@ -62,6 +63,7 @@
     "@teamnovu/kit-cookieconsent": "workspace:^",
     "@teamnovu/kit-shopware-api-client": "workspace:^",
     "@teamnovu/kit-shopware-composables": "workspace:^",
+    "@teamnovu/kit-api-platform-types": "workspace:^",
     "@types/node": "^22.14.1"
   }
 }

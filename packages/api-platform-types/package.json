@@ -1,0 +1,18 @@
+{
+  "name": "api-platform-types",
+  "version": "0.0.1",
+  "description": "Frontend typescript types for API Platform",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:teamnovu/kit.git"
+  },
+  "keywords": [],
+  "author": "Elias Bernhaut",
+  "homepage": "https://kit.novu.ch/packages/api-platform-types/"
+}

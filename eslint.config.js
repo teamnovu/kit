@@ -13,4 +13,16 @@ export default tseslint.config(
     },
   },
   ...novu,
+  {
+    rules:
+      {
+        '@stylistic/max-len': [
+          'warn',
+          {
+            code: 180,
+            tabWidth: 2,
+          },
+        ],
+      },
+  },
 )
