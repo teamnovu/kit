@@ -11,6 +11,9 @@ importers:
       '@teamnovu/kit-animations':
         specifier: workspace:^
         version: link:packages/animations
+      '@teamnovu/kit-api-platform-types':
+        specifier: workspace:^
+        version: link:packages/api-platform-types
       '@teamnovu/kit-components':
         specifier: workspace:^
         version: link:packages/components
@@ -130,6 +133,8 @@ importers:
       '@types/node':
         specifier: ^18.18.6
         version: 18.19.86
+
+  packages/api-platform-types: {}
 
   packages/components:
     dependencies:
