@@ -1,10 +1,10 @@
 {
   "name": "@teamnovu/kit-api-platform-types",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Frontend typescript types for API Platform",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts"
+      "types": "./index.d.ts"
     }
   },
   "license": "ISC",
