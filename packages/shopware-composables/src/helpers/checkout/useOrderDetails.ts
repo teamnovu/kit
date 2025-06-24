@@ -89,6 +89,5 @@ export function useOrderDetails(
     paymentMethod,
     paymentChangeable,
     orderQuery,
-    orderSetPaymentMutation,
   }
 }
