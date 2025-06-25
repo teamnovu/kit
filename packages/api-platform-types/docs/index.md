@@ -2,6 +2,12 @@
 
 Advanced TypeScript types for API Platform integration with serialization groups and type-safe entity definitions.
 
+## Installation
+
+```bash
+pnpm add @teamnovu/kit-api-platform-types
+```
+
 ## Usage Guide
 
 ### Purpose
@@ -95,14 +101,3 @@ export interface ApiUser extends ApiEntity {
 - `ApiCollectionResponse<T, TType, TID>` - Collections with `member`, `totalItems`
 - `LegacyApiCollectionResponse<T, TType, TID>` - Collections with `hydra:member`, `hydra:totalItems`
 - `IRI` - String alias for resource identifiers
-- `Reference` - IRI or array of IRIs
-- `ApiPropertyType<TEntity>` - Extracts wrapped type from ApiProperty
-- `ApiPropertyGroups<TEntity>` - Extracts serialization groups
-- `IsKeyAccessible<R, K, TGroup>` - Tests property accessibility
-- `ApiUpdate<T>` - Update operations with id and optional body
-
-## Installation
-
-```bash
-pnpm add @teamnovu/kit-api-platform-types
-```
