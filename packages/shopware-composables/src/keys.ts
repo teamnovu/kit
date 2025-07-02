@@ -16,6 +16,29 @@ export const categoryKeys = {
       },
     ] as const,
 }
+export const navigationKeys = {
+  all: () => ['navigation'] as const,
+  lists: () => [...navigationKeys.all(), 'list'] as const,
+  list: (body: MaybeRef<unknown>) =>
+    [
+      ...navigationKeys.all(),
+      'list',
+      {
+        body,
+      },
+    ] as const,
+  details: () => [...navigationKeys.all(), 'detail'] as const,
+  detail: (activeId: MaybeRef<string>, rootId: MaybeRef<string>, body: MaybeRef<unknown>) =>
+    [
+      ...navigationKeys.all(),
+      'detail',
+      {
+        activeId,
+        rootId,
+        body,
+      },
+    ] as const,
+}
 
 export const productKeys = {
   all: () => ['product'] as const,
@@ -96,6 +119,45 @@ export const orderKeys = {
     [
       ...orderKeys.all(),
       'detail',
+      {
+        body,
+      },
+    ] as const,
+}
+
+export const seoUrlKeys = {
+  all: () => ['seoUrl'] as const,
+  lists: () => [...seoUrlKeys.all(), 'list'] as const,
+  list: (body: MaybeRef<unknown>) =>
+    [
+      ...seoUrlKeys.all(),
+      'list',
+      {
+        body,
+      },
+    ] as const,
+}
+
+export const salutationKeys = {
+  all: () => ['salutation'] as const,
+  lists: () => [...salutationKeys.all(), 'list'] as const,
+  list: (body: MaybeRef<unknown>) =>
+    [
+      ...salutationKeys.all(),
+      'list',
+      {
+        body,
+      },
+    ] as const,
+}
+
+export const countryKeys = {
+  all: () => ['country'] as const,
+  lists: () => [...countryKeys.all(), 'list'] as const,
+  list: (body: MaybeRef<unknown>) =>
+    [
+      ...countryKeys.all(),
+      'list',
       {
         body,
       },

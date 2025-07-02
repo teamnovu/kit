@@ -27,10 +27,10 @@ export function useUpdateContextMutation(
       })
     },
 
-    onSuccess: (newContext, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: contextKeys.all() })
+    onSuccess: async (newContext, variables, context) => {
+      await queryClient.invalidateQueries({ queryKey: contextKeys.all() })
 
-      unref(unref(mutationOptions)?.onSuccess)?.(newContext, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(newContext, variables, context)
     },
   })
 }

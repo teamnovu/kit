@@ -11,7 +11,7 @@
       "import": "./dist/index.mjs"
     },
     "./operations": {
-      "types": "./dist/types/operations.d.ts"
+      "types": "./dist/query/types/operations.d.ts"
     }
   },
   "peerDependencies": {

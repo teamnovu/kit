@@ -22,11 +22,10 @@ export function useChangeProfileMutation(
     mutationFn: async (options: OperationOptions<typeof changeProfileOperation>) => {
       return client.query(changeProfileOperation, unrefOptions(options))
     },
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: customerKeys.get() })
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries({ queryKey: customerKeys.get() })
 
-      unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
   })
 }
-

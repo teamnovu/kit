@@ -22,11 +22,11 @@ export function useCreateCustomerAddressMutation(
     mutationFn: async (options: OperationOptions<typeof createCustomerAddressOperation>) => {
       return client.query(createCustomerAddressOperation, unrefOptions(options))
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
       // Invalidate address list queries to refetch data
-      queryClient.invalidateQueries({ queryKey: addressKeys.lists() })
+      await queryClient.invalidateQueries({ queryKey: addressKeys.lists() })
 
-      unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
   })
 }

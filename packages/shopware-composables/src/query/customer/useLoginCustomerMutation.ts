@@ -31,12 +31,14 @@ export function useLoginCustomerMutation(
 
       return response.json()
     },
-    onSuccess: (newCustomer, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: contextKeys.all() })
-      queryClient.invalidateQueries({ queryKey: cartKeys.get() })
-      queryClient.invalidateQueries({ queryKey: customerKeys.get() })
+    onSuccess: async (newCustomer, variables, context) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
+        queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
+        queryClient.invalidateQueries({ queryKey: customerKeys.get() }),
+      ])
 
-      unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, context)
     },
   })
 }

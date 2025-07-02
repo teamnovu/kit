@@ -22,11 +22,11 @@ export function useDeleteCustomerAddressMutation(
     mutationFn: async (options: OperationOptions<typeof deleteCustomerAddressOperation>) => {
       return client.query(deleteCustomerAddressOperation, unrefOptions(options))
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
       // Invalidate address list queries to refetch data
-      queryClient.invalidateQueries({ queryKey: addressKeys.lists() })
+      await queryClient.invalidateQueries({ queryKey: addressKeys.lists() })
 
-      unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
   })
 }

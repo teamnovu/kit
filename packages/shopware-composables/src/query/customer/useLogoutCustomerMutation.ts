@@ -22,11 +22,10 @@ export function useLogoutCustomerMutation(
     mutationFn: async (options?: OperationOptions<typeof logoutOperation>) => {
       return client.query(logoutOperation, unrefOptions(options))
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
       queryClient.removeQueries({ queryKey: customerKeys.get() })
 
-      unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
   })
 }
-

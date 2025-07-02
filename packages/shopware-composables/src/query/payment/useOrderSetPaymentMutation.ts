@@ -22,11 +22,11 @@ export function useOrderSetPaymentMutation(
     mutationFn: async (options: OperationOptions<typeof orderSetPaymentOperation>) => {
       return client.query(orderSetPaymentOperation, unrefOptions(options))
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
       // Invalidate order queries to refetch updated payment information
-      queryClient.invalidateQueries({ queryKey: orderKeys.all() })
+      await queryClient.invalidateQueries({ queryKey: orderKeys.all() })
 
-      unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
   })
 }

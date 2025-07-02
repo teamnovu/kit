@@ -1,10 +1,8 @@
-import { computed } from 'vue'
-import { useReadContextQuery } from '../../query/context/useReadContextQuery'
+import { computed, MaybeRef, unref } from 'vue'
+import { Schemas } from '#store-types'
 
-export function useIsLoggedIn() {
-  const { data: context } = useReadContextQuery()
-
-  return computed(() => !!context.value?.customer?.id
-    && !!context.value?.customer?.active
-    && !context.value?.customer?.guest)
+export function useIsLoggedIn(context: MaybeRef<Schemas['SalesChannelContext']>) {
+  return computed(() => !!unref(context)?.customer?.id
+    && !!unref(context)?.customer?.active
+    && !unref(context)?.customer?.guest)
 }

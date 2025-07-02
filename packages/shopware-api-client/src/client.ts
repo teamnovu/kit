@@ -1,3 +1,4 @@
+import { ShopwareApiError } from './error'
 import { EventEmitter } from './eventEmitter'
 import { createQueryParams } from './query'
 import type {
@@ -5,17 +6,6 @@ import type {
   OperationProp,
   ShopwareClientOptions,
 } from './types'
-
-export class ShopwareApiError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number,
-    public readonly response?: unknown,
-  ) {
-    super(message)
-    this.name = 'ShopwareApiError'
-  }
-}
 
 const operationRegex = /^(?<name>\w+?)\s(?<method>get|post|put|patch|delete)\s+(?<url>\/.*)/i
 
@@ -135,11 +125,15 @@ export class ShopwareClient<Operations extends Record<string, {
       })
 
       if (!response.ok) {
-        throw new ShopwareApiError(
+        const error = new ShopwareApiError(
           `Shopware API request failed: ${response.statusText}`,
           response.status,
           await response.json().catch(() => undefined),
         )
+
+        this.emit('error', error)
+
+        throw error
       }
 
       if (this.options.reflectContextToken) {

@@ -1,4 +1,3 @@
-import type { operations } from '#store-types'
 import type { QueryKey, UseQueryOptions } from '@tanstack/vue-query'
 import type {
   OperationProp,
@@ -6,8 +5,7 @@ import type {
 } from '@teamnovu/kit-shopware-api-client'
 import { MaybeRef, UnwrapRef } from 'vue'
 import { Operations } from './operations'
-
-export type PartialProps<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+import { PartialProps } from './util'
 
 export type ShallowMaybeRefs<T> = {
   [K in keyof T]: MaybeRef<T[K]>
@@ -17,7 +15,7 @@ export type ShallowUnwrapRefs<T> = {
   [K in keyof T]: UnwrapRef<T[K]>
 }
 
-export type OperationKey = keyof operations
+export type OperationKey = keyof Operations
 export type OperationBody<K extends OperationKey> =
   OperationProp<Operations, K, 'body'>
 export type OperationResponse<K extends OperationKey> =

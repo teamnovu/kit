@@ -20,8 +20,8 @@ export function useHandlePaymentMutation(
     mutationFn: async (options: OperationOptions<typeof handlePaymentOperation>) => {
       return client.query(handlePaymentOperation, unrefOptions(options))
     },
-    onSuccess: (data, variables, context) => {
-      unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+    onSuccess: async (data, variables, context) => {
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
   })
 }

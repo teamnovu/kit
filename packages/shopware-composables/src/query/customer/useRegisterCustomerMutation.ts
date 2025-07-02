@@ -22,11 +22,10 @@ export function useRegisterCustomerMutation(
     mutationFn: async (options: OperationOptions<typeof registerOperation>) => {
       return client.query(registerOperation, unrefOptions(options))
     },
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: customerKeys.get() })
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries({ queryKey: customerKeys.get() })
 
-      unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
   })
 }
-

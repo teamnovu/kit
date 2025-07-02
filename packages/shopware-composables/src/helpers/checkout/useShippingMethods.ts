@@ -21,7 +21,10 @@ export function useShippingMethods() {
   }
 
   const activeShippingMethod = computed(() => contextQuery.data?.value?.shippingMethod)
-  const shippingMethods = computed(() => shippingMethodsQuery.data?.value?.elements)
+  const shippingMethods = computed(() =>
+    shippingMethodsQuery.data?.value?.elements.sort((a, b) => {
+      return (a.position ?? 0) - (b.position ?? 0)
+    }) ?? [])
 
   return {
     contextUpdateMutation,

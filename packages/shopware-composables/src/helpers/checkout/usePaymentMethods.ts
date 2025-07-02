@@ -21,7 +21,10 @@ export function usePaymentMethods() {
   }
 
   const activePaymentMethod = computed(() => contextQuery.data?.value?.paymentMethod)
-  const paymentMethods = computed(() => paymentMethodsQuery.data?.value?.elements)
+  const paymentMethods = computed(() =>
+    paymentMethodsQuery.data?.value?.elements?.sort((a, b) => {
+      return (a.position ?? 0) - (b.position ?? 0)
+    }) ?? [])
 
   return {
     contextUpdateMutation,

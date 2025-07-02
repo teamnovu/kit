@@ -36,10 +36,10 @@ export function useUpdateLineItemMutation(
         body: body as OperationBody<typeof updateCartItemOperation>,
       })
     },
-    onSuccess: (newCart, variables, context) => {
+    onSuccess: async (newCart, variables, context) => {
       queryClient.setQueryData(cartKeys.get(), newCart)
       // queryClient.invalidateQueries({ queryKey: cartKeys.get() })
-      unref(unref(mutationOptions)?.onSuccess)?.(newCart, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(newCart, variables, context)
     },
   })
 }

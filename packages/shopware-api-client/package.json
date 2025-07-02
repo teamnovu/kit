@@ -25,5 +25,8 @@
   },
   "keywords": [],
   "author": "Elias Bernhaut",
-  "homepage": "https://kit.novu.ch/packages/shopware-api-client/"
+  "homepage": "https://kit.novu.ch/packages/shopware-api-client/",
+  "dependencies": {
+    "zod": "^3.25.67"
+  }
 }

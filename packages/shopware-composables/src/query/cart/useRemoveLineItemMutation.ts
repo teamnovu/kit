@@ -23,10 +23,10 @@ export function useRemoveLineItemMutation(
         body: body as OperationBody<typeof removeCartItemOperation>,
       })
     },
-    onSuccess: (newCart, variables, context) => {
+    onSuccess: async (newCart, variables, context) => {
       queryClient.setQueryData(cartKeys.get(), newCart)
       // queryClient.invalidateQueries({ queryKey: cartKeys.get() })
-      unref(unref(mutationOptions)?.onSuccess)?.(newCart, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(newCart, variables, context)
     },
   })
 }

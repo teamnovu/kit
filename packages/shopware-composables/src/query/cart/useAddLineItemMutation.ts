@@ -20,7 +20,7 @@ type Body = Omit<
 }
 
 export function useAddLineItemMutation(
-  mutationOptions: UseMutationOptions<
+  mutationOptions?: UseMutationOptions<
     OperationResponse<typeof addCartItemOperation>,
     unknown,
     Body
@@ -36,10 +36,10 @@ export function useAddLineItemMutation(
         body: body as OperationBody<typeof addCartItemOperation>,
       })
     },
-    onSuccess: (newCart, variables, context) => {
+    onSuccess: async (newCart, variables, context) => {
       queryClient.setQueryData(cartKeys.get(), newCart)
       // queryClient.invalidateQueries({ queryKey: cartKeys.get() })
-      unref(unref(mutationOptions).onSuccess)?.(newCart, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(newCart, variables, context)
     },
   })
 }
