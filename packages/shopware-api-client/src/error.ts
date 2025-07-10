@@ -6,6 +6,9 @@ const shopwareErrorSchema = z.object({
   title: z.string().optional(),
   detail: z.string().optional(),
   meta: z.record(z.unknown()).optional(),
+  source: z.object({
+    pointer: z.string().optional(),
+  }).optional(),
   trace: z.array(
     z.object({
       file: z.string(),
@@ -19,7 +22,7 @@ const shopwareErrorResponseSchema = z.object({
   errors: z.array(shopwareErrorSchema),
 })
 
-type ShopwareError = z.infer<typeof shopwareErrorSchema>
+export type ShopwareError = z.infer<typeof shopwareErrorSchema>
 
 export class ShopwareApiError extends Error {
   errors: ShopwareError[]

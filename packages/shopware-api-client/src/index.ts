@@ -1,3 +1,3 @@
 export * from './client'
 export * from './types'
-export { ShopwareApiError } from './error'
+export { type ShopwareError, ShopwareApiError } from './error'

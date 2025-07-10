@@ -233,8 +233,8 @@ importers:
   packages/shopware-composables:
     dependencies:
       '@tanstack/vue-query':
-        specifier: ^5.0.0
-        version: 5.74.7(vue@3.5.13(typescript@5.8.3))
+        specifier: ^5.75.5
+        version: 5.82.0(vue@3.5.13(typescript@5.8.3))
       '@teamnovu/kit-shopware-api-client':
         specifier: workspace:*
         version: link:../shopware-api-client
@@ -1835,11 +1835,11 @@ packages:
     resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
     engines: {node: '>=12'}
 
-  '@tanstack/query-core@5.74.7':
-    resolution: {integrity: sha512-X3StkN/Y6KGHndTjJf8H8th7AX4bKfbRpiVhVqevf0QWlxl6DhyJ0TYG3R0LARa/+xqDwzU9mA4pbJxzPCI29A==}
+  '@tanstack/query-core@5.82.0':
+    resolution: {integrity: sha512-JrjoVuaajBQtnoWSg8iaPHaT4mW73lK2t+exxHNOSMqy0+13eKLqJgTKXKImLejQIfdAHQ6Un0njEhOvUtOd5w==}
 
-  '@tanstack/vue-query@5.74.7':
-    resolution: {integrity: sha512-9QsGF1PyYa3jqCaPMlQgc5P9fxMaAnwiLVaiFnqJYmPdycDKrk0LuPJiEfAhY2eAgZ4adKtAPR1JTRaxKkiVmw==}
+  '@tanstack/vue-query@5.82.0':
+    resolution: {integrity: sha512-e+cb8OFuEetYd7q6U3g3yjqDDrAZ6rzxSlifjOy3tvJdopwTMDAyo65h4df/b+BrwcJRaPjsLk/b9H1gZrhv1g==}
     peerDependencies:
       '@vue/composition-api': ^1.1.2
       vue: ^2.6.0 || ^3.3.0
@@ -9966,12 +9966,12 @@ snapshots:
     dependencies:
       remove-accents: 0.5.0
 
-  '@tanstack/query-core@5.74.7': {}
+  '@tanstack/query-core@5.82.0': {}
 
-  '@tanstack/vue-query@5.74.7(vue@3.5.13(typescript@5.8.3))':
+  '@tanstack/vue-query@5.82.0(vue@3.5.13(typescript@5.8.3))':
     dependencies:
       '@tanstack/match-sorter-utils': 8.19.4
-      '@tanstack/query-core': 5.74.7
+      '@tanstack/query-core': 5.82.0
       '@vue/devtools-api': 6.6.4
       vue: 3.5.13(typescript@5.8.3)
       vue-demi: 0.14.10(vue@3.5.13(typescript@5.8.3))

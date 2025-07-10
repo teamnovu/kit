@@ -1,8 +1,9 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
 import { cartKeys } from '../../keys'
+import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 
 const addCartItemOperation = 'addLineItem post /checkout/cart/line-item' satisfies OperationKey
 
@@ -22,7 +23,7 @@ type Body = Omit<
 export function useAddLineItemMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof addCartItemOperation>,
-    unknown,
+    ShopwareApiError | Error,
     Body
   >,
 ) {

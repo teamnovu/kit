@@ -1,16 +1,17 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
 import { customerKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
+import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
 const changeProfileOperation = 'changeProfile post /account/change-profile' satisfies OperationKey
 
 export function useChangeProfileMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof changeProfileOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationOptions<typeof changeProfileOperation>
   >,
 ) {

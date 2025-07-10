@@ -8,7 +8,7 @@ export function usePaymentMethods() {
   const contextUpdateMutation = useUpdateContextMutation()
   const paymentMethodsQuery = useReadPaymentMethodQuery({
     query: {
-      onlyActive: true,
+      onlyAvailable: true,
     },
   })
 

@@ -1,15 +1,16 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
-import { contextKeys, cartKeys, customerKeys } from '../../keys'
+import { cartKeys, contextKeys, customerKeys } from '../../keys'
+import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 
 const loginCustomerOperation = 'loginCustomer post /account/login' satisfies OperationKey
 
 export function useLoginCustomerMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof loginCustomerOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationBody<typeof loginCustomerOperation>
   >,
 ) {
@@ -33,7 +34,7 @@ export function useLoginCustomerMutation(
     },
     onSuccess: async (newCustomer, variables, context) => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
+        queryClient.removeQueries({ queryKey: contextKeys.all() }),
         queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
         queryClient.invalidateQueries({ queryKey: customerKeys.get() }),
       ])

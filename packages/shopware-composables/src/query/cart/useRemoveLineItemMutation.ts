@@ -1,15 +1,16 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
 import { cartKeys } from '../../keys'
+import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 
 const removeCartItemOperation = 'removeLineItem post /checkout/cart/line-item/delete' satisfies OperationKey
 
 export function useRemoveLineItemMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof removeCartItemOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationBody<typeof removeCartItemOperation>
   >,
 ) {

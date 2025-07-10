@@ -1,4 +1,5 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
 import { contextKeys } from '../../keys'
@@ -9,7 +10,7 @@ const updateContextOperation = 'updateContext patch /context' satisfies Operatio
 export function useUpdateContextMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof updateContextOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationBody<typeof updateContextOperation>
   >,
 ) {

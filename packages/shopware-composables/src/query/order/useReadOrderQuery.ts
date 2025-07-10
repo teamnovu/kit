@@ -21,7 +21,6 @@ export function useReadOrderQueryOptions(
         signal,
       })
     },
-    enabled: !!options,
   })
 }
 
@@ -30,4 +29,3 @@ export function useReadOrderQuery(
 ) {
   return useQuery(useReadOrderQueryOptions(options))
 }
-

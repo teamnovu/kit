@@ -1,4 +1,5 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
 import { cartKeys } from '../../keys'
@@ -22,7 +23,7 @@ type Body = Omit<
 export function useUpdateLineItemMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof updateCartItemOperation>,
-    unknown,
+    ShopwareApiError | Error,
     Body
   >,
 ) {

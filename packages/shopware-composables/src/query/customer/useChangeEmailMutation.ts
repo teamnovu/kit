@@ -1,16 +1,17 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
 import { customerKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
+import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
 const changeEmailOperation = 'changeEmail post /account/change-email' satisfies OperationKey
 
 export function useChangeEmailMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof changeEmailOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationOptions<typeof changeEmailOperation>
   >,
 ) {

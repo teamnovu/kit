@@ -1,16 +1,17 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
 import { addressKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
+import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
 const deleteCustomerAddressOperation = 'deleteCustomerAddress delete /account/address/{addressId}' satisfies OperationKey
 
 export function useDeleteCustomerAddressMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof deleteCustomerAddressOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationOptions<typeof deleteCustomerAddressOperation>
   >,
 ) {

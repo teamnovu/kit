@@ -1,16 +1,17 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
 import { addressKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
+import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
 const createCustomerAddressOperation = 'createCustomerAddress post /account/address' satisfies OperationKey
 
 export function useCreateCustomerAddressMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof createCustomerAddressOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationOptions<typeof createCustomerAddressOperation>
   >,
 ) {

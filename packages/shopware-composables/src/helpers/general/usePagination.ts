@@ -6,15 +6,17 @@ interface PaginationOptions {
   page?: MaybeRef<number>
   total?: MaybeRef<number>
   limit?: MaybeRef<number>
+  totalCountMode?: MaybeRef<'exact' | 'next-pages' | 'none'>
 }
 
 export function usePagination(opts?: PaginationOptions) {
-  const { total, limit, page } = opts ?? {}
+  const { total, limit, page, totalCountMode } = opts ?? {}
 
   const state = reactive({
     page: page ?? 1,
     total: total ?? 0,
     limit: limit,
+    totalCountMode: totalCountMode,
   })
 
   const pageCount = computed(() => {
@@ -46,12 +48,15 @@ export function usePagination(opts?: PaginationOptions) {
   const isFirstPage = computed(() => state.page === 1)
 
   const queryOptions = computed(() => ({
-    p: state.page,
-    limit: state.limit,
+    'p': state.page,
+    'limit': state.limit,
+    'total-count-mode': state.totalCountMode ?? 'none',
   }))
 
-  const usePaginationSync = (data: MaybeRef<Schemas['EntitySearchResult']>) => {
+  const usePaginationSync = (data: MaybeRef<Schemas['EntitySearchResult'] | undefined>) => {
     watch(() => unref(data), (newData) => {
+      if (!newData) return
+
       state.total = newData?.total ?? 0
       state.limit = newData?.limit ?? 0
     })

@@ -8,7 +8,7 @@ export function useShippingMethods() {
   const contextUpdateMutation = useUpdateContextMutation()
   const shippingMethodsQuery = useReadShippingMethodQuery({
     query: {
-      onlyActive: true,
+      onlyAvailable: true,
     },
   })
 

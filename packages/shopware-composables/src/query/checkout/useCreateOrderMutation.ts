@@ -1,3 +1,4 @@
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
 import { unref } from 'vue'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
@@ -10,7 +11,7 @@ const createOrderOperation = 'createOrder post /checkout/order' satisfies Operat
 export function useCreateOrderMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof createOrderOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationOptions<typeof createOrderOperation>
   >,
 ) {

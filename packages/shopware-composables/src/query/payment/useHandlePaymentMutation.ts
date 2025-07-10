@@ -1,3 +1,4 @@
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { useMutation, UseMutationOptions } from '@tanstack/vue-query'
 import { unref } from 'vue'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
@@ -9,7 +10,7 @@ const handlePaymentOperation = 'handlePaymentMethod post /handle-payment' satisf
 export function useHandlePaymentMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof handlePaymentOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationOptions<typeof handlePaymentOperation>
   >,
 ) {

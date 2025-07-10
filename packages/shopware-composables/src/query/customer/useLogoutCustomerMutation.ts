@@ -1,8 +1,9 @@
+import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
 import { unref } from 'vue'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
-import { customerKeys } from '../../keys'
+import { cartKeys, contextKeys, customerKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 
 const logoutOperation = 'logoutCustomer post /account/logout' satisfies OperationKey
@@ -10,7 +11,7 @@ const logoutOperation = 'logoutCustomer post /account/logout' satisfies Operatio
 export function useLogoutCustomerMutation(
   mutationOptions?: UseMutationOptions<
     OperationResponse<typeof logoutOperation>,
-    unknown,
+    ShopwareApiError | Error,
     OperationOptions<typeof logoutOperation>
   >,
 ) {
@@ -23,7 +24,11 @@ export function useLogoutCustomerMutation(
       return client.query(logoutOperation, unrefOptions(options))
     },
     onSuccess: async (data, variables, context) => {
-      queryClient.removeQueries({ queryKey: customerKeys.get() })
+      await Promise.all([
+        queryClient.removeQueries({ queryKey: contextKeys.all() }),
+        queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
+        queryClient.invalidateQueries({ queryKey: customerKeys.get() }),
+      ])
 
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },

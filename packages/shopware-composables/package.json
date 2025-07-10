@@ -15,7 +15,7 @@
     }
   },
   "peerDependencies": {
-    "@tanstack/vue-query": "^5.0.0",
+    "@tanstack/vue-query": "^5.75.5",
     "@teamnovu/kit-shopware-api-client": "workspace:*",
     "vue": "^3.0.0"
   },
