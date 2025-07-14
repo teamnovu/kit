@@ -2,7 +2,7 @@ import { computed } from 'vue'
 import {
   useReadCustomerQuery,
 } from '../../query/customer'
-import { Schemas } from '../../query/types'
+import type { Schemas } from '../../query/types'
 
 export function useUser(criteria?: Schemas['Criteria']) {
   // Create customer query

@@ -1,7 +1,7 @@
 import type { MaybeRef } from 'vue'
 import { computed, unref } from 'vue'
 import { useReadOrderQuery } from '../../query/order'
-import { Schemas } from '../../query/types'
+import type { Schemas } from '../../query/types'
 
 export function useOrderDetails(
   orderId: MaybeRef<string>,

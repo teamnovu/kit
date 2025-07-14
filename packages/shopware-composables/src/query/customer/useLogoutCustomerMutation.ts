@@ -1,5 +1,5 @@
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
-import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { useMutation, type UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
 import { unref } from 'vue'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'

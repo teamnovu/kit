@@ -3,9 +3,9 @@ import type {
   OperationProp,
   OperationOptions as RawOperationOptions,
 } from '@teamnovu/kit-shopware-api-client'
-import { MaybeRef, UnwrapRef } from 'vue'
-import { Operations } from './operations'
-import { PartialProps } from './util'
+import type { MaybeRef, UnwrapRef } from 'vue'
+import type { Operations } from './operations'
+import type { PartialProps } from './util'
 
 export type ShallowMaybeRefs<T> = {
   [K in keyof T]: MaybeRef<T[K]>

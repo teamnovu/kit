@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import { operations, Schemas as OriginalSchemas } from '#store-types'
+import type { operations as OriginalOperations, Schemas as OriginalSchemas } from '#store-types'
 
-export interface Operations extends operations {}
-export interface Schemas extends OriginalSchemas {}
+declare module './operations' {
+  export interface Operations extends OriginalOperations {}
+  export interface Schemas extends OriginalSchemas {}
+}

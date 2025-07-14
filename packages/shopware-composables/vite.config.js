@@ -9,6 +9,10 @@ export default defineConfig({
     vue(),
     dts({
       staticImport: true,
+      compilerOptions: {
+        declaration: true,
+        emitDeclarationOnly: true,
+      },
     }),
   ],
   build: {

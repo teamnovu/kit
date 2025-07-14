@@ -1,7 +1,7 @@
-import { unref, UnwrapRef } from 'vue'
-import { OperationOptions as RawOperationOptions } from '@teamnovu/kit-shopware-api-client'
-import { OperationOptions } from '../query/types/query'
-import { Operations, PartialProps } from '../query/types'
+import { unref, type UnwrapRef } from 'vue'
+import type { OperationOptions as RawOperationOptions } from '@teamnovu/kit-shopware-api-client'
+import type { OperationOptions } from '../query/types/query'
+import type { Operations, PartialProps } from '../query/types'
 
 export function unrefOptions<
   K extends keyof Operations,

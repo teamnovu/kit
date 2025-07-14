@@ -1,6 +1,6 @@
 import type { MaybeRef } from 'vue'
 import { computed, unref } from 'vue'
-import { Schemas } from '../../query/types'
+import type { Schemas } from '../../query/types'
 
 export function useOrderPayment(
   order: MaybeRef<Schemas['Order'] | null | undefined>,

@@ -1,4 +1,5 @@
 import type { Schemas } from '#store-types'
+import { keepPreviousData } from '@tanstack/vue-query'
 import type { MaybeRef } from 'vue'
 import { computed, reactive, toRef, unref, watch } from 'vue'
 
@@ -8,7 +9,6 @@ interface PaginationOptions {
   limit?: MaybeRef<number>
   totalCountMode?: MaybeRef<'exact' | 'next-pages' | 'none'>
 }
-
 export function usePagination(opts?: PaginationOptions) {
   const { total, limit, page, totalCountMode } = opts ?? {}
 

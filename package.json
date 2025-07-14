@@ -40,7 +40,7 @@
     "concurrently": "^7.6.0",
     "eslint": "^9.25.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-vue": "^10.1.0",
+    "eslint-plugin-vue": "^10.3.0",
     "esno": "^0.16.3",
     "flexsearch": "^0.7.31",
     "glob": "^9.3.0",

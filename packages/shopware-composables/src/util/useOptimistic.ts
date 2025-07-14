@@ -1,4 +1,5 @@
-import { MutationOptions, QueryKey, UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import type { MutationOptions, QueryKey, UseMutationOptions } from '@tanstack/vue-query'
+import { useQueryClient } from '@tanstack/vue-query'
 import { unref } from 'vue'
 
 // https://tanstack.com/query/latest/docs/framework/vue/guides/optimistic-updates#via-the-cache

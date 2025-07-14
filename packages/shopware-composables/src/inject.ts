@@ -1,7 +1,7 @@
 import type { ShopwareClient } from '@teamnovu/kit-shopware-api-client'
 import type { InjectionKey } from 'vue'
 import { inject } from 'vue'
-import { Operations } from './query/types/operations'
+import type { Operations } from './query/types/operations'
 
 export const shopwareClientKey = Symbol('shopwareClient') as InjectionKey<ShopwareClient<never>>
 
