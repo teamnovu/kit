@@ -1,4 +1,5 @@
-import type { GenericRecord } from '#store-types'
+import type { GenericRecord } from '../../query/types/operations'
+
 import type { MaybeRef } from 'vue'
 import { computed, unref } from 'vue'
 

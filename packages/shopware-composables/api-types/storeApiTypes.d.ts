@@ -14,6 +14,7 @@ type GenericRecord =
   | {
     [key: string]: GenericRecord
   }
+
 export type components = {
   schemas: Schemas
 }

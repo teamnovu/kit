@@ -1,7 +1,7 @@
 import type { ShopwareClient } from '@teamnovu/kit-shopware-api-client'
 import type { InjectionKey } from 'vue'
 import { inject } from 'vue'
-import type { Operations } from './query/types/operations'
+import type { operations } from './query/types/operations'
 
 export const shopwareClientKey = Symbol('shopwareClient') as InjectionKey<ShopwareClient<never>>
 
@@ -12,5 +12,5 @@ export function useShopwareQueryClient() {
     throw new Error('Shopware client not provided!')
   }
 
-  return client as ShopwareClient<Operations>
+  return client as ShopwareClient<operations>
 }

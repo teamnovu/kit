@@ -1,4 +1,4 @@
-import type { Schemas } from '#store-types'
+import type { Schemas } from '../../query/types/operations'
 import type { MaybeRef } from 'vue'
 import { computed, unref } from 'vue'
 

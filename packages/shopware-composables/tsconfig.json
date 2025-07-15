@@ -2,27 +2,28 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "types": [
       "vue",
       "vite/client",
-      "vitest/globals",
+      "vitest/globals"
     ],
     "paths": {
-      "#types": [
-        "./src/types/operations.d.ts"
-      ],
-      "#store-types": [
+      "#api-types": [
         "./api-types/storeApiTypes.d.ts"
       ]
     },
     "typeRoots": [
-      "./node_modules"
+      "./node_modules",
+      "./api-types"
     ]
   },
   "include": [
     "src/**/*",
     "../components/src/injects"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
   ]
 }

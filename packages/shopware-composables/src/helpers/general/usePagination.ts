@@ -1,5 +1,4 @@
-import type { Schemas } from '#store-types'
-import { keepPreviousData } from '@tanstack/vue-query'
+import type { Schemas } from '../../query/types/operations'
 import type { MaybeRef } from 'vue'
 import { computed, reactive, toRef, unref, watch } from 'vue'
 

@@ -1,4 +1,4 @@
-import type { Schemas } from '#store-types'
+import type { Schemas } from '../../query/types/operations'
 import { until } from '@vueuse/core'
 import { computed } from 'vue'
 import { useListAddressQuery } from '../../query/address/useListAddressQuery'
