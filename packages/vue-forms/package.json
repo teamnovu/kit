@@ -1,0 +1,35 @@
+{
+  "name": "@teamnovu/kit-vue-forms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "watch": "NODE_ENV=development vite build --watch",
+    "lint": "eslint --fix --ignore-pattern 'dist/**' ."
+  },
+  "keywords": [
+    "vue",
+    "forms",
+    "validation",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@vueuse/core": "^13.5.0",
+    "zod": "^4"
+  }
+}
