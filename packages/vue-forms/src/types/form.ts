@@ -1,6 +1,6 @@
-export type FormDataDefault = Record<string, unknown>
+export type FormDataDefault = object
 
-export interface FormState<T extends FormDataDefault> {
+export interface FormState<T extends FormDataDefault, TIn extends FormDataDefault = T> {
   formData: T
-  initialData: T
+  initialData: TIn
 }

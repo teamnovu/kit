@@ -14,18 +14,8 @@ export function useFormState<T extends FormDataDefault>(
     return formFieldRegistry.getFields().some(field => unref(field.touched))
   })
 
-  const isValid = computed(() => {
-    return formFieldRegistry.getFields().every(
-      (field) => {
-        const errors = unref(field.errors)
-        return Array.isArray(errors) ? errors.length === 0 : errors == null
-      },
-    )
-  })
-
   return {
     isDirty,
     isTouched,
-    isValid,
   }
 }

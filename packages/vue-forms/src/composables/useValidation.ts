@@ -1,4 +1,4 @@
-import { reactive, toRefs, unref, watch, type MaybeRef } from 'vue'
+import { computed, reactive, toRefs, unref, watch, type MaybeRef } from 'vue'
 import z from 'zod'
 import type { FormDataDefault } from '../types/form'
 import type { ErrorBag, ValidationFunction, ValidationResult, Validator } from '../types/validation'
@@ -6,7 +6,7 @@ import { hasErrors, mergeErrors } from '../utils/validation'
 import { flattenError } from '../utils/zod'
 
 export interface ValidationOptions<T> {
-  schema?: MaybeRef<z.ZodType<T>>
+  schema?: MaybeRef<z.ZodType>
   validateFn?: MaybeRef<ValidationFunction<T>>
   errors?: MaybeRef<ErrorBag>
 }
@@ -80,7 +80,7 @@ export function useValidation<T extends FormDataDefault>(
     () => unref(options.validateFn),
     () => unref(options.schema),
   ], async (newValidateFn, newSchema) => {
-    if (validationState.isValidated) {
+    if (!validationState.isValidated) {
       return
     }
 
@@ -109,7 +109,7 @@ export function useValidation<T extends FormDataDefault>(
     }
 
     if (schema) {
-      validators.push(new ZodSchemaValidator(schema))
+      validators.push(new ZodSchemaValidator(schema as z.ZodType<T>))
     }
 
     const validationResults = await Promise.all(
@@ -151,9 +151,12 @@ export function useValidation<T extends FormDataDefault>(
     }
   }
 
+  const isValid = computed(() => !hasErrors(validationState.errors))
+
   return {
     ...toRefs(validationState),
     validateForm,
+    isValid,
   }
 }
 

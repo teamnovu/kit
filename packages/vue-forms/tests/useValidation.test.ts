@@ -214,4 +214,3 @@ describe('useValidation', () => {
     expect(result.errors.propertyErrors.email).toEqual(['External email error'])
   })
 })
-

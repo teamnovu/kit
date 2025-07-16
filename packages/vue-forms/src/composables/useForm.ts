@@ -23,14 +23,19 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
   })
 
   const fields = useFieldRegistry(state)
-
   const validationState = useValidation(state, options)
   const formState = useFormState(state, fields)
+
+  function reset() {
+    formData.value = cloneRef(initialData)
+    fields.getFields().forEach(field => field.reset())
+  }
 
   return {
     ...toRefs(state),
     ...fields,
     ...validationState,
     ...formState,
+    reset,
   }
 }

@@ -73,37 +73,6 @@ describe('useFormState', () => {
     expect(formState.isTouched.value).toBe(true)
   })
 
-  it('should detect valid state when all fields are valid', () => {
-    const data = {
-      name: 'John',
-      email: 'john@example.com',
-    }
-    const formData = reactive(data)
-    const fields = useFieldRegistry({
-      formData,
-      initialData: data,
-    })
-
-    const nameField = fields.defineField({ path: 'name' })
-    fields.defineField({ path: 'email' })
-
-    const formState = useFormState({
-      formData,
-      initialData: {
-        name: 'John',
-        email: 'john@example.com',
-      },
-    }, fields)
-
-    expect(formState.isValid.value).toBe(true)
-
-    nameField.setErrors(['Required'])
-    expect(formState.isValid.value).toBe(false)
-
-    nameField.clearErrors()
-    expect(formState.isValid.value).toBe(true)
-  })
-
   it('should handle empty fields map', () => {
     const data = { name: 'John' }
     const formData = reactive(data)
@@ -119,7 +88,6 @@ describe('useFormState', () => {
 
     expect(formState.isDirty.value).toBe(false)
     expect(formState.isTouched.value).toBe(false)
-    expect(formState.isValid.value).toBe(true)
   })
 
   it('should handle complex nested object changes', () => {

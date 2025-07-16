@@ -2,7 +2,7 @@ import { computed, unref, type MaybeRef } from 'vue'
 import type { Paths, PickProps, SplitPath } from '../types/util'
 
 export function splitPath(path: string): string[] {
-  return path.split(/\.|\[|\]\.?/).filter(Boolean)
+  return path.split(/\s*\.\s*/).filter(Boolean)
 }
 
 export function getNestedValue<T, K extends Paths<T>>(obj: T, path: K | SplitPath<K>) {
