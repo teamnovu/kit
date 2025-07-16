@@ -2,12 +2,12 @@ import type { FormDataDefault } from './form'
 
 export type ValidationStrategy = 'onTouch' | 'onFormOpen' | 'none' | 'preSubmit'
 
-export type ErrorMessage = string
-export type PropertyError = ErrorMessage | ErrorMessage[] | undefined
+export type ValidationErrorMessage = string
+export type ValidationErrors = ValidationErrorMessage[] | undefined
 
 export interface ErrorBag {
-  general: ErrorMessage[]
-  propertyErrors: Record<string, PropertyError>
+  general: ValidationErrors
+  propertyErrors: Record<string, ValidationErrors>
 }
 
 export interface ValidationResult {

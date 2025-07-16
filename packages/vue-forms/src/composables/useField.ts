@@ -1,20 +1,27 @@
-import { computed, reactive, toRefs, unref, type MaybeRef } from 'vue'
-import type { ErrorMessage, PropertyError } from '../types/validation'
+import { computed, reactive, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter } from 'vue'
+import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
+import { cloneRef } from '../utils/general'
 
-export interface UseFieldOptions<T> {
+export interface UseFieldOptions<T, K extends string> {
   value?: MaybeRef<T>
-  path: MaybeRef<string>
-  initialValue?: MaybeRef<T>
-  errors?: MaybeRef<PropertyError>
+  initialValue?: MaybeRefOrGetter<Readonly<T>>
+  type?: MaybeRef<string>
+  required?: MaybeRef<boolean>
+  path: MaybeRef<K>
+  errors?: MaybeRef<ValidationErrors>
 }
 
-export function useField<T>(options: UseFieldOptions<T>) {
+export function useField<T, K extends string>(options: UseFieldOptions<T, K>) {
   const state = reactive({
     value: options.value,
     path: options.path,
-    initialValue: computed(() => structuredClone(unref(options.initialValue))),
-    errors: computed(() => unref(options.errors) || []),
+    initialValue: computed(() => Object.freeze(cloneRef(options.initialValue))),
+    errors: unref(options.errors) || [],
     touched: false,
+  })
+
+  watch(() => unref(options.errors), (newValue) => {
+    state.errors = newValue || []
   })
 
   const dirty = computed(() => {
@@ -34,12 +41,12 @@ export function useField<T>(options: UseFieldOptions<T>) {
   }
 
   function reset(): void {
-    state.value = structuredClone(state.initialValue)
+    state.value = cloneRef(state.initialValue)
     state.touched = false
     state.errors = []
   }
 
-  function setErrors(newErrors: ErrorMessage[]): void {
+  function setErrors(newErrors: ValidationErrorMessage[]): void {
     state.errors = newErrors
   }
 
@@ -59,4 +66,4 @@ export function useField<T>(options: UseFieldOptions<T>) {
   }
 }
 
-export type FormField<T> = ReturnType<typeof useField<T>>
+export type FormField<T, K extends string> = ReturnType<typeof useField<T, K>>

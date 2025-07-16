@@ -1,39 +1,37 @@
 /**
- * Resolves to the first part of the dot-connected path of T.
+ * Takes a dot-connected path and returns a tuple of its parts.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ExtractRootPath<TPath extends string> = TPath extends `${infer T1}.${any}`
-  ? T1
-  : never
+export type SplitPath<TPath extends string> =
+  TPath extends `${infer T1}.${infer T2}`
+    ? [T1, ...SplitPath<T2>]
+    : [TPath]
 
 /**
- * Resolves to the rest part of the dot-connected path of T where TRoot is the first part.
+ * Picks the exact type of the Entity at the nested PropertyKeys path.
  */
-type ExtractRestPath<TRoot extends string, TPath extends string> = TPath extends `${TRoot}.${infer T2}`
-  ? T2
-  : never
-
-/**
- * Picks all properties of Entity with path in PropertyKeys. PropertyKeys can contain dot-paths for nested objects as well.
- */
-export type PickDot<Entity, PropertyKeys extends string> =
-  Entity extends Array<infer ArrayType>
-    ? PickDot<ArrayType, PropertyKeys>[]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    : Entity extends Record<string, any>
-      ? {
-          [key in keyof Entity as key extends ExtractRootPath<PropertyKeys> | PropertyKeys ? key : never]-?: key extends ExtractRootPath<PropertyKeys>
-            ? PickDot<Entity[key], ExtractRestPath<key, PropertyKeys>>
-            : Entity[key]
-        }
-      : Entity
-
+export type PickProps<Entity, PropertyKeys extends string> =
+  PropertyKeys extends `${infer TRoot}.${infer TRest}`
+    ? TRoot extends keyof Entity
+      ? TRest extends string
+        ? Entity[TRoot] extends object
+          ? PickProps<Entity[TRoot], TRest>
+          : never
+        : never
+      : never
+    : PropertyKeys extends keyof Entity
+      ? Entity[PropertyKeys]
+      : never
 /**
  * Resolves to a union of dot-connected paths of all nested properties of T.
+ * type Test = Paths<{
+ *   foo: { bar: [{ baz: string }] }
+ *   qux: number
+ * }>
+ * must resolve to: 'foo', 'qux', 'foo.bar', 'foo.bar.0', 'foo.bar.0.baz'
  */
 export type Paths<T, Seen = never> =
   T extends Seen ? never :
-    T extends Array<infer ArrayType> ? Paths<ArrayType, Seen> :
+    T extends Array<infer ArrayType> ? `${number}` | `${number}.${Paths<ArrayType, Seen | T>}` :
       T extends object
         ? {
             [K in keyof T]-?: `${Exclude<K, symbol>}${'' | `.${Paths<T[K], Seen | T>}`}`

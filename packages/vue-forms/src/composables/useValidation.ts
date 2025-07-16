@@ -3,6 +3,7 @@ import z from 'zod'
 import type { FormDataDefault } from '../types/form'
 import type { ErrorBag, ValidationFunction, ValidationResult, Validator } from '../types/validation'
 import { hasErrors, mergeErrors } from '../utils/validation'
+import { flattenError } from '../utils/zod'
 
 export interface ValidationOptions<T> {
   schema?: MaybeRef<z.ZodType<T>>
@@ -10,7 +11,7 @@ export interface ValidationOptions<T> {
   errors?: MaybeRef<ErrorBag>
 }
 
-const SuccessValidationResult: ValidationResult = {
+export const SuccessValidationResult: ValidationResult = {
   isValid: true,
   errors: {
     general: [],
@@ -28,13 +29,13 @@ class ZodSchemaValidator<T extends FormDataDefault> implements Validator<T> {
       return SuccessValidationResult
     }
 
-    const zodErrors = z.flattenError(result.error)
+    const zodErrors = flattenError(result.error)
 
     return {
       isValid: false,
       errors: {
-        general: zodErrors.formErrors ?? [],
-        propertyErrors: zodErrors.fieldErrors ?? {},
+        general: zodErrors.general ?? [],
+        propertyErrors: zodErrors.propertyErrors ?? {},
       },
     }
   }
@@ -60,19 +61,17 @@ export function useValidation<T extends FormDataDefault>(
 ) {
   const validationState = reactive({
     isValidated: false,
-    errors: options.errors ?? {
+    errors: unref(options.errors) ?? {
       general: [],
       propertyErrors: {},
     },
   })
 
   // Watch for changes in the error bag and update validation state
-  watch(() => unref(options.errors), async (newErrs) => {
-    const newErrors = newErrs ?? SuccessValidationResult.errors
-
+  watch(() => unref(options.errors), async () => {
     const validationResults = await getValidationResults()
 
-    validationState.errors = mergeErrors(validationResults.errors, newErrors)
+    updateErrors(validationResults.errors)
   }, { immediate: true })
 
   // Watch for changes in validation function or schema
@@ -135,10 +134,15 @@ export function useValidation<T extends FormDataDefault>(
     }
   }
 
+  const updateErrors = (newErrors: ErrorBag) => {
+    validationState.errors = mergeErrors(unref(options.errors) ?? SuccessValidationResult.errors, newErrors)
+  }
+
   async function validateForm(): Promise<ValidationResult> {
     const validationResults = await getValidationResults()
 
-    validationState.errors = validationResults.errors
+    updateErrors(validationResults.errors)
+
     validationState.isValidated = true
 
     return {

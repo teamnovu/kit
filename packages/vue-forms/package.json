@@ -12,7 +12,10 @@
   "scripts": {
     "build": "vite build",
     "watch": "NODE_ENV=development vite build --watch",
-    "lint": "eslint --fix --ignore-pattern 'dist/**' ."
+    "lint": "eslint --fix --ignore-pattern 'dist/**' .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "keywords": [
     "vue",
@@ -26,7 +29,10 @@
     "vue": "^3.0.0"
   },
   "devDependencies": {
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vitest": "^2.0.0",
+    "@vitest/ui": "^2.0.0",
+    "happy-dom": "^12.0.0"
   },
   "dependencies": {
     "@vueuse/core": "^13.5.0",

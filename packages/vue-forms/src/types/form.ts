@@ -1,11 +1,6 @@
-import type { ValidationState } from "../composables/useValidation"
-
 export type FormDataDefault = Record<string, unknown>
 
-export interface FormState<T extends FormDataDefault> extends ValidationState<T> {
+export interface FormState<T extends FormDataDefault> {
   formData: T
   initialData: T
-
-  isDirty: boolean
-  isTouched: boolean
 }
