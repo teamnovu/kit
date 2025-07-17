@@ -1,21 +1,22 @@
 import { computed, reactive, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter } from 'vue'
+import type { FormField } from '../types/form'
 import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
-import { cloneRef } from '../utils/general'
+import { cloneRefValue } from '../utils/general'
 
 export interface UseFieldOptions<T, K extends string> {
   value?: MaybeRef<T>
   initialValue?: MaybeRefOrGetter<Readonly<T>>
   type?: MaybeRef<string>
   required?: MaybeRef<boolean>
-  path: MaybeRef<K>
+  path: K
   errors?: MaybeRef<ValidationErrors>
 }
 
-export function useField<T, K extends string>(options: UseFieldOptions<T, K>) {
+export function useField<T, K extends string>(options: UseFieldOptions<T, K>): FormField<T, K> {
   const state = reactive({
     value: options.value,
     path: options.path,
-    initialValue: computed(() => Object.freeze(cloneRef(options.initialValue))),
+    initialValue: computed(() => Object.freeze(cloneRefValue(options.initialValue))),
     errors: unref(options.errors) || [],
     touched: false,
   })
@@ -28,34 +29,40 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>) {
     return JSON.stringify(state.value) !== JSON.stringify(state.initialValue)
   })
 
-  function setValue(newValue: T): void {
+  const setValue = (newValue: T): void => {
     state.value = newValue
   }
 
-  function onBlur(): void {
+  const onBlur = (): void => {
     state.touched = true
   }
 
-  function onFocus(): void {
+  const onFocus = (): void => {
     // TODO: Implement focus logic if needed
   }
 
-  function reset(): void {
-    state.value = cloneRef(state.initialValue)
+  const reset = (): void => {
+    state.value = cloneRefValue(state.initialValue)
     state.touched = false
     state.errors = []
   }
 
-  function setErrors(newErrors: ValidationErrorMessage[]): void {
+  const setErrors = (newErrors: ValidationErrorMessage[]): void => {
     state.errors = newErrors
   }
 
-  function clearErrors(): void {
+  const clearErrors = (): void => {
     state.errors = []
   }
 
+  const refs = toRefs(state)
+
   return {
-    ...toRefs(state),
+    value: refs.value as FormField<T, K>['value'],
+    path: refs.path as FormField<T, K>['path'],
+    initialValue: refs.initialValue as FormField<T, K>['initialValue'],
+    errors: refs.errors as FormField<T, K>['errors'],
+    touched: refs.touched as FormField<T, K>['touched'],
     dirty,
     setValue,
     onBlur,
@@ -65,5 +72,3 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>) {
     clearErrors,
   }
 }
-
-export type FormField<T, K extends string> = ReturnType<typeof useField<T, K>>

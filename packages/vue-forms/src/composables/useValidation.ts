@@ -138,7 +138,7 @@ export function useValidation<T extends FormDataDefault>(
     validationState.errors = mergeErrors(unref(options.errors) ?? SuccessValidationResult.errors, newErrors)
   }
 
-  async function validateForm(): Promise<ValidationResult> {
+  const validateForm = async (): Promise<ValidationResult> => {
     const validationResults = await getValidationResults()
 
     updateErrors(validationResults.errors)

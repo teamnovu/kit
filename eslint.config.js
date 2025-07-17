@@ -23,6 +23,7 @@ export default tseslint.config(
             tabWidth: 2,
           },
         ],
+        '@typescript-eslint/no-empty-object-type': 'off',
       },
   },
 )

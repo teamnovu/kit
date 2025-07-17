@@ -1,5 +1,6 @@
 import { computed, unref, type MaybeRef } from 'vue'
 import type { Paths, PickProps, SplitPath } from '../types/util'
+import type { ErrorBag } from '../types/validation'
 
 export function splitPath(path: string): string[] {
   return path.split(/\s*\.\s*/).filter(Boolean)
@@ -10,7 +11,7 @@ export function getNestedValue<T, K extends Paths<T>>(obj: T, path: K | SplitPat
   return splittedPath.reduce(
     (current, key) => current?.[key],
     obj as Record<string, never>,
-  ) as PickProps<T, K> | undefined
+  ) as PickProps<T, K>
 }
 
 export function setNestedValue<T, K extends Paths<T>>(obj: T, path: K | SplitPath<K>, value: PickProps<T, K>): void {
@@ -40,4 +41,48 @@ export const getLens = <T, K extends Paths<T>>(formData: MaybeRef<T>, key: Maybe
       setNestedValue(unref(formData), unref(key), value)
     },
   })
+}
+
+type JoinPath<Base extends string, Sub extends string> = `${Base}${Base extends '' ? '' : Sub extends '' ? '' : '.'}${Sub}`
+export function joinPath<Base extends string, Sub extends string>(basePath: Base, subPath: Sub): JoinPath<Base, Sub> {
+
+  if (!basePath && !subPath) {
+    return '' as JoinPath<Base, Sub>
+  }
+
+  if (!basePath && subPath) {
+    return subPath as JoinPath<Base, Sub>
+  }
+
+  if (!subPath && basePath) {
+    return basePath as JoinPath<Base, Sub>
+  }
+
+  return `${basePath}.${subPath}` as JoinPath<Base, Sub>
+}
+
+export function filterErrorsForPath(errors: ErrorBag, path: string): ErrorBag {
+  // Handle empty path - return all errors
+  if (!path) {
+    return errors
+  }
+
+  const pathPrefix = `${path}.`
+  const filteredPropertyErrors: Record<string, string[]> = {}
+
+  // Filter property errors that start with the path prefix
+  Object.entries(errors.propertyErrors).forEach(([errorPath, errorMessages]) => {
+    if (errorPath.startsWith(pathPrefix)) {
+      // Remove the path prefix to get relative path
+      const relativePath = errorPath.substring(pathPrefix.length)
+      if (relativePath) {
+        filteredPropertyErrors[relativePath] = errorMessages
+      }
+    }
+  })
+
+  return {
+    general: errors.general, // Keep general errors
+    propertyErrors: filteredPropertyErrors,
+  }
 }
