@@ -3,6 +3,9 @@ import type { Paths, PickProps, SplitPath } from '../types/util'
 import type { ErrorBag } from '../types/validation'
 
 export function splitPath(path: string): string[] {
+  if (path === '') {
+    return []
+  }
   return path.split(/\s*\.\s*/).filter(Boolean)
 }
 
@@ -45,7 +48,6 @@ export const getLens = <T, K extends Paths<T>>(formData: MaybeRef<T>, key: Maybe
 
 type JoinPath<Base extends string, Sub extends string> = `${Base}${Base extends '' ? '' : Sub extends '' ? '' : '.'}${Sub}`
 export function joinPath<Base extends string, Sub extends string>(basePath: Base, subPath: Sub): JoinPath<Base, Sub> {
-
   if (!basePath && !subPath) {
     return '' as JoinPath<Base, Sub>
   }

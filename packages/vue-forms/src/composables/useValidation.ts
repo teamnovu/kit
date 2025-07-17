@@ -1,13 +1,16 @@
-import { computed, reactive, toRefs, unref, watch, type MaybeRef } from 'vue'
+import { computed, getCurrentScope, isRef, onBeforeUnmount, reactive, ref, toRefs, unref, watch, type MaybeRef, type Ref } from 'vue'
 import z from 'zod'
 import type { FormDataDefault } from '../types/form'
 import type { ErrorBag, ValidationFunction, ValidationResult, Validator } from '../types/validation'
 import { hasErrors, mergeErrors } from '../utils/validation'
 import { flattenError } from '../utils/zod'
 
-export interface ValidationOptions<T> {
+export interface ValidatorOptions<T> {
   schema?: MaybeRef<z.ZodType>
   validateFn?: MaybeRef<ValidationFunction<T>>
+}
+
+export interface ValidationOptions<T> extends ValidatorOptions<T> {
   errors?: MaybeRef<ErrorBag>
 }
 
@@ -20,9 +23,13 @@ export const SuccessValidationResult: ValidationResult = {
 }
 
 class ZodSchemaValidator<T extends FormDataDefault> implements Validator<T> {
-  constructor(private schema: z.ZodType<T>) {}
+  constructor(private schema?: z.ZodType<T>) {}
 
   async validate(data: T): Promise<ValidationResult> {
+    if (!this.schema) {
+      return SuccessValidationResult
+    }
+
     const result = await this.schema.safeParseAsync(data)
 
     if (result.success) {
@@ -42,17 +49,67 @@ class ZodSchemaValidator<T extends FormDataDefault> implements Validator<T> {
 }
 
 class FunctionValidator<T extends FormDataDefault> implements Validator<T> {
-  constructor(private validateFn: ValidationFunction<T>) {}
+  constructor(private validateFn?: ValidationFunction<T>) {}
 
   async validate(data: T): Promise<ValidationResult> {
-    const result = await this.validateFn(data)
-
-    if (result.isValid) {
+    if (!this.validateFn) {
       return SuccessValidationResult
     }
 
-    return result
+    try {
+      const result = await this.validateFn(data)
+
+      if (result.isValid) {
+        return SuccessValidationResult
+      }
+
+      return result
+    } catch (error) {
+      return {
+        isValid: false,
+        errors: {
+          general: [(error as Error).message || 'Validation error'],
+          propertyErrors: {},
+        },
+      }
+    }
   }
+}
+
+class CombinedValidator<T extends FormDataDefault> implements Validator<T> {
+  private schemaValidator: ZodSchemaValidator<T>
+  private functionValidator: FunctionValidator<T>
+
+  constructor(
+    private schema: z.ZodType<T>,
+    private validateFn: ValidationFunction<T>,
+  ) {
+    this.schemaValidator = new ZodSchemaValidator(this.schema)
+    this.functionValidator = new FunctionValidator(this.validateFn)
+  }
+
+  async validate(data: T): Promise<ValidationResult> {
+    const [schemaResult, functionResult] = await Promise.all([
+      this.schemaValidator.validate(data),
+      this.functionValidator.validate(data),
+    ])
+
+    const isValid = schemaResult.isValid && functionResult.isValid
+
+    return {
+      isValid,
+      errors: mergeErrors(schemaResult.errors, functionResult.errors),
+    }
+  }
+}
+
+export function createValidator<T extends FormDataDefault>(
+  options: ValidatorOptions<T>,
+): Ref<Validator<T> | undefined> {
+  return computed(() => new CombinedValidator(
+    unref(options.schema) as z.ZodType<T>,
+    unref(options.validateFn) as ValidationFunction<T>,
+  ))
 }
 
 export function useValidation<T extends FormDataDefault>(
@@ -60,6 +117,7 @@ export function useValidation<T extends FormDataDefault>(
   options: ValidationOptions<T>,
 ) {
   const validationState = reactive({
+    validators: ref<Ref<Validator<T> | undefined>[]>([createValidator(options)]),
     isValidated: false,
     errors: unref(options.errors) ?? {
       general: [],
@@ -76,21 +134,22 @@ export function useValidation<T extends FormDataDefault>(
 
   // Watch for changes in validation function or schema
   // to trigger validation. Only run if validation is already validated.
-  watch([
-    () => unref(options.validateFn),
-    () => unref(options.schema),
-  ], async (newValidateFn, newSchema) => {
-    if (!validationState.isValidated) {
-      return
-    }
+  watch(
+    [() => validationState.validators],
+    async (validators) => {
+      if (!validationState.isValidated) {
+        return
+      }
 
-    if (newValidateFn || newSchema) {
-      const validationResults = await getValidationResults()
-      validationState.errors = validationResults.errors
-    } else {
-      validationState.errors = SuccessValidationResult.errors
-    }
-  }, { immediate: true })
+      if (validators) {
+        const validationResults = await getValidationResults()
+        validationState.errors = validationResults.errors
+      } else {
+        validationState.errors = SuccessValidationResult.errors
+      }
+    },
+    { immediate: true },
+  )
 
   // Watch for changes in form data to trigger validation
   watch(() => formState.formData, () => {
@@ -99,23 +158,27 @@ export function useValidation<T extends FormDataDefault>(
     }
   })
 
+  const defineValidator = (options: ValidatorOptions<T> | Ref<Validator<T>>) => {
+    const validator = isRef(options) ? options : createValidator(options)
+
+    validationState.validators.push(validator)
+
+    if (getCurrentScope()) {
+      onBeforeUnmount(() => {
+        validationState.validators = validationState.validators.filter(
+          v => v !== validator,
+        )
+      })
+    }
+
+    return validator
+  }
+
   async function getValidationResults() {
-    const validateFn = unref(options.validateFn)
-    const schema = unref(options.schema)
-    const validators: Validator<T>[] = []
-
-    if (validateFn) {
-      validators.push(new FunctionValidator(validateFn))
-    }
-
-    if (schema) {
-      validators.push(new ZodSchemaValidator(schema as z.ZodType<T>))
-    }
-
     const validationResults = await Promise.all(
-      validators.map(
-        validator => validator.validate(formState.formData),
-      ),
+      validationState.validators
+        .filter(validator => unref(validator) !== undefined)
+        .map(validator => unref(validator)!.validate(formState.formData)),
     )
 
     const isValid = validationResults.every(result => result.isValid)
@@ -156,6 +219,7 @@ export function useValidation<T extends FormDataDefault>(
   return {
     ...toRefs(validationState),
     validateForm,
+    defineValidator,
     isValid,
   }
 }

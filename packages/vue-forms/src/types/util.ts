@@ -1,5 +1,4 @@
-import type { FormField } from '../composables/useField'
-import type { Form, FormDataDefault } from './form'
+import type { FormDataDefault } from './form'
 
 /**
  * Takes a dot-connected path and returns a tuple of its parts.
@@ -20,10 +19,24 @@ export type PickProps<Entity, PropertyKeys extends string> =
           ? PickProps<Entity[TRoot], TRest>
           : never
         : never
-      : never
+      // We might have an array at hand but the key is a string with a number in it
+      : TRoot extends `${number}`
+        ? Entity extends unknown[]
+          ? TRest extends string
+            ? Entity[number] extends object
+              ? PickProps<Entity[number], TRest>
+              : never
+            : never
+          : never
+        : never
+    // We might have an array at hand but the key is a string with a number in it
     : PropertyKeys extends keyof Entity
       ? Entity[PropertyKeys]
-      : never
+      : PropertyKeys extends `${number}`
+        ? Entity extends unknown[]
+          ? Entity[number]
+          : never
+        : never
 
 /**
  * Resolves to a union of dot-connected paths of all nested properties of T.
@@ -58,43 +71,3 @@ export type PickEntity<Entity, PropertyKeys extends string> =
 
 export type RestPath<T extends string, P extends string> =
   P extends `${T}.${infer Rest}` ? Rest : never
-
-
-type ExtensiveEntity = {
-  person: {
-    origin: {
-      country: string
-      city: string
-    }
-
-    address: {
-      street: string
-      zip: string
-    }
-    name: string
-    age: number
-    hobbies: string[]
-  }
-}
-
-type SubFormPath = 'person'
-type SubForm = PickEntity<ExtensiveEntity, SubFormPath>
-type SubFormPaths = Paths<SubForm>
-
-type FieldPath = 'origin.country'
-type MainFieldPath = `${SubFormPath}.${FieldPath}`
-
-type ScopedMainPaths = Paths<ExtensiveEntity> & `${SubFormPath}.${SubFormPaths}`
-
-type SubEntityPaths = EntityPaths<SubForm>
-
-type field = FormField<PickProps<SubForm, 'country'>, 'country'>
-type mainField = FormField<PickProps<SubForm, FieldPath>, FieldPath>
-
-type form = Form<PickEntity<ExtensiveEntity, SubFormPath>>
-
-type Test = FormField<PickProps<SubForm, RestPath<SubFormPath, MainFieldPath>>, RestPath<SubFormPath, MainFieldPath>>
-
-const test: Test = {} as unknown as mainField
-test.setValue
-

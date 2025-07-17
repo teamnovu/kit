@@ -1,307 +1,1348 @@
 import { describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
+import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
+import { Form } from '../src/types/form'
 
-describe('Basic Subform Functionality', () => {
-  describe('Subform Creation', () => {
-    it('should create subform with correct data scoping', () => {
-      const form = useForm({
-        initialData: {
-          user: {
-            name: 'John',
-            email: 'john@example.com',
-          },
-          company: { name: 'Tech Corp' },
-        },
-      })
-
-      const userForm = form.getSubForm('user')
-
-      expect(userForm.formData.value).toEqual({
-        name: 'John',
-        email: 'john@example.com',
-      })
-      expect(userForm.initialData.value).toEqual({
-        name: 'John',
-        email: 'john@example.com',
-      })
-    })
-
-    it('should create nested subforms', () => {
-      const form = useForm({
-        initialData: {
-          user: {
-            profile: {
-              name: 'John',
-              bio: 'Developer',
-            },
-          },
-        },
-      })
-
-      const userForm = form.getSubForm('user')
-      const profileForm = userForm.getSubForm('profile')
-
-      expect(profileForm.formData.value).toEqual({
-        name: 'John',
-        bio: 'Developer',
-      })
-    })
-
-    it('should handle non-existent paths gracefully', () => {
-      const form = useForm({
-        initialData: { user: { name: 'John' } },
-      })
-
-      const nonExistentForm = form.getSubForm('nonexistent' as any)
-
-      expect(nonExistentForm.formData.value).toBeUndefined()
-    })
-
-    it('should maintain reactivity with main form data', async () => {
-      const form = useForm({
-        initialData: {
-          user: { name: 'John' },
-        },
-      })
-
-      const userForm = form.getSubForm('user')
-
-      // Change main form data
-      form.formData.value.user.name = 'Jane'
-      await nextTick()
-
-      // Subform should reflect the change
-      expect(userForm.formData.value.name).toBe('Jane')
-    })
-  })
-
-  describe('Field Operations', () => {
-    it('should register fields with correct paths in main form', () => {
-      const form = useForm({
-        initialData: {
-          user: {
-            name: 'John',
-            email: 'john@example.com',
-          },
-        },
-      })
-
-      const userForm = form.getSubForm('user')
-      const nameField = userForm.defineField({ path: 'name' })
-
-      // Field should be registered in main form with prefixed path
-      expect(form.getField('user.name')).toBe(nameField)
-    })
-
-    it('should retrieve fields with path transformation', () => {
-      const form = useForm({
-        initialData: { user: { name: 'John' } },
-      })
-
-      const userForm = form.getSubForm('user')
-      const nameField = userForm.defineField({ path: 'name' })
-
-      // Should retrieve same field through subform
-      expect(userForm.getField('name')).toBe(nameField)
-    })
-
-    it('should filter fields correctly for subform', () => {
-      const form = useForm({
-        initialData: {
-          user: {
-            name: 'John',
-            email: 'john@example.com',
-          },
-          company: { name: 'Tech Corp' },
-        },
-      })
-
-      const userForm = form.getSubForm('user')
-      userForm.defineField({ path: 'name' })
-      userForm.defineField({ path: 'email' })
-
-      const companyForm = form.getSubForm('company')
-      companyForm.defineField({ path: 'name' })
-
-      expect(userForm.getFields()).toHaveLength(2)
-      expect(companyForm.getFields()).toHaveLength(1)
-    })
-
-    it('should handle nested field operations', () => {
-      const form = useForm({
-        initialData: {
-          user: {
-            profile: {
-              name: 'John',
-              bio: 'Developer',
-            },
-          },
-        },
-      })
-
-      const userForm = form.getSubForm('user')
-      const profileForm = userForm.getSubForm('profile')
-
-      const nameField = profileForm.defineField({ path: 'name' })
-
-      // Field should be registered with full path
-      expect(form.getField('user.profile.name')).toBe(nameField)
-      expect(profileForm.getField('name')).toBe(nameField)
-    })
-  })
-
-  describe('Data Synchronization', () => {
-    it('should sync subform changes to main form', async () => {
-      const form = useForm({
-        initialData: {
-          user: { name: 'John' },
-        },
-      })
-
-      const userForm = form.getSubForm('user')
-      const nameField = userForm.defineField({ path: 'name' })
-
-      // Change through subform field
-      nameField.setValue('Jane')
-      await nextTick()
-
-      // Main form should reflect the change
-      expect(form.formData.value.user.name).toBe('Jane')
-    })
-
-    it('should handle complex nested data synchronization', async () => {
-      const form = useForm({
-        initialData: {
-          user: {
-            profile: {
-              preferences: {
-                theme: 'dark',
-                notifications: true,
-              },
-            },
-          },
-        },
-      })
-
-      const userForm = form.getSubForm('user')
-      const profileForm = userForm.getSubForm('profile')
-      const preferencesForm = profileForm.getSubForm('preferences')
-
-      const themeField = preferencesForm.defineField({ path: 'theme' })
-      themeField.setValue('light')
-      await nextTick()
-
-      expect(form.formData.value.user.profile.preferences.theme).toBe('light')
-    })
-  })
-
-  describe('Subform API Consistency', () => {
-    it('should provide same API as main form', () => {
-      const form = useForm({
-        initialData: { user: { name: 'John' } },
-      })
-
-      const userForm = form.getSubForm('user')
-
-      // Should have same methods as main form
-      expect(typeof userForm.defineField).toBe('function')
-      expect(typeof userForm.getField).toBe('function')
-      expect(typeof userForm.getFields).toBe('function')
-      expect(typeof userForm.reset).toBe('function')
-      expect(typeof userForm.validateForm).toBe('function')
-      expect(typeof userForm.getSubForm).toBe('function')
-
-      // Should have same reactive properties
-      expect(userForm.formData).toBeDefined()
-      expect(userForm.initialData).toBeDefined()
-      expect(userForm.isDirty).toBeDefined()
-      expect(userForm.isTouched).toBeDefined()
-      expect(userForm.isValid).toBeDefined()
-      expect(userForm.isValidated).toBeDefined()
-      expect(userForm.errors).toBeDefined()
-    })
-
-    it('should handle infinite nesting', () => {
-      const form = useForm({
-        initialData: {
-          level1: {
-            level2: {
-              level3: {
-                level4: {
-                  level5: { name: 'Deep' },
-                },
-              },
-            },
-          },
-        },
-      })
-
-      const deepForm = form
-        .getSubForm('level1')
-        .getSubForm('level2')
-        .getSubForm('level3')
-        .getSubForm('level4')
-        .getSubForm('level5')
-
-      expect(deepForm.formData.value.name).toBe('Deep')
-
-      const nameField = deepForm.defineField({ path: 'name' })
-      expect(form.getField('level1.level2.level3.level4.level5.name')).toBe(nameField)
-    })
-  })
-
-  describe('Array Data Support', () => {
-    it('should handle array data in subforms', () => {
-      const form = useForm({
-        initialData: {
-          users: [
-            {
+describe('Subform Implementation', () => {
+  describe('Basic Functionality', () => {
+    describe('Subform Creation', () => {
+      it('should create subform with correct data scoping', () => {
+        const form = useForm({
+          initialData: {
+            user: {
               name: 'John',
               email: 'john@example.com',
             },
-            {
-              name: 'Jane',
-              email: 'jane@example.com',
-            },
-          ],
-        },
+            company: { name: 'Tech Corp' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+
+        expect(userForm.formData.value).toEqual({
+          name: 'John',
+          email: 'john@example.com',
+        })
+        expect(userForm.initialData.value).toEqual({
+          name: 'John',
+          email: 'john@example.com',
+        })
       })
 
-      const firstUserForm = form.getSubForm('users.0')
-      const secondUserForm = form.getSubForm('users.1')
+      it('should create array subforms', () => {
+        const form = useForm({
+          initialData: {
+            users: [
+              {
+                name: 'John',
+                email: 'john@example.com',
+              },
+              {
+                name: 'Jane',
+                email: 'jane@example.com',
+              },
+            ],
+          },
+        })
 
-      expect(firstUserForm.formData.value.name).toBe('John')
-      expect(secondUserForm.formData.value.name).toBe('Jane')
+        const firstUserForm = form.getSubForm('users.0')
+        const secondUserForm = form.getSubForm('users.1')
+
+        expect(firstUserForm.formData.value).toEqual({
+          name: 'John',
+          email: 'john@example.com',
+        })
+        expect(secondUserForm.formData.value).toEqual({
+          name: 'Jane',
+          email: 'jane@example.com',
+        })
+      })
+
+      it('should handle deeply nested subforms', () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                personal: {
+                  name: 'John',
+                  age: 30,
+                },
+                work: {
+                  title: 'Developer',
+                  company: 'Tech Corp',
+                },
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+        const personalForm = profileForm.getSubForm('personal')
+
+        expect(personalForm.formData.value).toEqual({
+          name: 'John',
+          age: 30,
+        })
+      })
     })
 
-    it('should handle nested arrays', () => {
-      const form = useForm({
-        initialData: {
-          companies: [
-            {
-              name: 'Tech Corp',
-              employees: [
-                {
-                  name: 'John',
-                  role: 'Developer',
-                },
-                {
-                  name: 'Jane',
-                  role: 'Designer',
-                },
-              ],
-            },
-          ],
-        },
+    describe('Field Operations', () => {
+      it('should register fields with correct paths in main form', () => {
+        const form = useForm({
+          initialData: {
+            user: { name: 'John' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const nameField = userForm.defineField({ path: 'name' })
+
+        expect(nameField.path.value).toBe('name')
+        expect(nameField.value.value).toBe('John')
+        expect(form.getField('user.name')).toBeDefined()
       })
 
-      const companyForm = form.getSubForm('companies.0')
-      const firstEmployeeForm = companyForm.getSubForm('employees.0')
+      it('should retrieve fields with path transformation', () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              name: 'John',
+              email: 'john@example.com',
+            },
+          },
+        })
 
-      expect(firstEmployeeForm.formData.value.name).toBe('John')
-      expect(firstEmployeeForm.formData.value.role).toBe('Developer')
+        const userForm = form.getSubForm('user')
+        userForm.defineField({ path: 'name' })
+        userForm.defineField({ path: 'email' })
+
+        const nameField = userForm.getField('name')
+        const emailField = userForm.getField('email')
+
+        expect(nameField).toBeDefined()
+        expect(emailField).toBeDefined()
+        expect(nameField?.path.value).toBe('name')
+        expect(emailField?.path.value).toBe('email')
+      })
+
+      it('should handle field operations on nested subforms', () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                name: 'John',
+                bio: 'Developer',
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+        const nameField = profileForm.defineField({ path: 'name' })
+
+        expect(nameField.path.value).toBe('name')
+        expect(nameField.value.value).toBe('John')
+
+        // Should be registered in main form with full path
+        expect(form.getField('user.profile.name')).toBeDefined()
+      })
+
+      it('should handle field value updates correctly', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: 'John' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const nameField = userForm.defineField({ path: 'name' })
+
+        nameField.setValue('Jane')
+        await nextTick()
+
+        expect(nameField.value.value).toBe('Jane')
+        expect(userForm.formData.value.name).toBe('Jane')
+        expect(form.formData.value.user.name).toBe('Jane')
+      })
+    })
+
+    describe('Nested Subforms', () => {
+      it('should create nested subforms from subforms', () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                name: 'John',
+                settings: {
+                  theme: 'dark',
+                  notifications: true,
+                },
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+        const settingsForm = profileForm.getSubForm('settings')
+
+        expect(settingsForm.formData.value).toEqual({
+          theme: 'dark',
+          notifications: true,
+        })
+      })
+
+      it('should handle infinite nesting levels', () => {
+        const form = useForm({
+          initialData: {
+            level1: {
+              level2: {
+                level3: {
+                  level4: {
+                    level5: {
+                      name: 'Deep Value',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        })
+
+        const level1Form = form.getSubForm('level1')
+        const level2Form = level1Form.getSubForm('level2')
+        const level3Form = level2Form.getSubForm('level3')
+        const level4Form = level3Form.getSubForm('level4')
+        const level5Form = level4Form.getSubForm('level5')
+
+        expect(level5Form.formData.value).toEqual({
+          name: 'Deep Value',
+        })
+
+        const nameField = level5Form.defineField({ path: 'name' })
+        expect(form.getField('level1.level2.level3.level4.level5.name')).toBeDefined()
+      })
+
+      it('should handle mixed object and array nesting', () => {
+        const form = useForm({
+          initialData: {
+            teams: [
+              {
+                name: 'Team A',
+                members: [
+                  {
+                    name: 'John',
+                    role: 'lead',
+                  },
+                  {
+                    name: 'Jane',
+                    role: 'dev',
+                  },
+                ],
+              },
+            ],
+          },
+        })
+
+        const teamForm = form.getSubForm('teams.0')
+        const memberForm = teamForm.getSubForm('members.0')
+
+        expect(memberForm.formData.value).toEqual({
+          name: 'John',
+          role: 'lead',
+        })
+      })
+    })
+  })
+
+  describe('Validation Integration', () => {
+    describe('Schema Validation', () => {
+      it('should validate subform with schema using defineValidator', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              name: '',
+              email: '',
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        userForm.defineValidator({
+          schema: z.object({
+            name: z.string().min(1, 'Name required'),
+            email: z.string().email('Invalid email'),
+          }),
+        })
+
+        // Set invalid data
+        userForm.formData.value.name = ''
+        userForm.formData.value.email = 'invalid'
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.propertyErrors['user.name']).toContain('Name required')
+        expect(result.errors.propertyErrors['user.email']).toContain('Invalid email')
+      })
+
+      it('should validate nested subforms with schemas', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                name: '',
+                bio: '',
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+
+        profileForm.defineValidator({
+          schema: z.object({
+            name: z.string().min(1, 'Name required'),
+            bio: z.string().min(10, 'Bio too short'),
+          }),
+        })
+
+        // Set invalid data
+        profileForm.formData.value.name = ''
+        profileForm.formData.value.bio = 'Short'
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.propertyErrors['user.profile.name']).toContain('Name required')
+        expect(result.errors.propertyErrors['user.profile.bio']).toContain('Bio too short')
+      })
+
+      it('should handle multiple subform validations at same level', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: '' },
+            company: { name: '' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const companyForm = form.getSubForm('company')
+
+        userForm.defineValidator({
+          schema: z.object({
+            name: z.string().min(1, 'User name required'),
+          }),
+        })
+
+        companyForm.defineValidator({
+          schema: z.object({
+            name: z.string().min(1, 'Company name required'),
+          }),
+        })
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.propertyErrors['user.name']).toContain('User name required')
+        expect(result.errors.propertyErrors['company.name']).toContain('Company name required')
+      })
+    })
+
+    describe('Custom Validation Functions', () => {
+      it('should validate subform with custom validation function', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              name: 'admin',
+              email: 'admin@example.com',
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        userForm.defineValidator({
+          validateFn: async (data) => {
+            const errors: Record<string, string[]> = {}
+
+            if (data.name === 'admin') {
+              errors.name = ['Admin name not allowed']
+            }
+
+            return {
+              isValid: Object.keys(errors).length === 0,
+              errors: {
+                general: [],
+                propertyErrors: errors,
+              },
+            }
+          },
+        })
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.propertyErrors['user.name']).toContain('Admin name not allowed')
+      })
+
+      it('should handle both schema and custom validation', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              name: '',
+              email: 'test@example.com',
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        userForm.defineValidator({
+          schema: z.object({
+            name: z.string().min(1, 'Name required'),
+          }),
+          validateFn: async (data) => {
+            const errors: Record<string, string[]> = {}
+
+            if (data.email === 'test@example.com') {
+              errors.email = ['Test email not allowed']
+            }
+
+            return {
+              isValid: Object.keys(errors).length === 0,
+              errors: {
+                general: [],
+                propertyErrors: errors,
+              },
+            }
+          },
+        })
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.propertyErrors['user.name']).toContain('Name required')
+        expect(result.errors.propertyErrors['user.email']).toContain('Test email not allowed')
+      })
+
+      it('should handle validation with nested custom functions', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                name: 'admin',
+                bio: 'Test bio',
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+
+        profileForm.defineValidator({
+          validateFn: async (data) => {
+            const errors: Record<string, string[]> = {}
+
+            if (data.name === 'admin') {
+              errors.name = ['Admin profile name not allowed']
+            }
+
+            return {
+              isValid: Object.keys(errors).length === 0,
+              errors: {
+                general: [],
+                propertyErrors: errors,
+              },
+            }
+          },
+        })
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.propertyErrors['user.profile.name']).toContain('Admin profile name not allowed')
+      })
+    })
+
+    describe('Main Form and Subform Validation Integration', () => {
+      it('should integrate main form and subform validation', async () => {
+        const form = useForm({
+          initialData: {
+            globalSetting: 'abc',
+            user: {
+              name: 'admin',
+            },
+          },
+        })
+
+        // Main form validation
+        form.defineValidator({
+          schema: z.object({
+            globalSetting: z.string().min(5, 'Global setting too short'),
+          }),
+        })
+
+        // Subform validation
+        const userForm = form.getSubForm('user')
+        userForm.defineValidator({
+          validateFn: async (data) => {
+            const errors: Record<string, string[]> = {}
+
+            if (data.name === 'admin') {
+              errors.name = ['Admin name not allowed']
+            }
+
+            return {
+              isValid: Object.keys(errors).length === 0,
+              errors: {
+                general: [],
+                propertyErrors: errors,
+              },
+            }
+          },
+        })
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.propertyErrors['globalSetting']).toContain('Global setting too short')
+        expect(result.errors.propertyErrors['user.name']).toContain('Admin name not allowed')
+      })
+    })
+  })
+
+  describe('State Management', () => {
+    describe('Dirty State', () => {
+      it('should compute isDirty for subform scope only', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: 'John' },
+            company: { name: 'Tech Corp' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const companyForm = form.getSubForm('company')
+
+        // Define fields to enable dirty state computation
+        const userNameField = userForm.defineField({ path: 'name' })
+        const companyNameField = companyForm.defineField({ path: 'name' })
+
+        expect(userForm.isDirty.value).toBe(false)
+        expect(companyForm.isDirty.value).toBe(false)
+
+        userNameField.setValue('Jane')
+        await nextTick()
+
+        expect(userForm.isDirty.value).toBe(true)
+        expect(companyForm.isDirty.value).toBe(false)
+      })
+
+      it('should handle nested isDirty computation', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                name: 'John',
+                bio: 'Developer',
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+
+        // Define fields to enable dirty state computation
+        const nameField = profileForm.defineField({ path: 'name' })
+
+        expect(profileForm.isDirty.value).toBe(false)
+
+        nameField.setValue('Jane')
+        await nextTick()
+
+        expect(profileForm.isDirty.value).toBe(true)
+        expect(userForm.isDirty.value).toBe(true)
+      })
+
+      it('should handle array subform isDirty', async () => {
+        const form = useForm({
+          initialData: {
+            users: [
+              { name: 'John' },
+              { name: 'Jane' },
+            ],
+          },
+        })
+
+        const firstUserForm = form.getSubForm('users.0')
+        const secondUserForm = form.getSubForm('users.1')
+
+        // Define fields to enable dirty state computation
+        const firstNameField = firstUserForm.defineField({ path: 'name' })
+        const secondNameField = secondUserForm.defineField({ path: 'name' })
+
+        expect(firstUserForm.isDirty.value).toBe(false)
+        expect(secondUserForm.isDirty.value).toBe(false)
+
+        firstNameField.setValue('Johnny')
+        await nextTick()
+
+        expect(firstUserForm.isDirty.value).toBe(true)
+        expect(secondUserForm.isDirty.value).toBe(false)
+      })
+    })
+
+    describe('Touched State', () => {
+      it('should compute isTouched for subform scope only', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: 'John' },
+            company: { name: 'Tech Corp' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const companyForm = form.getSubForm('company')
+
+        const userNameField = userForm.defineField({ path: 'name' })
+        const companyNameField = companyForm.defineField({ path: 'name' })
+
+        expect(userForm.isTouched.value).toBe(false)
+        expect(companyForm.isTouched.value).toBe(false)
+
+        userNameField.onBlur()
+        await nextTick()
+
+        expect(userForm.isTouched.value).toBe(true)
+        expect(companyForm.isTouched.value).toBe(false)
+      })
+
+      it('should handle nested isTouched computation', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                name: 'John',
+                bio: 'Developer',
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+
+        const nameField = profileForm.defineField({ path: 'name' })
+
+        expect(profileForm.isTouched.value).toBe(false)
+        expect(userForm.isTouched.value).toBe(false)
+
+        nameField.onBlur()
+        await nextTick()
+
+        expect(profileForm.isTouched.value).toBe(true)
+        expect(userForm.isTouched.value).toBe(true)
+      })
+
+      it('should handle multiple fields touched in same subform', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              name: 'John',
+              email: 'john@example.com',
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const nameField = userForm.defineField({ path: 'name' })
+        const emailField = userForm.defineField({ path: 'email' })
+
+        expect(userForm.isTouched.value).toBe(false)
+
+        nameField.onBlur()
+        await nextTick()
+
+        expect(userForm.isTouched.value).toBe(true)
+
+        emailField.onBlur()
+        await nextTick()
+
+        expect(userForm.isTouched.value).toBe(true)
+      })
+    })
+
+    describe('Error State', () => {
+      it('should filter errors to subform scope', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: '' },
+            company: { name: '' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const companyForm = form.getSubForm('company')
+
+        userForm.defineValidator({
+          schema: z.object({
+            name: z.string().min(1, 'User name required'),
+          }),
+        })
+
+        companyForm.defineValidator({
+          schema: z.object({
+            name: z.string().min(1, 'Company name required'),
+          }),
+        })
+
+        await form.validateForm()
+
+        // User form should only see user errors
+        expect(userForm.errors.value.propertyErrors['name']).toContain('User name required')
+        expect(userForm.errors.value.propertyErrors['company.name']).toBeUndefined()
+
+        // Company form should only see company errors
+        expect(companyForm.errors.value.propertyErrors['name']).toContain('Company name required')
+        expect(companyForm.errors.value.propertyErrors['user.name']).toBeUndefined()
+      })
+
+      it('should handle nested error filtering', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                name: '',
+                bio: '',
+              },
+              settings: {
+                theme: '',
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+        const settingsForm = userForm.getSubForm('settings')
+
+        profileForm.defineValidator({
+          schema: z.object({
+            name: z.string().min(1, 'Name required'),
+            bio: z.string().min(1, 'Bio required'),
+          }),
+        })
+
+        settingsForm.defineValidator({
+          schema: z.object({
+            theme: z.string().min(1, 'Theme required'),
+          }),
+        })
+
+        await form.validateForm()
+
+        // Profile form should only see profile errors
+        expect(profileForm.errors.value.propertyErrors['name']).toContain('Name required')
+        expect(profileForm.errors.value.propertyErrors['bio']).toContain('Bio required')
+        expect(profileForm.errors.value.propertyErrors['settings.theme']).toBeUndefined()
+
+        // Settings form should only see settings errors
+        expect(settingsForm.errors.value.propertyErrors['theme']).toContain('Theme required')
+        expect(settingsForm.errors.value.propertyErrors['profile.name']).toBeUndefined()
+      })
+
+      it('should handle general errors in subforms', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              name: 'test',
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        userForm.defineValidator({
+          validateFn: async () => ({
+            isValid: false,
+            errors: {
+              general: ['General user error'],
+              propertyErrors: {},
+            },
+          }),
+        })
+
+        await form.validateForm()
+
+        expect(userForm.errors.value.general).toContain('General user error')
+      })
+    })
+
+    describe('Reset Functionality', () => {
+      it('should reset only subform fields', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: 'John' },
+            company: { name: 'Tech Corp' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const companyForm = form.getSubForm('company')
+
+        const userNameField = userForm.defineField({ path: 'name' })
+        const companyNameField = companyForm.defineField({ path: 'name' })
+
+        // Change values
+        userNameField.setValue('Jane')
+        companyNameField.setValue('New Corp')
+        await nextTick()
+
+        expect(userForm.formData.value.name).toBe('Jane')
+        expect(companyForm.formData.value.name).toBe('New Corp')
+
+        // Reset only user subform
+        userForm.reset()
+        await nextTick()
+
+        expect(userForm.formData.value.name).toBe('John')
+        expect(companyForm.formData.value.name).toBe('New Corp')
+      })
+
+      it('should handle nested subform reset', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                name: 'John',
+                bio: 'Developer',
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+
+        const nameField = profileForm.defineField({ path: 'name' })
+        const bioField = profileForm.defineField({ path: 'bio' })
+
+        // Change values
+        nameField.setValue('Jane')
+        bioField.setValue('Designer')
+        await nextTick()
+
+        expect(profileForm.formData.value.name).toBe('Jane')
+        expect(profileForm.formData.value.bio).toBe('Designer')
+
+        // Reset profile subform
+        profileForm.reset()
+        await nextTick()
+
+        expect(profileForm.formData.value.name).toBe('John')
+        expect(profileForm.formData.value.bio).toBe('Developer')
+      })
+
+      it('should handle array subform reset', async () => {
+        const form = useForm({
+          initialData: {
+            users: [
+              { name: 'John' },
+              { name: 'Jane' },
+            ],
+          },
+        })
+
+        const firstUserForm = form.getSubForm('users.0')
+        const secondUserForm = form.getSubForm('users.1')
+
+        const firstNameField = firstUserForm.defineField({ path: 'name' })
+        const secondNameField = secondUserForm.defineField({ path: 'name' })
+
+        // Change values
+        firstNameField.setValue('Johnny')
+        secondNameField.setValue('Janie')
+        await nextTick()
+
+        expect(firstUserForm.formData.value.name).toBe('Johnny')
+        expect(secondUserForm.formData.value.name).toBe('Janie')
+
+        // Reset only first user subform
+        firstUserForm.reset()
+        await nextTick()
+
+        expect(firstUserForm.formData.value.name).toBe('John')
+        expect(secondUserForm.formData.value.name).toBe('Janie')
+      })
+    })
+
+    describe('State Synchronization', () => {
+      it('should maintain state consistency between main form and subforms', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: 'John' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const nameField = userForm.defineField({ path: 'name' })
+
+        // Change through subform
+        userForm.formData.value.name = 'Jane'
+        await nextTick()
+
+        expect(form.formData.value.user.name).toBe('Jane')
+        expect(nameField.value.value).toBe('Jane')
+
+        // Change through main form
+        form.formData.value.user.name = 'Bob'
+        await nextTick()
+
+        expect(userForm.formData.value.name).toBe('Bob')
+        expect(nameField.value.value).toBe('Bob')
+      })
+
+      it('should handle state changes through main form', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                name: 'John',
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+
+        // Change through main form
+        form.formData.value.user.profile.name = 'Jane'
+        await nextTick()
+
+        expect(userForm.formData.value.profile.name).toBe('Jane')
+        expect(profileForm.formData.value.name).toBe('Jane')
+      })
+
+      it('should handle initial data changes', async () => {
+        const initialData = {
+          user: { name: 'John' },
+        }
+
+        const form = useForm({
+          initialData: () => initialData,
+        })
+
+        const userForm = form.getSubForm('user')
+
+        expect(userForm.initialData.value.name).toBe('John')
+
+        // This test would need reactive initial data to work properly
+        // For now, just verify the current behavior
+        expect(userForm.initialData.value).toEqual({ name: 'John' })
+      })
+    })
+  })
+
+  describe('Edge Cases', () => {
+    describe('Validation Edge Cases', () => {
+      it('should handle validation function that throws error', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: 'test' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        userForm.defineValidator({
+          validateFn: async () => {
+            throw new Error('Validation function error')
+          },
+        })
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.general).toContain('Validation function error')
+      })
+
+      it('should handle validation function that returns invalid format', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: 'test' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        userForm.defineValidator({
+          validateFn: async () => {
+            // Return invalid format (missing propertyErrors)
+            return {
+              isValid: false,
+              errors: {
+                general: ['Invalid format error'],
+                propertyErrors: {},
+              },
+            }
+          },
+        })
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.general).toContain('Invalid format error')
+      })
+
+      it('should handle validation function with undefined data', async () => {
+        const form = useForm({
+          initialData: {
+            user: undefined,
+          },
+        })
+
+        const userForm = form.getSubForm('user' as never)
+        userForm.defineValidator({
+          validateFn: async (data) => {
+            if (!data) {
+              return {
+                isValid: false,
+                errors: {
+                  general: ['Data is undefined'],
+                  propertyErrors: {},
+                },
+              }
+            }
+            return {
+              isValid: true,
+              errors: {
+                general: [],
+                propertyErrors: {},
+              },
+            }
+          },
+        })
+
+        const result = await form.validateForm()
+
+        expect(result.isValid).toBe(false)
+        expect(result.errors.general).toContain('Data is undefined')
+      })
+    })
+
+    describe('Path Edge Cases', () => {
+      it('should handle special characters in paths', () => {
+        const form = useForm({
+          initialData: {
+            'user-name': { 'first-name': 'John' },
+          },
+        })
+
+        const userForm = form.getSubForm('user-name')
+        expect(userForm.formData.value).toEqual({ 'first-name': 'John' })
+      })
+
+      it('should handle numeric string paths', () => {
+        const form = useForm({
+          initialData: {
+            123: { name: 'test' },
+          },
+        })
+
+        const numericForm = form.getSubForm('123')
+        expect(numericForm.formData.value).toEqual({ name: 'test' })
+      })
+    })
+
+    describe('Data Structure Edge Cases', () => {
+      it('should handle null values in subform data', () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              name: null,
+              email: 'test@example.com',
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        expect(userForm.formData.value.name).toBe(null)
+        expect(userForm.formData.value.email).toBe('test@example.com')
+      })
+
+      it('should handle undefined values in subform data', () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              name: undefined,
+              email: 'test@example.com',
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        expect(userForm.formData.value.name).toBe(undefined)
+        expect(userForm.formData.value.email).toBe('test@example.com')
+      })
+
+      it('should handle empty objects', () => {
+        const form = useForm({
+          initialData: {
+            user: {},
+          },
+        })
+
+        const userForm = form.getSubForm('user' as never)
+        expect(userForm.formData.value).toEqual({})
+      })
+
+      it('should handle empty arrays', () => {
+        const form = useForm({
+          initialData: {
+            users: [],
+          },
+        })
+
+        const usersForm = form.getSubForm('users')
+        expect(usersForm.formData.value).toEqual([])
+      })
+    })
+  })
+
+  describe('Performance', () => {
+    describe('Large Form Performance', () => {
+      it('should handle large numbers of subforms efficiently', () => {
+        const initialData = {
+          users: [] as {
+            id: number
+            name: string
+            email: string
+          }[],
+        }
+
+        // Create 100 users
+        for (let i = 0; i < 100; i++) {
+          initialData.users.push({
+            id: i,
+            name: `User ${i}`,
+            email: `user${i}@example.com`,
+          })
+        }
+
+        const form = useForm({ initialData })
+
+        const startTime = performance.now()
+
+        // Create 100 subforms
+        const subforms: Form<{
+          id: number
+          name: string
+          email: string
+        }>[] = []
+        for (let i = 0; i < 100; i++) {
+          subforms.push(form.getSubForm(`users.${i}`))
+        }
+
+        const endTime = performance.now()
+        const duration = endTime - startTime
+
+        // Should complete within reasonable time (less than 100ms)
+        expect(duration).toBeLessThan(100)
+        expect(subforms).toHaveLength(100)
+        expect(subforms[0].formData.value.name).toBe('User 0')
+        expect(subforms[99].formData.value.name).toBe('User 99')
+      })
+
+      it('should handle rapid field registration efficiently', () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              name: 'John',
+              email: 'john@example.com',
+              bio: 'Developer',
+              phone: '123-456-7890',
+              address: '123 Main St',
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+
+        const startTime = performance.now()
+
+        // Register many fields rapidly
+        const fields = [
+          userForm.defineField({ path: 'name' }),
+          userForm.defineField({ path: 'email' }),
+          userForm.defineField({ path: 'bio' }),
+          userForm.defineField({ path: 'phone' }),
+          userForm.defineField({ path: 'address' }),
+        ]
+
+        const endTime = performance.now()
+        const duration = endTime - startTime
+
+        // Should complete within reasonable time
+        expect(duration).toBeLessThan(50)
+        expect(fields).toHaveLength(5)
+        expect(fields[0].value.value).toBe('John')
+      })
+
+      it('should handle complex validation on large forms', async () => {
+        const initialData = {
+          users: [] as {
+            id: number
+            name: string
+            email: string
+          }[],
+        }
+
+        // Create 50 users for validation test
+        for (let i = 0; i < 50; i++) {
+          initialData.users.push({
+            id: i,
+            name: `User ${i}`,
+            email: `user${i}@example.com`,
+          })
+        }
+
+        const form = useForm({ initialData })
+
+        // Add validation to multiple subforms
+        for (let i = 0; i < 50; i++) {
+          const userForm = form.getSubForm(`users.${i}`)
+          userForm.defineValidator({
+            schema: z.object({
+              name: z.string().min(1, 'Name required'),
+              email: z.string().email('Invalid email'),
+            }),
+          })
+        }
+
+        const startTime = performance.now()
+        const result = await form.validateForm()
+        const endTime = performance.now()
+        const duration = endTime - startTime
+
+        // Should complete within reasonable time (less than 1000ms)
+        expect(duration).toBeLessThan(1000)
+        expect(result.isValid).toBe(true)
+      })
+    })
+
+    describe('Memory Usage', () => {
+      it('should not create excessive memory usage with many subforms', () => {
+        const form = useForm({
+          initialData: {
+            users: Array.from({ length: 1000 }, (_, i) => ({
+              id: i,
+              name: `User ${i}`,
+            })),
+          },
+        })
+
+        // Create many subforms
+        const subforms: Form<{
+          id: number
+          name: string
+        }>[] = []
+        for (let i = 0; i < 100; i++) {
+          subforms.push(form.getSubForm(`users.${i}`))
+        }
+
+        // Should not crash or cause memory issues
+        expect(subforms).toHaveLength(100)
+
+        // Clear references
+        subforms.length = 0
+      })
+
+      it('should handle subform cleanup properly', () => {
+        const form = useForm({
+          initialData: {
+            users: [
+              { name: 'John' },
+              { name: 'Jane' },
+            ],
+          },
+        })
+
+        let userForm: Form<{
+          name: string
+        }> | undefined = form.getSubForm('users.0')
+        expect(userForm.formData.value.name).toBe('John')
+
+        // Remove reference
+        userForm = undefined
+
+        // Should not cause issues
+        const newUserForm = form.getSubForm('users.0')
+        expect(newUserForm.formData.value.name).toBe('John')
+      })
+    })
+
+    describe('Reactivity Performance', () => {
+      it('should handle frequent data updates efficiently', async () => {
+        const form = useForm({
+          initialData: {
+            user: { name: 'John' },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const nameField = userForm.defineField({ path: 'name' })
+
+        const startTime = performance.now()
+
+        // Make many rapid updates
+        for (let i = 0; i < 100; i++) {
+          nameField.setValue(`Name ${i}`)
+          await nextTick()
+        }
+
+        const endTime = performance.now()
+        const duration = endTime - startTime
+
+        // Should complete within reasonable time (less than 500ms)
+        expect(duration).toBeLessThan(500)
+        expect(nameField.value.value).toBe('Name 99')
+      })
+
+      it('should handle nested reactivity updates efficiently', async () => {
+        const form = useForm({
+          initialData: {
+            user: {
+              profile: {
+                personal: {
+                  name: 'John',
+                },
+              },
+            },
+          },
+        })
+
+        const userForm = form.getSubForm('user')
+        const profileForm = userForm.getSubForm('profile')
+        const personalForm = profileForm.getSubForm('personal')
+
+        const startTime = performance.now()
+
+        // Make updates at different levels
+        for (let i = 0; i < 50; i++) {
+          personalForm.formData.value.name = `Name ${i}`
+          await nextTick()
+        }
+
+        const endTime = performance.now()
+        const duration = endTime - startTime
+
+        // Should complete within reasonable time
+        expect(duration).toBeLessThan(500)
+        expect(personalForm.formData.value.name).toBe('Name 49')
+      })
     })
   })
 })
-

@@ -2,7 +2,8 @@ import type { Ref } from 'vue'
 import type { DefineFieldOptions } from '../composables/useFieldRegistry'
 import type { SubformOptions } from '../composables/useSubform'
 import type { EntityPaths, Paths, PickEntity, PickProps } from './util'
-import type { ErrorBag, ValidationErrorMessage, ValidationErrors, ValidationResult } from './validation'
+import type { ErrorBag, ValidationErrorMessage, ValidationErrors, ValidationResult, Validator } from './validation'
+import type { ValidatorOptions } from '../composables/useValidation'
 
 export type FormDataDefault = object
 
@@ -42,6 +43,8 @@ export interface Form<T extends FormDataDefault> {
   isValid: Ref<boolean>
   isValidated: Ref<boolean>
   errors: Ref<ErrorBag>
+
+  defineValidator: (options: ValidatorOptions<T> | Ref<Validator<T>>) => Ref<Validator<T> | undefined>
 
   // Operations
   reset: () => void

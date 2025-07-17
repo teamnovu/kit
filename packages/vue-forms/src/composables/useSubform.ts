@@ -1,12 +1,46 @@
-import { computed, unref, type Ref } from 'vue'
+import { computed, isRef, unref, type Ref } from 'vue'
 import type { Form, FormDataDefault, FormField } from '../types/form'
 import type { EntityPaths, Paths, PickEntity, PickProps } from '../types/util'
+import type { ValidationResult, Validator } from '../types/validation'
 import { filterErrorsForPath, getLens, getNestedValue, joinPath } from '../utils/path'
 import type { DefineFieldOptions } from './useFieldRegistry'
-import type { UseFormOptions } from './useForm'
+import { createValidator, SuccessValidationResult, type ValidatorOptions } from './useValidation'
 
-export interface SubformOptions<T extends FormDataDefault> extends Omit<UseFormOptions<T>, 'initialData'> {
+export interface SubformOptions<_T extends FormDataDefault> {
   // Additional subform-specific options can be added here
+}
+
+class NestedValidator<T extends FormDataDefault, P extends Paths<T>> implements Validator<T> {
+  constructor(
+    private path: P,
+    private validator: Validator<PickEntity<T, P>> | undefined,
+  ) {
+  }
+
+  async validate(data: T): Promise<ValidationResult> {
+    const subFormData = getNestedValue(data, this.path) as PickEntity<T, P>
+
+    if (!this.validator) {
+      return SuccessValidationResult
+    }
+
+    const validationResult = await this.validator.validate(subFormData)
+
+    return {
+      isValid: validationResult.isValid,
+      errors: {
+        general: validationResult.errors.general || [],
+        propertyErrors: validationResult.errors.propertyErrors
+          ? Object.fromEntries(
+              Object.entries(validationResult.errors.propertyErrors).map(([key, errors]) => [
+                joinPath(this.path, key),
+                errors,
+              ]),
+            )
+          : {},
+      },
+    }
+  }
 }
 
 export function createSubformInterface<
@@ -15,7 +49,7 @@ export function createSubformInterface<
 >(
   mainForm: Form<T>,
   path: K,
-  options?: SubformOptions<PickEntity<T, K>>,
+  _options?: SubformOptions<PickEntity<T, K>>,
 ): Form<PickEntity<T, K>> {
   type ST = PickEntity<T, K>
   type SP = Paths<ST>
@@ -74,9 +108,18 @@ export function createSubformInterface<
       .map(field => adaptMainFormField(field))
   }
 
+  // Helper function to get all fields without type parameter
+  const getAllSubformFields = () => {
+    return (mainForm.getFields() as FormField<PickProps<T, ScopedMainPaths>, ScopedMainPaths>[])
+      .filter((field) => {
+        const fieldPath = field.path.value
+        return fieldPath.startsWith(path + '.') || fieldPath === path
+      })
+  }
+
   // State computed from main form with path filtering
-  const isDirty = computed(() => getFields().some(field => field.dirty.value))
-  const isTouched = computed(() => getFields().some(field => field.touched.value))
+  const isDirty = computed(() => getAllSubformFields().some(field => field.dirty.value))
+  const isTouched = computed(() => getAllSubformFields().some(field => field.touched.value))
 
   // Validation delegates to main form
   const isValid = computed(() => mainForm.isValid.value)
@@ -98,7 +141,18 @@ export function createSubformInterface<
   }
 
   // Reset scoped to this subform
-  const reset = () => getFields().forEach(field => field.reset())
+  const reset = () => getAllSubformFields().forEach(field => field.reset())
+
+  const defineValidator = (options: ValidatorOptions<ST> | Ref<Validator<ST>>) => {
+    const subValidator = isRef(options) ? options : createValidator(options)
+    const validator = computed(
+      () => new NestedValidator<T, K>(path, unref(subValidator)),
+    )
+
+    mainForm.defineValidator(validator)
+
+    return subValidator
+  }
 
   return {
     formData,
@@ -111,6 +165,7 @@ export function createSubformInterface<
     isValid,
     isValidated,
     errors,
+    defineValidator,
     reset,
     validateForm,
     getSubForm,

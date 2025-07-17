@@ -53,7 +53,7 @@ export function mergeErrors(...errorBags: ErrorBag[]): ErrorBag {
   return errorBags.slice(1).reduce(
     (acc, current) => ({
       general: mergeErrorMessages(acc.general, current.general),
-      propertyErrors: mergePropertyErrors(acc.propertyErrors, current.propertyErrors),
+      propertyErrors: mergePropertyErrors(acc.propertyErrors ?? {}, current.propertyErrors ?? {}),
     }),
     firstBag,
   )
