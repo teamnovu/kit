@@ -1,6 +1,6 @@
 import { computed, unref, type MaybeRef } from 'vue'
 import type { Paths, PickProps, SplitPath } from '../types/util'
-import type { ErrorBag } from '../types/validation'
+import type { ErrorBag, ValidationErrors } from '../types/validation'
 
 export function splitPath(path: string): string[] {
   if (path === '') {
@@ -70,18 +70,15 @@ export function filterErrorsForPath(errors: ErrorBag, path: string): ErrorBag {
   }
 
   const pathPrefix = `${path}.`
-  const filteredPropertyErrors: Record<string, string[]> = {}
-
-  // Filter property errors that start with the path prefix
-  Object.entries(errors.propertyErrors).forEach(([errorPath, errorMessages]) => {
-    if (errorPath.startsWith(pathPrefix)) {
-      // Remove the path prefix to get relative path
-      const relativePath = errorPath.substring(pathPrefix.length)
-      if (relativePath) {
-        filteredPropertyErrors[relativePath] = errorMessages
-      }
-    }
-  })
+  const filteredPropertyErrors: Record<string, ValidationErrors> = Object.fromEntries(
+    Object.entries(errors.propertyErrors)
+      .filter(([errorPath]) => {
+        return errorPath.startsWith(pathPrefix)
+      })
+      .map(
+        ([errorPath, errorMessages]) => [errorPath.slice(pathPrefix.length), errorMessages],
+      ),
+  )
 
   return {
     general: errors.general, // Keep general errors
