@@ -9,10 +9,17 @@ import type {
 
 const operationRegex = /^(?<name>\w+?)\s(?<method>get|post|put|patch|delete)\s+(?<url>\/.*)/i
 
-export class ShopwareClient<Operations extends Record<string, {
-  body?: unknown
-  response?: unknown
-}>> extends EventEmitter {
+// This **Must** stay an interface and the response **must** be branded.
+// This is to ensure that the response type is not already resolved when the
+// library is built so we can still use module augmentation to override operations.
+export interface ResponseType<TKey> {
+  __response: TKey
+}
+
+export type BrandedResponse<Operations, OperationKey extends (keyof Operations) & string> =
+  ResponseType<OperationKey> & OperationProp<Operations, OperationKey, 'response'>
+
+export class ShopwareClient<Operations> extends EventEmitter {
   private options: ShopwareClientOptions = {
     baseURL: '',
     apiKey: '',
@@ -160,7 +167,7 @@ export class ShopwareClient<Operations extends Record<string, {
   async query<OperationKey extends (keyof Operations) & string>(
     operation: OperationKey,
     options?: OperationOptions<Operations, OperationKey>,
-  ): Promise<OperationProp<Operations, OperationKey, 'response'>> {
+  ): Promise<BrandedResponse<Operations, OperationKey>> {
     const response = await this.queryRaw(operation, options)
 
     return response.json()

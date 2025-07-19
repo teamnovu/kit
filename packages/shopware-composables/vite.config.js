@@ -1,7 +1,7 @@
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import dts from 'vite-plugin-dts'
+import dts from 'unplugin-dts/vite'
 import pkg from './package.json'
 
 export default defineConfig({
@@ -9,6 +9,7 @@ export default defineConfig({
     vue(),
     dts({
       staticImport: true,
+      copyDtsFiles: true,
       compilerOptions: {
         declaration: true,
         emitDeclarationOnly: true,
