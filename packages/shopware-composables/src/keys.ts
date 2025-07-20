@@ -69,7 +69,8 @@ export const cartKeys = {
 }
 
 export const customerKeys = {
-  get: () => ['customer'] as const,
+  all: () => ['customer'] as const,
+  detail: (body: MaybeRef<unknown>) => ['customer', { body }] as const,
 }
 
 export const addressKeys = {
