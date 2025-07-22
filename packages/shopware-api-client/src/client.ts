@@ -13,7 +13,7 @@ const operationRegex = /^(?<name>\w+?)\s(?<method>get|post|put|patch|delete)\s+(
 // This is to ensure that the response type is not already resolved when the
 // library is built so we can still use module augmentation to override operations.
 export interface ResponseType<TKey> {
-  __response: TKey
+  __response?: TKey
 }
 
 export type BrandedResponse<Operations, OperationKey extends (keyof Operations) & string> =

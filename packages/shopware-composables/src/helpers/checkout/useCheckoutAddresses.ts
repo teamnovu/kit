@@ -39,7 +39,7 @@ export function useCheckoutAddresses() {
 
   const inactiveShippingAddresses = computed(() =>
     addressListQuery.data.value?.elements.filter(
-      address => address.id !== activeBillingAddress.value?.id,
+      address => address.id !== activeShippingAddress.value?.id,
     ) ?? [])
 
   return {
