@@ -84,6 +84,8 @@ export const addressKeys = {
         body,
       },
     ] as const,
+  details: () => [...addressKeys.all(), 'detail'] as const,
+  detail: (addressId: string, body?: MaybeRef<unknown>) => [...addressKeys.details(), addressId, ...(body ? [{ body }] : [])] as const,
 }
 
 export const shippingKeys = {

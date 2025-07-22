@@ -24,7 +24,7 @@ export function useChangeEmailMutation(
       return client.query(changeEmailOperation, unrefOptions(options))
     },
     onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries({ queryKey: customerKeys.get() })
+      await queryClient.invalidateQueries({ queryKey: customerKeys.all() })
 
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },

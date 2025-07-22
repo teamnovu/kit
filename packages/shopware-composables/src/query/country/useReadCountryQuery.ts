@@ -28,3 +28,4 @@ export const useReadCountryQueryOptions = function useReadCountryQueryOptions(
 export function useReadCountryQuery(options?: OperationOptions<typeof readCountryOperation>) {
   return useQuery(useReadCountryQueryOptions(options))
 }
+

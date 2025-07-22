@@ -36,7 +36,7 @@ export function useLoginCustomerMutation(
       await Promise.all([
         queryClient.removeQueries({ queryKey: contextKeys.all() }),
         queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
-        queryClient.invalidateQueries({ queryKey: customerKeys.get() }),
+        queryClient.invalidateQueries({ queryKey: customerKeys.all() }),
       ])
 
       await unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, context)
