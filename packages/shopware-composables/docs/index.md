@@ -244,7 +244,7 @@ const {
 } = useShippingMethods()
 ```
 
-#### useAddresses
+#### useCheckoutAddresses
 Manage customer addresses:
 
 ```typescript
@@ -255,7 +255,7 @@ const {
   setBillingAddress,
   setShippingAddress,
   isSaving
-} = useAddresses()
+} = useCheckoutAddresses()
 ```
 
 ### Product Helpers
