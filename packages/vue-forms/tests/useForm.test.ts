@@ -11,7 +11,7 @@ describe('useForm', () => {
     }
     const form = useForm({ initialData })
 
-    expect(form.formData.value).toEqual(initialData)
+    expect(form.data.value).toEqual(initialData)
     expect(form.initialData.value).toEqual(initialData)
   })
 
@@ -22,7 +22,7 @@ describe('useForm', () => {
     })
     const form = useForm({ initialData })
 
-    expect(form.formData.value).toEqual({
+    expect(form.data.value).toEqual({
       name: 'John',
       age: 30,
     })
@@ -100,7 +100,7 @@ describe('useForm', () => {
     }
     const form = useForm({ initialData })
 
-    expect(form.formData.value).toEqual(initialData)
+    expect(form.data.value).toEqual(initialData)
     expect(form.initialData.value).toEqual(initialData)
   })
 

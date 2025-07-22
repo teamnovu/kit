@@ -18,7 +18,7 @@ describe('useField', () => {
       initialValue: 'John',
     })
 
-    expect(field.value.value).toBe('John')
+    expect(field.data.value).toBe('John')
     expect(field.initialValue.value).toBe('John')
     expect(field.dirty.value).toBe(false)
   })
@@ -32,8 +32,8 @@ describe('useField', () => {
 
     expect(field.dirty.value).toBe(false)
 
-    field.setValue('Jane')
-    expect(field.value.value).toBe('Jane')
+    field.setData('Jane')
+    expect(field.data.value).toBe('Jane')
     expect(field.dirty.value).toBe(true)
   })
 
@@ -98,18 +98,18 @@ describe('useField', () => {
       initialValue: 'Initial',
     })
 
-    field.setValue('Modified')
+    field.setData('Modified')
     field.onBlur()
     field.setErrors(['Error'])
 
-    expect(field.value.value).toBe('Modified')
+    expect(field.data.value).toBe('Modified')
     expect(field.touched.value).toBe(true)
     expect(field.errors.value).toEqual(['Error'])
     expect(field.dirty.value).toBe(true)
 
     field.reset()
 
-    expect(field.value.value).toBe('Initial')
+    expect(field.data.value).toBe('Initial')
     expect(field.touched.value).toBe(false)
     expect(field.errors.value).toEqual([])
     expect(field.dirty.value).toBe(false)
@@ -123,10 +123,10 @@ describe('useField', () => {
       initialValue,
     })
 
-    expect(field.value.value).toEqual(initialValue)
+    expect(field.data.value).toEqual(initialValue)
     expect(field.dirty.value).toBe(false)
 
-    field.setValue({ nested: { value: 'changed' } })
+    field.setData({ nested: { value: 'changed' } })
     expect(field.dirty.value).toBe(true)
   })
 
@@ -138,10 +138,10 @@ describe('useField', () => {
       initialValue,
     })
 
-    expect(field.value.value).toEqual(initialValue)
+    expect(field.data.value).toEqual(initialValue)
     expect(field.dirty.value).toBe(false)
 
-    field.setValue(['a', 'b', 'c', 'd'])
+    field.setData(['a', 'b', 'c', 'd'])
     expect(field.dirty.value).toBe(true)
   })
 })

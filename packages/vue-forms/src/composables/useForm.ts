@@ -17,19 +17,19 @@ export interface UseFormOptions<T extends FormDataDefault> extends ValidationOpt
 export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
   const initialData = computed(() => Object.freeze(cloneRefValue(options.initialData)))
 
-  const formData = ref<T>(cloneRefValue(initialData)) as Ref<T>
+  const data = ref<T>(cloneRefValue(initialData)) as Ref<T>
 
   const state = reactive({
     initialData: initialData,
-    formData,
+    data,
   })
 
   const fields = useFieldRegistry(state)
   const validationState = useValidation(state, options)
-  const formState = useFormState(state, fields)
+  const formState = useFormState(fields)
 
   const reset = () => {
-    formData.value = cloneRefValue(initialData)
+    data.value = cloneRefValue(initialData)
     fields.getFields().forEach(field => field.reset())
   }
 
@@ -47,7 +47,7 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
     reset,
     getSubForm,
     initialData: toRef(state, 'initialData') as Form<T>['initialData'],
-    formData: toRef(state, 'formData') as Form<T>['formData'],
+    data: toRef(state, 'data') as Form<T>['data'],
   }
 
   return formInterface

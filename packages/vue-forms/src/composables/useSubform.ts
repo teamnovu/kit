@@ -57,7 +57,7 @@ export function createSubformInterface<
   type ScopedMainPaths = Paths<T> & MP<SP>
 
   // Create reactive data scoped to subform path
-  const formData = getLens(mainForm.formData, path) as Ref<ST>
+  const data = getLens(mainForm.data, path) as Ref<ST>
 
   const initialData = computed(() => {
     return getNestedValue(mainForm.initialData.value, path) as ST
@@ -70,8 +70,8 @@ export function createSubformInterface<
     return {
       ...field,
       path: computed(() => unref(field.path).replace(path + '.', '')),
-      setValue: (newValue: PickProps<ST, S>) => {
-        field.setValue(newValue as PickProps<T, ScopedMainPaths>)
+      setData: (newData: PickProps<ST, S>) => {
+        field.setData(newData as PickProps<T, ScopedMainPaths>)
       },
     } as unknown as FormField<PickProps<ST, S>, S>
   }
@@ -155,7 +155,7 @@ export function createSubformInterface<
   }
 
   return {
-    formData,
+    data: data,
     initialData,
     defineField,
     getField,

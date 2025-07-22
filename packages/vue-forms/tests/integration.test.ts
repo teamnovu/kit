@@ -32,9 +32,9 @@ describe('Integration Tests', () => {
     expect(form.isValidated.value).toBe(false)
 
     // Fill out form
-    nameField.setValue('John')
-    emailField.setValue('john@example.com')
-    ageField.setValue(25)
+    nameField.setData('John')
+    emailField.setData('john@example.com')
+    ageField.setData(25)
 
     // Form should be dirty now
     expect(form.isDirty.value).toBe(true)
@@ -76,8 +76,8 @@ describe('Integration Tests', () => {
     expect(result.errors.propertyErrors.email).toBeDefined()
 
     // Fix the data
-    nameField.setValue('John')
-    emailField.setValue('john@example.com')
+    nameField.setData('John')
+    emailField.setData('john@example.com')
 
     // Re-validate
     const result2 = await form.validateForm()
@@ -93,8 +93,8 @@ describe('Integration Tests', () => {
 
     const nameField = form.defineField({ path: 'name' })
 
-    expect(nameField.value.value).toEqual('John')
-    expect(form.formData.value).toEqual({
+    expect(nameField.data.value).toEqual('John')
+    expect(form.data.value).toEqual({
       name: 'John',
       age: 30,
     })

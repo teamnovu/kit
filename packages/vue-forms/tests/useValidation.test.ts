@@ -7,7 +7,7 @@ import { hasErrors } from '../src/utils/validation'
 
 describe('useValidation', () => {
   it('should initialize with no errors', () => {
-    const formState = { formData: { name: 'John' } }
+    const formState = { data: { name: 'John' } }
     const validation = useValidation(formState, {})
 
     expect(validation.isValidated.value).toBe(false)
@@ -22,7 +22,7 @@ describe('useValidation', () => {
     })
 
     const formState = {
-      formData: {
+      data: {
         name: 'John',
         age: 30,
       },
@@ -44,7 +44,7 @@ describe('useValidation', () => {
     })
 
     const formState = {
-      formData: {
+      data: {
         name: 'A',
         age: 16,
       },
@@ -80,7 +80,7 @@ describe('useValidation', () => {
       }
     }
 
-    const formState = { formData: { name: 'A' } }
+    const formState = { data: { name: 'A' } }
     const validation = useValidation(formState, { validateFn })
 
     const result = await validation.validateForm()
@@ -102,7 +102,7 @@ describe('useValidation', () => {
       },
     })
 
-    const formState = { formData: { name: 'forbidden' } }
+    const formState = { data: { name: 'forbidden' } }
     const validation = useValidation(formState, {
       schema,
       validateFn,
@@ -120,7 +120,7 @@ describe('useValidation', () => {
     }))
 
     const formState = {
-      formData: {
+      data: {
         name: 'A',
         age: 25,
       },
@@ -159,7 +159,7 @@ describe('useValidation', () => {
     })
 
     const validateFn = ref(strictValidation)
-    const formState = { formData: { name: 'John' } }
+    const formState = { data: { name: 'John' } }
     const validation = useValidation(formState, { validateFn })
 
     // Initial validation with strict rules
@@ -179,7 +179,7 @@ describe('useValidation', () => {
       propertyErrors: { name: ['External field error'] },
     })
 
-    const formState = { formData: { name: 'John' } }
+    const formState = { data: { name: 'John' } }
     const validation = useValidation(formState, { errors })
 
     await nextTick()
@@ -195,7 +195,7 @@ describe('useValidation', () => {
 
     const errors = ref<ErrorBag>(SuccessValidationResult.errors)
 
-    const formState = { formData: { name: 'A' } }
+    const formState = { data: { name: 'A' } }
     const validation = useValidation(formState, {
       schema,
       errors,
