@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { reactive } from 'vue'
-import { FieldRegistry, useFieldRegistry } from '../src/composables/useFieldRegistry'
+import { useFieldRegistry } from '../src/composables/useFieldRegistry'
 import { useFormState } from '../src/composables/useFormState'
+import { useForm } from '../src'
 
 describe('useFormState', () => {
   it('should detect dirty state when form data changes', () => {
@@ -9,18 +10,15 @@ describe('useFormState', () => {
       name: 'John',
       age: 30,
     }
-    const formData = reactive({ ...initialData })
-    const fields = {} as FieldRegistry<typeof initialData>
 
-    const formState = useFormState({
-      formData,
-      initialData,
-    }, fields)
+    const form = useForm({ initialData: initialData })
+    form.defineField({ path: 'name' })
+    form.defineField({ path: 'age' })
 
-    expect(formState.isDirty.value).toBe(false)
+    expect(form.isDirty.value).toBe(false)
 
-    formData.name = 'Jane'
-    expect(formState.isDirty.value).toBe(true)
+    form.data.value.name = 'Jane'
+    expect(form.isDirty.value).toBe(true)
   })
 
   it('should not be dirty when data equals initial data', () => {
@@ -28,44 +26,34 @@ describe('useFormState', () => {
       name: 'John',
       age: 30,
     }
-    const formData = reactive({ ...initialData })
-    const fields = {} as FieldRegistry<typeof initialData>
+    const form = useForm({ initialData: initialData })
+    form.defineField({ path: 'name' })
+    form.defineField({ path: 'age' })
 
-    const formState = useFormState({
-      formData,
-      initialData,
-    }, fields)
+    expect(form.isDirty.value).toBe(false)
 
-    expect(formState.isDirty.value).toBe(false)
+    form.data.value.name = 'Jane'
+    expect(form.isDirty.value).toBe(true)
 
-    formData.name = 'Jane'
-    expect(formState.isDirty.value).toBe(true)
-
-    formData.name = 'John' // Back to initial
-    expect(formState.isDirty.value).toBe(false)
+    form.data.value.name = 'John' // Back to initial
+    expect(form.isDirty.value).toBe(false)
   })
 
   it('should detect touched state when any field is touched', () => {
-    const data = {
+    const initialData = {
       name: 'John',
       email: 'john@example.com',
     }
-    const formData = reactive(data)
+    const data = reactive(initialData)
     const fields = useFieldRegistry({
-      formData,
-      initialData: data,
+      data,
+      initialData,
     })
 
     const nameField = fields.defineField({ path: 'name' })
     fields.defineField({ path: 'email' })
 
-    const formState = useFormState({
-      formData,
-      initialData: {
-        name: 'John',
-        email: 'john@example.com',
-      },
-    }, fields)
+    const formState = useFormState(fields)
 
     expect(formState.isTouched.value).toBe(false)
 
@@ -74,17 +62,14 @@ describe('useFormState', () => {
   })
 
   it('should handle empty fields map', () => {
-    const data = { name: 'John' }
-    const formData = reactive(data)
+    const initialData = { name: 'John' }
+    const data = reactive(initialData)
     const fields = useFieldRegistry({
-      formData,
-      initialData: data,
+      data,
+      initialData,
     })
 
-    const formState = useFormState({
-      formData,
-      initialData: { name: 'John' },
-    }, fields)
+    const formState = useFormState(fields)
 
     expect(formState.isDirty.value).toBe(false)
     expect(formState.isTouched.value).toBe(false)
@@ -100,39 +85,25 @@ describe('useFormState', () => {
         },
       },
     }
-    const formData = reactive(JSON.parse(JSON.stringify(initialData)))
-    const fields = useFieldRegistry({
-      formData,
-      initialData,
-    })
 
-    const formState = useFormState({
-      formData,
-      initialData,
-    }, fields)
+    const form = useForm({ initialData: initialData })
+    form.defineField({ path: 'user' })
 
-    expect(formState.isDirty.value).toBe(false)
+    expect(form.isDirty.value).toBe(false)
 
-    formData.user.address.city = 'Boston'
-    expect(formState.isDirty.value).toBe(true)
+    form.data.value.user.address.city = 'Boston'
+    expect(form.isDirty.value).toBe(true)
   })
 
   it('should handle array changes', () => {
     const initialData = { tags: ['vue', 'typescript'] }
-    const formData = reactive({ tags: [...initialData.tags] })
-    const fields = useFieldRegistry({
-      formData,
-      initialData,
-    })
 
-    const formState = useFormState({
-      formData,
-      initialData,
-    }, fields)
+    const form = useForm({ initialData: initialData })
+    form.defineField({ path: 'tags' })
 
-    expect(formState.isDirty.value).toBe(false)
+    expect(form.isDirty.value).toBe(false)
 
-    formData.tags.push('forms')
-    expect(formState.isDirty.value).toBe(true)
+    form.data.value.tags.push('forms')
+    expect(form.isDirty.value).toBe(true)
   })
 })

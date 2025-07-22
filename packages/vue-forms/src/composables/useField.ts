@@ -29,8 +29,8 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
     return JSON.stringify(state.value) !== JSON.stringify(state.initialValue)
   })
 
-  const setValue = (newValue: T): void => {
-    state.value = newValue
+  const setData = (newData: T): void => {
+    state.value = newData
   }
 
   const onBlur = (): void => {
@@ -58,13 +58,13 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
   const refs = toRefs(state)
 
   return {
-    value: refs.value as FormField<T, K>['value'],
+    data: refs.value as FormField<T, K>['data'],
     path: refs.path as FormField<T, K>['path'],
     initialValue: refs.initialValue as FormField<T, K>['initialValue'],
     errors: refs.errors as FormField<T, K>['errors'],
     touched: refs.touched as FormField<T, K>['touched'],
     dirty,
-    setValue,
+    setData,
     onBlur,
     onFocus,
     reset,

@@ -8,4 +8,4 @@ export type { UseFieldOptions } from './composables/useField'
 
 // Types
 export type { ValidationStrategy, ValidationErrorMessage as ErrorMessage, ValidationResult, ErrorBag } from './types/validation'
-export type { DeepPartial, FormData } from './utils/type-helpers'
+export type { DeepPartial } from './utils/type-helpers'

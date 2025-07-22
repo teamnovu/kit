@@ -20,7 +20,7 @@ describe('Subform Implementation', () => {
 
         const userForm = form.getSubForm('user')
 
-        expect(userForm.formData.value).toEqual({
+        expect(userForm.data.value).toEqual({
           name: 'John',
           email: 'john@example.com',
         })
@@ -49,11 +49,11 @@ describe('Subform Implementation', () => {
         const firstUserForm = form.getSubForm('users.0')
         const secondUserForm = form.getSubForm('users.1')
 
-        expect(firstUserForm.formData.value).toEqual({
+        expect(firstUserForm.data.value).toEqual({
           name: 'John',
           email: 'john@example.com',
         })
-        expect(secondUserForm.formData.value).toEqual({
+        expect(secondUserForm.data.value).toEqual({
           name: 'Jane',
           email: 'jane@example.com',
         })
@@ -81,7 +81,7 @@ describe('Subform Implementation', () => {
         const profileForm = userForm.getSubForm('profile')
         const personalForm = profileForm.getSubForm('personal')
 
-        expect(personalForm.formData.value).toEqual({
+        expect(personalForm.data.value).toEqual({
           name: 'John',
           age: 30,
         })
@@ -100,7 +100,7 @@ describe('Subform Implementation', () => {
         const nameField = userForm.defineField({ path: 'name' })
 
         expect(nameField.path.value).toBe('name')
-        expect(nameField.value.value).toBe('John')
+        expect(nameField.data.value).toBe('John')
         expect(form.getField('user.name')).toBeDefined()
       })
 
@@ -144,7 +144,7 @@ describe('Subform Implementation', () => {
         const nameField = profileForm.defineField({ path: 'name' })
 
         expect(nameField.path.value).toBe('name')
-        expect(nameField.value.value).toBe('John')
+        expect(nameField.data.value).toBe('John')
 
         // Should be registered in main form with full path
         expect(form.getField('user.profile.name')).toBeDefined()
@@ -160,12 +160,12 @@ describe('Subform Implementation', () => {
         const userForm = form.getSubForm('user')
         const nameField = userForm.defineField({ path: 'name' })
 
-        nameField.setValue('Jane')
+        nameField.setData('Jane')
         await nextTick()
 
-        expect(nameField.value.value).toBe('Jane')
-        expect(userForm.formData.value.name).toBe('Jane')
-        expect(form.formData.value.user.name).toBe('Jane')
+        expect(nameField.data.value).toBe('Jane')
+        expect(userForm.data.value.name).toBe('Jane')
+        expect(form.data.value.user.name).toBe('Jane')
       })
     })
 
@@ -189,7 +189,7 @@ describe('Subform Implementation', () => {
         const profileForm = userForm.getSubForm('profile')
         const settingsForm = profileForm.getSubForm('settings')
 
-        expect(settingsForm.formData.value).toEqual({
+        expect(settingsForm.data.value).toEqual({
           theme: 'dark',
           notifications: true,
         })
@@ -218,7 +218,7 @@ describe('Subform Implementation', () => {
         const level4Form = level3Form.getSubForm('level4')
         const level5Form = level4Form.getSubForm('level5')
 
-        expect(level5Form.formData.value).toEqual({
+        expect(level5Form.data.value).toEqual({
           name: 'Deep Value',
         })
 
@@ -250,7 +250,7 @@ describe('Subform Implementation', () => {
         const teamForm = form.getSubForm('teams.0')
         const memberForm = teamForm.getSubForm('members.0')
 
-        expect(memberForm.formData.value).toEqual({
+        expect(memberForm.data.value).toEqual({
           name: 'John',
           role: 'lead',
         })
@@ -279,8 +279,8 @@ describe('Subform Implementation', () => {
         })
 
         // Set invalid data
-        userForm.formData.value.name = ''
-        userForm.formData.value.email = 'invalid'
+        userForm.data.value.name = ''
+        userForm.data.value.email = 'invalid'
 
         const result = await form.validateForm()
 
@@ -312,8 +312,8 @@ describe('Subform Implementation', () => {
         })
 
         // Set invalid data
-        profileForm.formData.value.name = ''
-        profileForm.formData.value.bio = 'Short'
+        profileForm.data.value.name = ''
+        profileForm.data.value.bio = 'Short'
 
         const result = await form.validateForm()
 
@@ -535,7 +535,7 @@ describe('Subform Implementation', () => {
         expect(userForm.isDirty.value).toBe(false)
         expect(companyForm.isDirty.value).toBe(false)
 
-        userNameField.setValue('Jane')
+        userNameField.setData('Jane')
         await nextTick()
 
         expect(userForm.isDirty.value).toBe(true)
@@ -562,7 +562,7 @@ describe('Subform Implementation', () => {
 
         expect(profileForm.isDirty.value).toBe(false)
 
-        nameField.setValue('Jane')
+        nameField.setData('Jane')
         await nextTick()
 
         expect(profileForm.isDirty.value).toBe(true)
@@ -589,7 +589,7 @@ describe('Subform Implementation', () => {
         expect(firstUserForm.isDirty.value).toBe(false)
         expect(secondUserForm.isDirty.value).toBe(false)
 
-        firstNameField.setValue('Johnny')
+        firstNameField.setData('Johnny')
         await nextTick()
 
         expect(firstUserForm.isDirty.value).toBe(true)
@@ -798,19 +798,19 @@ describe('Subform Implementation', () => {
         const companyNameField = companyForm.defineField({ path: 'name' })
 
         // Change values
-        userNameField.setValue('Jane')
-        companyNameField.setValue('New Corp')
+        userNameField.setData('Jane')
+        companyNameField.setData('New Corp')
         await nextTick()
 
-        expect(userForm.formData.value.name).toBe('Jane')
-        expect(companyForm.formData.value.name).toBe('New Corp')
+        expect(userForm.data.value.name).toBe('Jane')
+        expect(companyForm.data.value.name).toBe('New Corp')
 
         // Reset only user subform
         userForm.reset()
         await nextTick()
 
-        expect(userForm.formData.value.name).toBe('John')
-        expect(companyForm.formData.value.name).toBe('New Corp')
+        expect(userForm.data.value.name).toBe('John')
+        expect(companyForm.data.value.name).toBe('New Corp')
       })
 
       it('should handle nested subform reset', async () => {
@@ -832,19 +832,19 @@ describe('Subform Implementation', () => {
         const bioField = profileForm.defineField({ path: 'bio' })
 
         // Change values
-        nameField.setValue('Jane')
-        bioField.setValue('Designer')
+        nameField.setData('Jane')
+        bioField.setData('Designer')
         await nextTick()
 
-        expect(profileForm.formData.value.name).toBe('Jane')
-        expect(profileForm.formData.value.bio).toBe('Designer')
+        expect(profileForm.data.value.name).toBe('Jane')
+        expect(profileForm.data.value.bio).toBe('Designer')
 
         // Reset profile subform
         profileForm.reset()
         await nextTick()
 
-        expect(profileForm.formData.value.name).toBe('John')
-        expect(profileForm.formData.value.bio).toBe('Developer')
+        expect(profileForm.data.value.name).toBe('John')
+        expect(profileForm.data.value.bio).toBe('Developer')
       })
 
       it('should handle array subform reset', async () => {
@@ -864,19 +864,19 @@ describe('Subform Implementation', () => {
         const secondNameField = secondUserForm.defineField({ path: 'name' })
 
         // Change values
-        firstNameField.setValue('Johnny')
-        secondNameField.setValue('Janie')
+        firstNameField.setData('Johnny')
+        secondNameField.setData('Janie')
         await nextTick()
 
-        expect(firstUserForm.formData.value.name).toBe('Johnny')
-        expect(secondUserForm.formData.value.name).toBe('Janie')
+        expect(firstUserForm.data.value.name).toBe('Johnny')
+        expect(secondUserForm.data.value.name).toBe('Janie')
 
         // Reset only first user subform
         firstUserForm.reset()
         await nextTick()
 
-        expect(firstUserForm.formData.value.name).toBe('John')
-        expect(secondUserForm.formData.value.name).toBe('Janie')
+        expect(firstUserForm.data.value.name).toBe('John')
+        expect(secondUserForm.data.value.name).toBe('Janie')
       })
     })
 
@@ -892,18 +892,18 @@ describe('Subform Implementation', () => {
         const nameField = userForm.defineField({ path: 'name' })
 
         // Change through subform
-        userForm.formData.value.name = 'Jane'
+        userForm.data.value.name = 'Jane'
         await nextTick()
 
-        expect(form.formData.value.user.name).toBe('Jane')
-        expect(nameField.value.value).toBe('Jane')
+        expect(form.data.value.user.name).toBe('Jane')
+        expect(nameField.data.value).toBe('Jane')
 
         // Change through main form
-        form.formData.value.user.name = 'Bob'
+        form.data.value.user.name = 'Bob'
         await nextTick()
 
-        expect(userForm.formData.value.name).toBe('Bob')
-        expect(nameField.value.value).toBe('Bob')
+        expect(userForm.data.value.name).toBe('Bob')
+        expect(nameField.data.value).toBe('Bob')
       })
 
       it('should handle state changes through main form', async () => {
@@ -921,11 +921,11 @@ describe('Subform Implementation', () => {
         const profileForm = userForm.getSubForm('profile')
 
         // Change through main form
-        form.formData.value.user.profile.name = 'Jane'
+        form.data.value.user.profile.name = 'Jane'
         await nextTick()
 
-        expect(userForm.formData.value.profile.name).toBe('Jane')
-        expect(profileForm.formData.value.name).toBe('Jane')
+        expect(userForm.data.value.profile.name).toBe('Jane')
+        expect(profileForm.data.value.name).toBe('Jane')
       })
 
       it('should handle initial data changes', async () => {
@@ -1042,7 +1042,7 @@ describe('Subform Implementation', () => {
         })
 
         const userForm = form.getSubForm('user-name')
-        expect(userForm.formData.value).toEqual({ 'first-name': 'John' })
+        expect(userForm.data.value).toEqual({ 'first-name': 'John' })
       })
 
       it('should handle numeric string paths', () => {
@@ -1053,7 +1053,7 @@ describe('Subform Implementation', () => {
         })
 
         const numericForm = form.getSubForm('123')
-        expect(numericForm.formData.value).toEqual({ name: 'test' })
+        expect(numericForm.data.value).toEqual({ name: 'test' })
       })
     })
 
@@ -1069,8 +1069,8 @@ describe('Subform Implementation', () => {
         })
 
         const userForm = form.getSubForm('user')
-        expect(userForm.formData.value.name).toBe(null)
-        expect(userForm.formData.value.email).toBe('test@example.com')
+        expect(userForm.data.value.name).toBe(null)
+        expect(userForm.data.value.email).toBe('test@example.com')
       })
 
       it('should handle undefined values in subform data', () => {
@@ -1084,8 +1084,8 @@ describe('Subform Implementation', () => {
         })
 
         const userForm = form.getSubForm('user')
-        expect(userForm.formData.value.name).toBe(undefined)
-        expect(userForm.formData.value.email).toBe('test@example.com')
+        expect(userForm.data.value.name).toBe(undefined)
+        expect(userForm.data.value.email).toBe('test@example.com')
       })
 
       it('should handle empty objects', () => {
@@ -1096,7 +1096,7 @@ describe('Subform Implementation', () => {
         })
 
         const userForm = form.getSubForm('user' as never)
-        expect(userForm.formData.value).toEqual({})
+        expect(userForm.data.value).toEqual({})
       })
 
       it('should handle empty arrays', () => {
@@ -1107,7 +1107,7 @@ describe('Subform Implementation', () => {
         })
 
         const usersForm = form.getSubForm('users')
-        expect(usersForm.formData.value).toEqual([])
+        expect(usersForm.data.value).toEqual([])
       })
     })
   })
@@ -1152,8 +1152,8 @@ describe('Subform Implementation', () => {
         // Should complete within reasonable time (less than 100ms)
         expect(duration).toBeLessThan(100)
         expect(subforms).toHaveLength(100)
-        expect(subforms[0].formData.value.name).toBe('User 0')
-        expect(subforms[99].formData.value.name).toBe('User 99')
+        expect(subforms[0].data.value.name).toBe('User 0')
+        expect(subforms[99].data.value.name).toBe('User 99')
       })
 
       it('should handle rapid field registration efficiently', () => {
@@ -1188,7 +1188,7 @@ describe('Subform Implementation', () => {
         // Should complete within reasonable time
         expect(duration).toBeLessThan(50)
         expect(fields).toHaveLength(5)
-        expect(fields[0].value.value).toBe('John')
+        expect(fields[0].data.value).toBe('John')
       })
 
       it('should handle complex validation on large forms', async () => {
@@ -1273,14 +1273,14 @@ describe('Subform Implementation', () => {
         let userForm: Form<{
           name: string
         }> | undefined = form.getSubForm('users.0')
-        expect(userForm.formData.value.name).toBe('John')
+        expect(userForm.data.value.name).toBe('John')
 
         // Remove reference
         userForm = undefined
 
         // Should not cause issues
         const newUserForm = form.getSubForm('users.0')
-        expect(newUserForm.formData.value.name).toBe('John')
+        expect(newUserForm.data.value.name).toBe('John')
       })
     })
 
@@ -1299,7 +1299,7 @@ describe('Subform Implementation', () => {
 
         // Make many rapid updates
         for (let i = 0; i < 100; i++) {
-          nameField.setValue(`Name ${i}`)
+          nameField.setData(`Name ${i}`)
           await nextTick()
         }
 
@@ -1308,7 +1308,7 @@ describe('Subform Implementation', () => {
 
         // Should complete within reasonable time (less than 500ms)
         expect(duration).toBeLessThan(500)
-        expect(nameField.value.value).toBe('Name 99')
+        expect(nameField.data.value).toBe('Name 99')
       })
 
       it('should handle nested reactivity updates efficiently', async () => {
@@ -1332,7 +1332,7 @@ describe('Subform Implementation', () => {
 
         // Make updates at different levels
         for (let i = 0; i < 50; i++) {
-          personalForm.formData.value.name = `Name ${i}`
+          personalForm.data.value.name = `Name ${i}`
           await nextTick()
         }
 
@@ -1341,7 +1341,7 @@ describe('Subform Implementation', () => {
 
         // Should complete within reasonable time
         expect(duration).toBeLessThan(500)
-        expect(personalForm.formData.value.name).toBe('Name 49')
+        expect(personalForm.data.value.name).toBe('Name 49')
       })
     })
   })

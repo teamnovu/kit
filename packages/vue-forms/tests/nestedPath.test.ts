@@ -117,8 +117,8 @@ describe('Nested Path Handling', () => {
       const nameField = form.defineField({ path: 'user.name' })
       const emailField = form.defineField({ path: 'user.email' })
 
-      expect(nameField.value.value).toBe('John Doe')
-      expect(emailField.value.value).toBe('john@example.com')
+      expect(nameField.data.value).toBe('John Doe')
+      expect(emailField.data.value).toBe('john@example.com')
     })
 
     it('should define and access fields with deeply nested paths', () => {
@@ -128,9 +128,9 @@ describe('Nested Path Handling', () => {
       const themeField = form.defineField({ path: 'user.profile.preferences.theme' })
       const notificationsField = form.defineField({ path: 'user.profile.preferences.notifications' })
 
-      expect(ageField.value.value).toBe(30)
-      expect(themeField.value.value).toBe('dark')
-      expect(notificationsField.value.value).toBe(true)
+      expect(ageField.data.value).toBe(30)
+      expect(themeField.data.value).toBe('dark')
+      expect(notificationsField.data.value).toBe(true)
     })
 
     it('should update nested field values reactively', async () => {
@@ -139,13 +139,13 @@ describe('Nested Path Handling', () => {
       const nameField = form.defineField({ path: 'user.name' })
       const ageField = form.defineField({ path: 'user.profile.age' })
 
-      nameField.value.value = 'Jane Doe'
-      ageField.value.value = 25
+      nameField.data.value = 'Jane Doe'
+      ageField.data.value = 25
 
       await nextTick()
 
-      expect(form.formData.value.user.name).toBe('Jane Doe')
-      expect(form.formData.value.user.profile.age).toBe(25)
+      expect(form.data.value.user.name).toBe('Jane Doe')
+      expect(form.data.value.user.profile.age).toBe(25)
     })
 
     it('should retrieve fields using getField with nested paths', () => {
@@ -159,8 +159,8 @@ describe('Nested Path Handling', () => {
 
       expect(nameField).toBeDefined()
       expect(ageField).toBeDefined()
-      expect(nameField?.value.value).toBe('John Doe')
-      expect(ageField?.value.value).toBe(30)
+      expect(nameField?.data.value).toBe('John Doe')
+      expect(ageField?.data.value).toBe(30)
     })
 
     it('should handle nested paths with complex coordinate data', () => {
@@ -169,14 +169,14 @@ describe('Nested Path Handling', () => {
       const latField = form.defineField({ path: 'company.address.coordinates.lat' })
       const lngField = form.defineField({ path: 'company.address.coordinates.lng' })
 
-      expect(latField.value.value).toBe(40.7128)
-      expect(lngField.value.value).toBe(-74.0060)
+      expect(latField.data.value).toBe(40.7128)
+      expect(lngField.data.value).toBe(-74.0060)
 
-      latField.value.value = 41.8781
-      lngField.value.value = -87.6298
+      latField.data.value = 41.8781
+      lngField.data.value = -87.6298
 
-      expect(form.formData.value.company.address.coordinates.lat).toBe(41.8781)
-      expect(form.formData.value.company.address.coordinates.lng).toBe(-87.6298)
+      expect(form.data.value.company.address.coordinates.lat).toBe(41.8781)
+      expect(form.data.value.company.address.coordinates.lng).toBe(-87.6298)
     })
   })
 
@@ -187,8 +187,8 @@ describe('Nested Path Handling', () => {
       const firstTagField = form.defineField({ path: 'tags.0' })
       const secondTagField = form.defineField({ path: 'tags.1' })
 
-      expect(firstTagField.value.value).toBe('javascript')
-      expect(secondTagField.value.value).toBe('vue')
+      expect(firstTagField.data.value).toBe('javascript')
+      expect(secondTagField.data.value).toBe('vue')
     })
 
     it('should handle nested object arrays with index paths', () => {
@@ -198,9 +198,9 @@ describe('Nested Path Handling', () => {
       const firstContactEmailField = form.defineField({ path: 'contacts.0.email' })
       const secondContactNameField = form.defineField({ path: 'contacts.1.name' })
 
-      expect(firstContactNameField.value.value).toBe('Jane Smith')
-      expect(firstContactEmailField.value.value).toBe('jane@example.com')
-      expect(secondContactNameField.value.value).toBe('Bob Johnson')
+      expect(firstContactNameField.data.value).toBe('Jane Smith')
+      expect(firstContactEmailField.data.value).toBe('jane@example.com')
+      expect(secondContactNameField.data.value).toBe('Bob Johnson')
     })
 
     it('should handle deeply nested arrays with multiple levels', () => {
@@ -219,10 +219,10 @@ describe('Nested Path Handling', () => {
         path: 'contacts.1.addresses.0.street',
       })
 
-      expect(firstContactFirstAddressTypeField.value.value).toBe('home')
-      expect(firstContactFirstAddressStreetField.value.value).toBe('456 Oak Ave')
-      expect(firstContactSecondAddressTypeField.value.value).toBe('work')
-      expect(secondContactFirstAddressStreetField.value.value).toBe('321 Elm St')
+      expect(firstContactFirstAddressTypeField.data.value).toBe('home')
+      expect(firstContactFirstAddressStreetField.data.value).toBe('456 Oak Ave')
+      expect(firstContactSecondAddressTypeField.data.value).toBe('work')
+      expect(secondContactFirstAddressStreetField.data.value).toBe('321 Elm St')
     })
 
     it('should update array element values reactively', async () => {
@@ -231,28 +231,28 @@ describe('Nested Path Handling', () => {
       const firstTagField = form.defineField({ path: 'tags.0' })
       const firstContactNameField = form.defineField({ path: 'contacts.0.name' })
 
-      firstTagField.value.value = 'react'
-      firstContactNameField.value.value = 'Janet Smith'
+      firstTagField.data.value = 'react'
+      firstContactNameField.data.value = 'Janet Smith'
 
       await nextTick()
 
-      expect(form.formData.value.tags[0]).toBe('react')
-      expect(form.formData.value.contacts[0].name).toBe('Janet Smith')
+      expect(form.data.value.tags[0]).toBe('react')
+      expect(form.data.value.contacts[0].name).toBe('Janet Smith')
     })
 
     it('should handle dynamic array indices', async () => {
       const form = useForm({ initialData })
 
       // Test that we can access different indices
-      for (let i = 0; i < form.formData.value.tags.length; i++) {
+      for (let i = 0; i < form.data.value.tags.length; i++) {
         const tagField = form.defineField({ path: `tags.${i}` as `tags.${number}` })
-        expect(tagField.value.value).toBe(initialData.tags[i])
+        expect(tagField.data.value).toBe(initialData.tags[i])
       }
 
       // Test that we can access different contact indices
-      for (let i = 0; i < form.formData.value.contacts.length; i++) {
+      for (let i = 0; i < form.data.value.contacts.length; i++) {
         const contactNameField = form.defineField({ path: `contacts.${i}.name` as `contacts.${number}.name` })
-        expect(contactNameField.value.value).toBe(initialData.contacts[i].name)
+        expect(contactNameField.data.value).toBe(initialData.contacts[i].name)
       }
     })
   })
@@ -266,10 +266,10 @@ describe('Nested Path Handling', () => {
       const debugField = form.defineField({ path: 'metadata.settings.debug' })
       const timeoutField = form.defineField({ path: 'metadata.settings.timeout' })
 
-      expect(versionField.value.value).toBe('1.0')
-      expect(createdField.value.value).toBe('2023-01-01')
-      expect(debugField.value.value).toBe(false)
-      expect(timeoutField.value.value).toBe(5000)
+      expect(versionField.data.value).toBe('1.0')
+      expect(createdField.data.value).toBe('2023-01-01')
+      expect(debugField.data.value).toBe(false)
+      expect(timeoutField.data.value).toBe(5000)
     })
 
     it('should handle record object updates', async () => {
@@ -278,13 +278,13 @@ describe('Nested Path Handling', () => {
       const versionField = form.defineField({ path: 'metadata.version' })
       const debugField = form.defineField({ path: 'metadata.settings.debug' })
 
-      versionField.value.value = '2.0'
-      debugField.value.value = true
+      versionField.data.value = '2.0'
+      debugField.data.value = true
 
       await nextTick()
 
-      expect(form.formData.value.metadata.version).toBe('2.0')
-      expect(form.formData.value.metadata.settings.debug).toBe(true)
+      expect(form.data.value.metadata.version).toBe('2.0')
+      expect(form.data.value.metadata.settings.debug).toBe(true)
     })
   })
 
@@ -298,13 +298,13 @@ describe('Nested Path Handling', () => {
       expect(nameField.dirty.value).toBe(false)
       expect(ageField.dirty.value).toBe(false)
 
-      nameField.value.value = 'Jane Doe'
+      nameField.data.value = 'Jane Doe'
       await nextTick()
 
       expect(nameField.dirty.value).toBe(true)
       expect(ageField.dirty.value).toBe(false)
 
-      ageField.value.value = 25
+      ageField.data.value = 25
       await nextTick()
 
       expect(ageField.dirty.value).toBe(true)
@@ -332,20 +332,20 @@ describe('Nested Path Handling', () => {
       const nameField = form.defineField({ path: 'user.name' })
       const ageField = form.defineField({ path: 'user.profile.age' })
 
-      nameField.value.value = 'Jane Doe'
-      ageField.value.value = 25
+      nameField.data.value = 'Jane Doe'
+      ageField.data.value = 25
       nameField.onBlur()
 
       await nextTick()
 
-      expect(nameField.value.value).toBe('Jane Doe')
+      expect(nameField.data.value).toBe('Jane Doe')
       expect(nameField.dirty.value).toBe(true)
       expect(nameField.touched.value).toBe(true)
 
       nameField.reset()
       await nextTick()
 
-      expect(nameField.value.value).toBe('John Doe')
+      expect(nameField.data.value).toBe('John Doe')
       expect(nameField.dirty.value).toBe(false)
       expect(nameField.touched.value).toBe(false)
     })
@@ -401,8 +401,8 @@ describe('Nested Path Handling', () => {
       const nameField = form.defineField({ path: 'user.name' })
       const emailField = form.defineField({ path: 'user.email' })
 
-      nameField.value.value = 'A'
-      emailField.value.value = 'invalid-email'
+      nameField.data.value = 'A'
+      emailField.data.value = 'invalid-email'
 
       await nextTick()
 
@@ -422,8 +422,8 @@ describe('Nested Path Handling', () => {
       const ageField = form.defineField({ path: 'user.profile.age' })
       const themeField = form.defineField({ path: 'user.profile.preferences.theme' })
 
-      ageField.value.value = 16
-      themeField.value.value = 'blue' as typeof themeField.value.value
+      ageField.data.value = 16
+      themeField.data.value = 'blue' as typeof themeField.data.value
 
       await nextTick()
 
@@ -443,8 +443,8 @@ describe('Nested Path Handling', () => {
       const firstContactNameField = form.defineField({ path: 'contacts.0.name' })
       const firstContactEmailField = form.defineField({ path: 'contacts.0.email' })
 
-      firstContactNameField.value.value = ''
-      firstContactEmailField.value.value = 'invalid-email'
+      firstContactNameField.data.value = ''
+      firstContactEmailField.data.value = 'invalid-email'
 
       await nextTick()
 
@@ -464,8 +464,8 @@ describe('Nested Path Handling', () => {
       const addressTypeField = form.defineField({ path: 'contacts.0.addresses.0.type' })
       const addressStreetField = form.defineField({ path: 'contacts.0.addresses.0.street' })
 
-      addressTypeField.value.value = 'office' as typeof addressTypeField.value.value
-      addressStreetField.value.value = ''
+      addressTypeField.data.value = 'office' as typeof addressTypeField.data.value
+      addressStreetField.data.value = ''
 
       await nextTick()
 
@@ -483,7 +483,7 @@ describe('Nested Path Handling', () => {
 
       const nonExistentField = form.defineField({ path: 'user.nonexistent' as any })
 
-      expect(nonExistentField.value.value).toBeUndefined()
+      expect(nonExistentField.data.value).toBeUndefined()
     })
 
     it('should handle deeply non-existent paths', () => {
@@ -491,7 +491,7 @@ describe('Nested Path Handling', () => {
 
       const deepNonExistentField = form.defineField({ path: 'user.nonexistent.deep.path' as any })
 
-      expect(deepNonExistentField.value.value).toBeUndefined()
+      expect(deepNonExistentField.data.value).toBeUndefined()
     })
 
     it('should handle array index out of bounds', () => {
@@ -499,7 +499,7 @@ describe('Nested Path Handling', () => {
 
       const outOfBoundsField = form.defineField({ path: 'tags.99' as any })
 
-      expect(outOfBoundsField.value.value).toBeUndefined()
+      expect(outOfBoundsField.data.value).toBeUndefined()
     })
 
     it('should handle nested array index out of bounds', () => {
@@ -507,7 +507,7 @@ describe('Nested Path Handling', () => {
 
       const outOfBoundsField = form.defineField({ path: 'contacts.99.name' as any })
 
-      expect(outOfBoundsField.value.value).toBeUndefined()
+      expect(outOfBoundsField.data.value).toBeUndefined()
     })
 
     it('should handle paths with spaces around dots', () => {
@@ -515,7 +515,7 @@ describe('Nested Path Handling', () => {
 
       const nameField = form.defineField({ path: 'user . name' as any })
 
-      expect(nameField.value.value).toBe('John Doe')
+      expect(nameField.data.value).toBe('John Doe')
     })
 
     it('should handle empty path segments', () => {
@@ -523,7 +523,7 @@ describe('Nested Path Handling', () => {
 
       const nameField = form.defineField({ path: 'user..name' as any })
 
-      expect(nameField.value.value).toBe('John Doe')
+      expect(nameField.data.value).toBe('John Doe')
     })
 
     it('should handle setting values on non-existent paths', async () => {
@@ -531,11 +531,11 @@ describe('Nested Path Handling', () => {
 
       const nonExistentField = form.defineField({ path: 'user.newField' as any })
 
-      nonExistentField.value.value = 'new value'
+      nonExistentField.data.value = 'new value'
 
       await nextTick()
 
-      expect((form.formData.value.user as any).newField).toBe('new value')
+      expect((form.data.value.user as any).newField).toBe('new value')
     })
   })
 
@@ -559,7 +559,7 @@ describe('Nested Path Handling', () => {
 
       // Create many nested fields
       for (let i = 0; i < 100; i++) {
-        if (i < form.formData.value.contacts.length) {
+        if (i < form.data.value.contacts.length) {
           fields.push(form.defineField({ path: `contacts.${i}.name` }))
           fields.push(form.defineField({ path: `contacts.${i}.email` }))
         }
@@ -579,7 +579,7 @@ describe('Nested Path Handling', () => {
 
       expect(form.isDirty.value).toBe(false)
 
-      nameField.value.value = 'Jane Doe'
+      nameField.data.value = 'Jane Doe'
       await nextTick()
 
       expect(form.isDirty.value).toBe(true)
@@ -629,8 +629,8 @@ describe('Nested Path Handling', () => {
       await form.validateForm()
       expect(form.isValid.value).toBe(true)
 
-      nameField.value.value = 'A'
-      emailField.value.value = 'invalid'
+      nameField.data.value = 'A'
+      emailField.data.value = 'invalid'
 
       await nextTick()
 
@@ -638,8 +638,8 @@ describe('Nested Path Handling', () => {
       await form.validateForm()
       expect(form.isValid.value).toBe(false)
 
-      nameField.value.value = 'John Doe'
-      emailField.value.value = 'john@example.com'
+      nameField.data.value = 'John Doe'
+      emailField.data.value = 'john@example.com'
 
       await nextTick()
 

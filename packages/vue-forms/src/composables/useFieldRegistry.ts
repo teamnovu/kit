@@ -32,7 +32,7 @@ export function useFieldRegistry<T extends FormDataDefault>(
   const defineField = <K extends Paths<T>>(options: DefineFieldOptions<PickProps<T, K>, K>) => {
     const field = useField({
       ...options,
-      value: getLens(toRef(formState, 'formData'), options.path),
+      value: getLens(toRef(formState, 'data'), options.path),
       initialValue: computed(() => getNestedValue(formState.initialData, unref(options.path))),
     })
 

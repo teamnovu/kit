@@ -8,18 +8,18 @@ import type { ValidatorOptions } from '../composables/useValidation'
 export type FormDataDefault = object
 
 export interface FormState<T extends FormDataDefault, TIn extends FormDataDefault = T> {
-  formData: T
+  data: T
   initialData: TIn
 }
 
 export interface FormField<T, P extends string> {
-  value: Ref<T>
+  data: Ref<T>
   path: Ref<P>
   initialValue: Readonly<Ref<T>>
   errors: Ref<ValidationErrors>
   touched: Ref<boolean>
   dirty: Ref<boolean>
-  setValue: (newValue: T) => void
+  setData: (newData: T) => void
   onBlur: () => void
   onFocus: () => void
   reset: () => void
@@ -29,7 +29,7 @@ export interface FormField<T, P extends string> {
 
 export interface Form<T extends FormDataDefault> {
   // Data properties
-  formData: Ref<T>
+  data: Ref<T>
   initialData: Readonly<Ref<T>>
 
   // Field operations

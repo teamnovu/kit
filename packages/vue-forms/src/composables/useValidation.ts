@@ -11,7 +11,7 @@ export interface ValidatorOptions<T> {
 }
 
 export interface ValidationOptions<T> extends ValidatorOptions<T> {
-  errors?: MaybeRef<ErrorBag>
+  errors?: MaybeRef<ErrorBag | undefined>
 }
 
 export const SuccessValidationResult: ValidationResult = {
@@ -113,16 +113,13 @@ export function createValidator<T extends FormDataDefault>(
 }
 
 export function useValidation<T extends FormDataDefault>(
-  formState: { formData: T },
+  formState: { data: T },
   options: ValidationOptions<T>,
 ) {
   const validationState = reactive({
     validators: ref<Ref<Validator<T> | undefined>[]>([createValidator(options)]),
     isValidated: false,
-    errors: unref(options.errors) ?? {
-      general: [],
-      propertyErrors: {},
-    },
+    errors: unref(options.errors) ?? SuccessValidationResult.errors,
   })
 
   // Watch for changes in the error bag and update validation state
@@ -152,7 +149,7 @@ export function useValidation<T extends FormDataDefault>(
   )
 
   // Watch for changes in form data to trigger validation
-  watch(() => formState.formData, () => {
+  watch(() => formState.data, () => {
     if (validationState.isValidated) {
       validateForm()
     }
@@ -178,7 +175,7 @@ export function useValidation<T extends FormDataDefault>(
     const validationResults = await Promise.all(
       validationState.validators
         .filter(validator => unref(validator) !== undefined)
-        .map(validator => unref(validator)!.validate(formState.formData)),
+        .map(validator => unref(validator)!.validate(formState.data)),
     )
 
     const isValid = validationResults.every(result => result.isValid)

@@ -35,13 +35,13 @@ export function setNestedValue<T, K extends Paths<T>>(obj: T, path: K | SplitPat
   target[lastKey] = value
 }
 
-export const getLens = <T, K extends Paths<T>>(formData: MaybeRef<T>, key: MaybeRef<K | SplitPath<K>>) => {
+export const getLens = <T, K extends Paths<T>>(data: MaybeRef<T>, key: MaybeRef<K | SplitPath<K>>) => {
   return computed({
     get() {
-      return getNestedValue(unref(formData), unref(key))
+      return getNestedValue(unref(data), unref(key))
     },
     set(value: PickProps<T, K>) {
-      setNestedValue(unref(formData), unref(key), value)
+      setNestedValue(unref(data), unref(key), value)
     },
   })
 }
