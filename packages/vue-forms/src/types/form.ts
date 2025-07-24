@@ -7,11 +7,6 @@ import type { ValidatorOptions } from '../composables/useValidation'
 
 export type FormDataDefault = object
 
-export interface FormState<T extends FormDataDefault, TIn extends FormDataDefault = T> {
-  data: T
-  initialData: TIn
-}
-
 export interface FormField<T, P extends string> {
   data: Ref<T>
   path: Ref<P>

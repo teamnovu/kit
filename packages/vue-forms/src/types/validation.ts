@@ -11,6 +11,7 @@ export interface ErrorBag {
 }
 
 export interface ValidationResult {
+  // TODO @Elias remove isValid
   isValid: boolean
   errors: ErrorBag
 }

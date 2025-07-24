@@ -8,6 +8,8 @@ import { useFormState } from './useFormState'
 import { createSubformInterface, type SubformOptions } from './useSubform'
 import { useValidation, type ValidationOptions } from './useValidation'
 
+// TODO @Elias implement validation strategy handling
+
 export interface UseFormOptions<T extends FormDataDefault> extends ValidationOptions<T> {
   initialData: MaybeRefOrGetter<T>
   validationStrategy?: MaybeRef<ValidationStrategy>

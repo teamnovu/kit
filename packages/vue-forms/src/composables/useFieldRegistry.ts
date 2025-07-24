@@ -1,5 +1,5 @@
 import { computed, toRef, unref } from 'vue'
-import type { FormDataDefault, FormField, FormState } from '../types/form'
+import type { FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
 import { getLens, getNestedValue } from '../utils/path'
 import { useField, type UseFieldOptions } from './useField'
@@ -10,6 +10,11 @@ type FieldRegistryCache<T> = Record<Paths<T>, FormField<any, string>>
 export type ResolvedFormField<T, K extends Paths<T>> = FormField<PickProps<T, K>, K>
 
 export type DefineFieldOptions<F, K extends string> = Pick<UseFieldOptions<F, K>, 'path' | 'type' | 'required'>
+
+interface FormState<T extends FormDataDefault, TIn extends FormDataDefault = T> {
+  data: T
+  initialData: TIn
+}
 
 export function useFieldRegistry<T extends FormDataDefault>(
   formState: FormState<T>,
