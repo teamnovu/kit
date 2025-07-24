@@ -14,3 +14,4 @@ export type { Form, FormField } from './types/form'
 export type { SplitPath, Paths, PickProps } from './types/util'
 
 export { default as Field } from './components/Field.vue'
+export type { FieldProps } from './components/Field.vue'
