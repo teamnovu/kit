@@ -6,13 +6,13 @@ import { contextKeys, customerKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
-const changeProfileOperation = 'changeProfile post /account/change-profile' satisfies OperationKey
+const defaultShippingAddressOperation = 'defaultShippingAddress patch /account/address/default-shipping/{addressId}' satisfies OperationKey
 
-export function useChangeProfileMutation(
+export function useDefaultShippingAddressMutation(
   mutationOptions?: UseMutationOptions<
-    OperationResponse<typeof changeProfileOperation>,
+    OperationResponse<typeof defaultShippingAddressOperation>,
     ShopwareApiError | Error,
-    OperationOptions<typeof changeProfileOperation>
+    OperationOptions<typeof defaultShippingAddressOperation>
   >,
 ) {
   const client = useShopwareQueryClient()
@@ -20,8 +20,8 @@ export function useChangeProfileMutation(
 
   return useMutation({
     ...mutationOptions,
-    mutationFn: async (options: OperationOptions<typeof changeProfileOperation>) => {
-      return client.query(changeProfileOperation, unrefOptions(options))
+    mutationFn: async (options: OperationOptions<typeof defaultShippingAddressOperation>) => {
+      return client.query(defaultShippingAddressOperation, unrefOptions(options))
     },
     onSuccess: async (data, variables, context) => {
       await Promise.all([

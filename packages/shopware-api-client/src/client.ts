@@ -170,6 +170,6 @@ export class ShopwareClient<Operations> extends EventEmitter {
   ): Promise<BrandedResponse<Operations, OperationKey>> {
     const response = await this.queryRaw(operation, options)
 
-    return response.json()
+    return response.json().catch(() => undefined)
   }
 }
