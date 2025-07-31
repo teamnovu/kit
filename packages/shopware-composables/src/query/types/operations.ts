@@ -3,4 +3,3 @@ import type { operations as OriginalOperations, Schemas as OriginalSchemas } fro
 
 export interface Operations extends ShopwareApi.Operations, OriginalOperations {}
 export interface Schemas extends ShopwareApi.Schemas, OriginalSchemas {}
-

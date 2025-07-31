@@ -1,5 +1,6 @@
 import type { QueryKey, UseQueryOptions } from '@tanstack/vue-query'
 import type {
+  BrandedResponse,
   OperationProp,
   OperationOptions as RawOperationOptions,
 } from '@teamnovu/kit-shopware-api-client'
@@ -18,8 +19,7 @@ export type ShallowUnwrapRefs<T> = {
 export type OperationKey = keyof Operations
 export type OperationBody<K extends OperationKey> =
   OperationProp<Operations, K, 'body'>
-export type OperationResponse<K extends OperationKey> =
-  OperationProp<Operations, K, 'response'>
+export type OperationResponse<K extends OperationKey> = BrandedResponse<Operations, K>
 
 export type OperationOptions<
   K extends OperationKey,

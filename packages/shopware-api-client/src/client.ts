@@ -17,7 +17,7 @@ export interface ResponseType<TKey> {
 }
 
 export type BrandedResponse<Operations, OperationKey extends (keyof Operations) & string> =
-  ResponseType<OperationKey> & OperationProp<Operations, OperationKey, 'response'>
+  ResponseType<OperationKey> & OperationProp<Operations, OperationKey, 'response'> & { __BLBL: string }
 
 export class ShopwareClient<Operations> extends EventEmitter {
   private options: ShopwareClientOptions = {

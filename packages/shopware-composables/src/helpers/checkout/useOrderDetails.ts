@@ -1,11 +1,11 @@
 import type { MaybeRef } from 'vue'
 import { computed, unref } from 'vue'
 import { useReadOrderQuery } from '../../query/order'
-import type { Schemas } from '../../query/types'
+import type { BrandedSchema } from '../types/schema'
 
 export function useOrderDetails(
   orderId: MaybeRef<string>,
-  criteria?: Schemas['Criteria'],
+  criteria?: BrandedSchema<'Criteria'>,
 ) {
   // Create reactive order query options
   const orderQueryOptions = computed(() => {
@@ -23,7 +23,7 @@ export function useOrderDetails(
         ],
         ...criteria,
         checkPromotion: true,
-      } as Schemas['Criteria'],
+      } as BrandedSchema<'Criteria'>,
     }
   })
 
@@ -31,7 +31,7 @@ export function useOrderDetails(
   const orderQuery = useReadOrderQuery(orderQueryOptions.value)
 
   // Computed properties based on order data
-  const order = computed(() => orderQuery.data?.value?.orders?.elements?.[0])
+  const order = computed(() => orderQuery.data?.value?.orders?.elements?.[0] as BrandedSchema<'Order'> | undefined)
 
   const paymentChangeableList = computed(() => {
     return orderQuery.data?.value?.paymentChangeable || {}
@@ -52,22 +52,22 @@ export function useOrderDetails(
   const billingAddress = computed(() =>
     order.value?.addresses?.find(
       ({ id }: { id: string }) => id === order.value?.billingAddressId,
-    ))
+    ) as BrandedSchema<'OrderAddress'> | undefined)
 
   const shippingAddress = computed(
-    () => order.value?.deliveries?.[0]?.shippingOrderAddress,
+    () => order.value?.deliveries?.[0]?.shippingOrderAddress as BrandedSchema<'OrderAddress'> | undefined,
   )
 
   const paymentMethod = computed(() => {
     const transactions = order.value?.transactions
     if (!transactions?.length) return undefined
-    return transactions.at(-1)?.paymentMethod
+    return transactions.at(-1)?.paymentMethod as BrandedSchema<'PaymentMethod'> | undefined
   })
 
   const shippingMethod = computed(() => {
     const deliveries = order.value?.deliveries
     if (!deliveries?.length) return undefined
-    return deliveries.at(-1)?.shippingMethod
+    return deliveries.at(-1)?.shippingMethod as BrandedSchema<'ShippingMethod'> | undefined
   })
 
   const paymentChangeable = computed(() => {
