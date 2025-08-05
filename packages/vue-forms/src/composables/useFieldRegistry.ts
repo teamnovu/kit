@@ -9,7 +9,7 @@ type FieldRegistryCache<T> = Record<Paths<T>, FormField<any, string>>
 
 export type ResolvedFormField<T, K extends Paths<T>> = FormField<PickProps<T, K>, K>
 
-export type DefineFieldOptions<F, K extends string> = Pick<UseFieldOptions<F, K>, 'path' | 'type' | 'required'>
+export type DefineFieldOptions<F, K extends string> = Pick<UseFieldOptions<F, K>, 'path'>
 
 interface FormState<T extends FormDataDefault, TIn extends FormDataDefault = T> {
   data: T
