@@ -6,8 +6,6 @@ import { cloneRefValue } from '../utils/general'
 export interface UseFieldOptions<T, K extends string> {
   value?: MaybeRef<T>
   initialValue?: MaybeRefOrGetter<Readonly<T>>
-  type?: MaybeRef<string>
-  required?: MaybeRef<boolean>
   path: K
   errors?: MaybeRef<ValidationErrors>
 }

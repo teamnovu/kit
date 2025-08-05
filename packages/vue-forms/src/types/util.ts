@@ -71,3 +71,10 @@ export type PickEntity<Entity, PropertyKeys extends string> =
 
 export type RestPath<T extends string, P extends string> =
   P extends `${T}.${infer Rest}` ? Rest : never
+
+export type RootPath<P extends string> =
+  P extends `${infer TRoot}.${string}` ? TRoot : P
+
+export type ObjectOf<TPath extends string, T> = {
+  [K in RootPath<TPath>]: RestPath<K, TPath> extends never ? T : ObjectOf<RestPath<K, TPath>, T>
+}
