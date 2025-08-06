@@ -1,4 +1,4 @@
-import { computed, reactive, ref, toRef, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
+import { computed, reactive, ref, toRef, watch, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
 import type { AnyField, Form, FormDataDefault } from '../types/form'
 import type { EntityPaths, PickEntity } from '../types/util'
 import type { ValidationStrategy } from '../types/validation'
@@ -7,6 +7,7 @@ import { useFieldRegistry } from './useFieldRegistry'
 import { useFormState } from './useFormState'
 import { createSubformInterface, type SubformOptions } from './useSubform'
 import { useValidation, type ValidationOptions } from './useValidation'
+import { syncRef } from '@vueuse/core'
 
 // TODO @Elias implement validation strategy handling
 
@@ -22,8 +23,12 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
   const data = ref<T>(cloneRefValue(initialData)) as Ref<T>
 
   const state = reactive({
-    initialData: initialData,
+    initialData,
     data,
+  })
+
+  watch(initialData, (newValue) => {
+    state.data = cloneRefValue(newValue)
   })
 
   const fields = useFieldRegistry(state)

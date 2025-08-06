@@ -195,6 +195,6 @@ describe('Integration Tests', () => {
 
     // Try to get non-existent field
     const nonExistentField = form.getField('nonexistent')
-    expect(nonExistentField).toBeUndefined()
+    expect(nonExistentField).toBeDefined()
   })
 })

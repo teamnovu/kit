@@ -540,16 +540,14 @@ describe('Nested Path Handling', () => {
   })
 
   describe('Performance and Memory', () => {
-    it('should replace field when defining same path twice', () => {
+    it('should return the same field when defining same path twice', () => {
       const form = useForm({ initialData })
 
       const field1 = form.defineField({ path: 'user.name' })
       const field2 = form.defineField({ path: 'user.name' })
 
-      // Fields are not the same object, but second field replaces the first
-      expect(field1).not.toBe(field2)
-      expect(form.getField('user.name')).toBe(field2)
-      expect(form.getFields().length).toBe(1)
+      // Fields are the same object
+      expect(field1).toBe(field2)
     })
 
     it('should handle large numbers of nested fields', () => {

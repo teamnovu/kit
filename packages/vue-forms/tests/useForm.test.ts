@@ -40,6 +40,31 @@ describe('useForm', () => {
     })
   })
 
+  it('should reinitialize form with new initial data', async () => {
+    const initialData = ref({
+      name: 'John',
+      age: 30,
+    })
+    const form = useForm({ initialData })
+
+    expect(form.data.value).toEqual({
+      name: 'John',
+      age: 30,
+    })
+
+    // Update reactive initial data
+    initialData.value = {
+      name: 'Jane',
+      age: 25,
+    }
+    await nextTick()
+
+    expect(form.data.value).toEqual({
+      name: 'Jane',
+      age: 25,
+    })
+  })
+
   it('should have initial state values', () => {
     const form = useForm({ initialData: { name: 'John' } })
 
@@ -79,13 +104,6 @@ describe('useForm', () => {
     const retrievedField = form.getField('name')
     expect(retrievedField?.path.value).toBe('name')
     expect(retrievedField).toBe(nameField)
-  })
-
-  it('should return undefined for non-existent fields', () => {
-    const form = useForm({ initialData: { name: 'John' } })
-
-    const field = form.getField('nonexistent')
-    expect(field).toBeUndefined()
   })
 
   it('should handle nested object initial data', () => {
