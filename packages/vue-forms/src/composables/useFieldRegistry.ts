@@ -27,10 +27,16 @@ export function useFieldRegistry<T extends FormDataDefault>(
   }
 
   const getField = <K extends Paths<T>>(path: K): ResolvedFormField<T, K> => {
-    if (!(path in fields)) {
-      console.warn(`Field with path "${path}" is not registered.`)
+    if (!fields[path]) {
+      const field = useField({
+        path,
+        value: getLens(toRef(formState, 'data'), path),
+        initialValue: computed(() => getNestedValue(formState.initialData, path)),
+      })
 
-      return getEmptyField() as ResolvedFormField<T, K>
+      registerField(field)
+
+      return field
     }
 
     return fields[path] as ResolvedFormField<T, K>
@@ -40,14 +46,11 @@ export function useFieldRegistry<T extends FormDataDefault>(
     return Object.values(fields) as FieldsTuple<TData>
   }
 
-  const defineField = <K extends Paths<T>>(options: DefineFieldOptions<PickProps<T, K>, K>) => {
-    const field = useField({
-      ...options,
-      value: getLens(toRef(formState, 'data'), options.path),
-      initialValue: computed(() => getNestedValue(formState.initialData, unref(options.path))),
-    })
+  const defineField = <K extends Paths<T>>(options: DefineFieldOptions<PickProps<T, K>, K>): ResolvedFormField<T, K> => {
+    const field = getField(options.path)
 
-    registerField(field)
+    // TODO: If more options are ever needed than only the path we have to update the field
+    // here with the new options
 
     return field
   }
