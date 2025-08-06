@@ -1,4 +1,4 @@
-import { computed, reactive, ref, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter } from 'vue'
+import { computed, reactive, toRefs, watch, type MaybeRef, type MaybeRefOrGetter, type WritableComputedRef } from 'vue'
 import type { FormField } from '../types/form'
 import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
@@ -7,24 +7,7 @@ export interface UseFieldOptions<T, K extends string> {
   value?: MaybeRef<T>
   initialValue?: MaybeRefOrGetter<Readonly<T>>
   path: K
-  errors?: MaybeRef<ValidationErrors>
-}
-
-export function getEmptyField(): FormField<unknown, string> {
-  return {
-    setData: () => {},
-    onBlur: () => {},
-    onFocus: () => {},
-    reset: () => {},
-    setErrors: () => {},
-    clearErrors: () => {},
-    data: ref(undefined),
-    initialValue: ref(undefined),
-    path: ref(''),
-    errors: ref([]),
-    touched: ref(false),
-    dirty: computed(() => false),
-  }
+  errors?: WritableComputedRef<ValidationErrors>
 }
 
 export function useField<T, K extends string>(options: UseFieldOptions<T, K>): FormField<T, K> {
@@ -32,12 +15,8 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
     value: options.value,
     path: options.path,
     initialValue: computed(() => Object.freeze(cloneRefValue(options.initialValue))),
-    errors: unref(options.errors) || [],
+    errors: options.errors,
     touched: false,
-  })
-
-  watch(() => unref(options.errors), (newValue) => {
-    state.errors = newValue || []
   })
 
   const dirty = computed(() => {

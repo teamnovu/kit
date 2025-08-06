@@ -1,5 +1,5 @@
 <template>
-  <slot v-bind="reactive(field)" />
+  <slot v-bind="slotData" />
 </template>
 
 <script
@@ -20,4 +20,6 @@ const props = defineProps<FieldProps<TData, TPath>>()
 const field = props.form.defineField({
   path: props.path,
 })
+
+const slotData = reactive(field)
 </script>

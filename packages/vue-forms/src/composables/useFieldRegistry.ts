@@ -2,7 +2,8 @@ import { computed, toRef, unref } from 'vue'
 import type { FieldsTuple, FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
 import { getLens, getNestedValue } from '../utils/path'
-import { getEmptyField, useField, type UseFieldOptions } from './useField'
+import { useField, type UseFieldOptions } from './useField'
+import type { ValidationState } from './useValidation'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FieldRegistryCache<T> = Record<Paths<T>, FormField<any, string>>
@@ -18,6 +19,7 @@ interface FormState<T extends FormDataDefault, TIn extends FormDataDefault = T> 
 
 export function useFieldRegistry<T extends FormDataDefault>(
   formState: FormState<T>,
+  validationState: ValidationState<T>,
 ) {
   const fields = {} as FieldRegistryCache<T>
 
@@ -32,6 +34,14 @@ export function useFieldRegistry<T extends FormDataDefault>(
         path,
         value: getLens(toRef(formState, 'data'), path),
         initialValue: computed(() => getNestedValue(formState.initialData, path)),
+        errors: computed({
+          get() {
+            return validationState.errors.value.propertyErrors[path] || []
+          },
+          set(newErrors) {
+            validationState.errors.value.propertyErrors[path] = newErrors
+          },
+        }),
       })
 
       registerField(field)

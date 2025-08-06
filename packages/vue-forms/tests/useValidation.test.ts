@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { nextTick, ref } from 'vue'
 import { z } from 'zod'
+import { useForm } from '../src/composables/useForm'
 import { SuccessValidationResult, useValidation } from '../src/composables/useValidation'
 import { ErrorBag } from '../src/types/validation'
 import { hasErrors } from '../src/utils/validation'
+
+const delay = (ms: number = 0) => new Promise(resolve => setTimeout(resolve, ms))
 
 describe('useValidation', () => {
   it('should initialize with no errors', () => {
@@ -212,5 +215,27 @@ describe('useValidation', () => {
     expect(result.errors.general).toEqual(['External error'])
     expect(result.errors.propertyErrors.name).toEqual(['Too small: expected string to have >=2 characters']) // From schema validation
     expect(result.errors.propertyErrors.email).toEqual(['External email error'])
+  })
+
+  it('should pass errors to the field', async () => {
+    const errors = ref<ErrorBag>(SuccessValidationResult.errors)
+
+    const form = useForm({
+      initialData: { name: 'A' },
+      errors,
+    })
+
+    const field = form.getField('name')
+
+    expect(field.errors.value).toEqual([]) // Initially no errors
+
+    errors.value = {
+      general: [],
+      propertyErrors: { name: ['Name error'] },
+    }
+
+    await delay()
+
+    expect(field.errors.value).toEqual(['Name error'])
   })
 })
