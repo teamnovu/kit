@@ -1,9 +1,8 @@
 {
   "name": "@teamnovu/kit-vue-forms",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
