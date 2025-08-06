@@ -12,31 +12,35 @@ export type SplitPath<TPath extends string> =
  * Picks the exact type of the Entity at the nested PropertyKeys path.
  */
 export type PickProps<Entity, PropertyKeys extends string> =
-  PropertyKeys extends `${infer TRoot}.${infer TRest}`
-    ? TRoot extends keyof Entity
-      ? TRest extends string
-        ? Entity[TRoot] extends object
-          ? PickProps<Entity[TRoot], TRest>
-          : never
-        : never
-      // We might have an array at hand but the key is a string with a number in it
-      : TRoot extends `${number}`
-        ? Entity extends unknown[]
+  Entity extends NonNullable<infer NonNullEntity>
+    ? Required<NonNullEntity> extends infer RequiredEntity
+      ? PropertyKeys extends `${infer TRoot}.${infer TRest}`
+        ? TRoot extends keyof RequiredEntity
           ? TRest extends string
-            ? Entity[number] extends object
-              ? PickProps<Entity[number], TRest>
+            ? RequiredEntity[TRoot] extends object
+              ? PickProps<RequiredEntity[TRoot], TRest>
               : never
             : never
-          : never
-        : never
-    // We might have an array at hand but the key is a string with a number in it
-    : PropertyKeys extends keyof Entity
-      ? Entity[PropertyKeys]
-      : PropertyKeys extends `${number}`
-        ? Entity extends unknown[]
-          ? Entity[number]
-          : never
-        : never
+        // We might have an array at hand but the key is a string with a number in it
+          : TRoot extends `${number}`
+            ? RequiredEntity extends unknown[]
+              ? TRest extends string
+                ? RequiredEntity[number] extends object
+                  ? PickProps<RequiredEntity[number], TRest>
+                  : never
+                : never
+              : never
+            : never
+      // We might have an array at hand but the key is a string with a number in it
+        : PropertyKeys extends keyof Required<RequiredEntity>
+          ? RequiredEntity[PropertyKeys]
+          : PropertyKeys extends `${number}`
+            ? RequiredEntity extends unknown[]
+              ? RequiredEntity[number]
+              : never
+            : never
+      : never
+    : never
 
 /**
  * Resolves to a union of dot-connected paths of all nested properties of T.

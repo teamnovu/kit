@@ -27,7 +27,7 @@ export function useFieldRegistry<T extends FormDataDefault>(
   }
 
   const getField = <K extends Paths<T>>(path: K) => {
-    return fields[path] as ResolvedFormField<T, K> | undefined
+    return (fields[path] ?? {}) as ResolvedFormField<T, K>
   }
 
   const getFields = () => {
