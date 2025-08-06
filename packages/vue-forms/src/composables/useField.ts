@@ -1,4 +1,4 @@
-import { computed, reactive, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter } from 'vue'
+import { computed, reactive, ref, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter } from 'vue'
 import type { FormField } from '../types/form'
 import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
@@ -8,6 +8,23 @@ export interface UseFieldOptions<T, K extends string> {
   initialValue?: MaybeRefOrGetter<Readonly<T>>
   path: K
   errors?: MaybeRef<ValidationErrors>
+}
+
+export function getEmptyField(): FormField<unknown, string> {
+  return {
+    setData: () => {},
+    onBlur: () => {},
+    onFocus: () => {},
+    reset: () => {},
+    setErrors: () => {},
+    clearErrors: () => {},
+    data: ref(undefined),
+    initialValue: ref(undefined),
+    path: ref(''),
+    errors: ref([]),
+    touched: ref(false),
+    dirty: computed(() => false),
+  }
 }
 
 export function useField<T, K extends string>(options: UseFieldOptions<T, K>): FormField<T, K> {

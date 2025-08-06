@@ -2,7 +2,7 @@ import { computed, toRef, unref } from 'vue'
 import type { FieldsTuple, FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
 import { getLens, getNestedValue } from '../utils/path'
-import { useField, type UseFieldOptions } from './useField'
+import { getEmptyField, useField, type UseFieldOptions } from './useField'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FieldRegistryCache<T> = Record<Paths<T>, FormField<any, string>>
@@ -26,8 +26,14 @@ export function useFieldRegistry<T extends FormDataDefault>(
     fields[path] = field
   }
 
-  const getField = <K extends Paths<T>>(path: K) => {
-    return (fields[path] ?? {}) as ResolvedFormField<T, K>
+  const getField = <K extends Paths<T>>(path: K): ResolvedFormField<T, K> => {
+    if (!(path in fields)) {
+      console.warn(`Field with path "${path}" is not registered.`)
+
+      return getEmptyField() as ResolvedFormField<T, K>
+    }
+
+    return fields[path] as ResolvedFormField<T, K>
   }
 
   const getFields = <TData extends T>() => {
