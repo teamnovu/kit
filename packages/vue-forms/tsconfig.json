@@ -4,12 +4,11 @@
     "outDir": "dist",
     "verbatimModuleSyntax": true,
     "types": [
-      "vue",
-      "vite/client",
-    ],
+      "vite/client"
+    ]
   },
   "include": [
-    "src/**/*",
+    "src/**/*"
   ],
   "exclude": [
     "dist",

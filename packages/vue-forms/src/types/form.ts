@@ -22,6 +22,16 @@ export interface FormField<T, P extends string> {
   clearErrors: () => void
 }
 
+export type FieldsTuple<T, TPaths = Paths<T>> = [...(
+  TPaths extends infer P
+    ? P extends string
+      ? FormField<PickProps<T, P>, P>
+      : never
+    : never
+)[]]
+
+export type AnyField<T> = FormField<PickProps<T, Paths<T>>, Paths<T>>
+
 export interface Form<T extends FormDataDefault> {
   // Data properties
   data: Ref<T>
@@ -29,8 +39,8 @@ export interface Form<T extends FormDataDefault> {
 
   // Field operations
   defineField: <P extends Paths<T>>(options: DefineFieldOptions<PickProps<T, P>, P>) => FormField<PickProps<T, P>, P>
-  getField: <P extends Paths<T>>(path: P) => FormField<PickProps<T, P>, P> | undefined
-  getFields: () => FormField<PickProps<T, Paths<T>>, Paths<T>>[]
+  getField: <P extends Paths<T>>(path: P) => FormField<PickProps<T, P>, P>
+  getFields: <TData extends T>() => FieldsTuple<TData>
 
   // State properties
   isDirty: Ref<boolean>
@@ -39,7 +49,7 @@ export interface Form<T extends FormDataDefault> {
   isValidated: Ref<boolean>
   errors: Ref<ErrorBag>
 
-  defineValidator: (options: ValidatorOptions<T> | Ref<Validator<T>>) => Ref<Validator<T> | undefined>
+  defineValidator: <TData extends T>(options: ValidatorOptions<TData> | Ref<Validator<TData>>) => Ref<Validator<TData> | undefined>
 
   // Operations
   reset: () => void

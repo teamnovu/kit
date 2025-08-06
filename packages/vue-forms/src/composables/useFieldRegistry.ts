@@ -1,5 +1,5 @@
 import { computed, toRef, unref } from 'vue'
-import type { FormDataDefault, FormField } from '../types/form'
+import type { FieldsTuple, FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
 import { getLens, getNestedValue } from '../utils/path'
 import { useField, type UseFieldOptions } from './useField'
@@ -30,8 +30,8 @@ export function useFieldRegistry<T extends FormDataDefault>(
     return (fields[path] ?? {}) as ResolvedFormField<T, K>
   }
 
-  const getFields = () => {
-    return Object.values(fields) as ResolvedFormField<T, Paths<T>>[]
+  const getFields = <TData extends T>() => {
+    return Object.values(fields) as FieldsTuple<TData>
   }
 
   const defineField = <K extends Paths<T>>(options: DefineFieldOptions<PickProps<T, K>, K>) => {

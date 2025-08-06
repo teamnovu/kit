@@ -155,10 +155,10 @@ export function useValidation<T extends FormDataDefault>(
     }
   })
 
-  const defineValidator = (options: ValidatorOptions<T> | Ref<Validator<T>>) => {
+  const defineValidator = <TData extends T>(options: ValidatorOptions<TData> | Ref<Validator<TData>>) => {
     const validator = isRef(options) ? options : createValidator(options)
 
-    validationState.validators.push(validator)
+    validationState.validators.push(validator as Ref<Validator<T> | undefined>)
 
     if (getCurrentScope()) {
       onBeforeUnmount(() => {

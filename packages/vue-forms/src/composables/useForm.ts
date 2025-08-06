@@ -1,5 +1,5 @@
 import { computed, reactive, ref, toRef, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
-import type { Form, FormDataDefault } from '../types/form'
+import type { AnyField, Form, FormDataDefault } from '../types/form'
 import type { EntityPaths, PickEntity } from '../types/util'
 import type { ValidationStrategy } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
@@ -32,7 +32,9 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
 
   const reset = () => {
     data.value = cloneRefValue(initialData)
-    fields.getFields().forEach(field => field.reset())
+    fields.getFields().forEach(
+      (field: AnyField<T>) => field.reset(),
+    )
   }
 
   function getSubForm<K extends EntityPaths<T>>(

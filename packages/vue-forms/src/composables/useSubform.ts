@@ -1,5 +1,5 @@
 import { computed, isRef, unref, type Ref } from 'vue'
-import type { Form, FormDataDefault, FormField } from '../types/form'
+import type { FieldsTuple, Form, FormDataDefault, FormField } from '../types/form'
 import type { EntityPaths, Paths, PickEntity, PickProps } from '../types/util'
 import type { ValidationResult, Validator } from '../types/validation'
 import { filterErrorsForPath, getLens, getNestedValue, joinPath } from '../utils/path'
@@ -81,7 +81,7 @@ export function createSubformInterface<
     const mainFormField = mainForm.getField(fullPath as ScopedMainPaths)
 
     if (!mainFormField) {
-      return
+      return {} as FormField<PickProps<ST, P>, P>
     }
 
     return adaptMainFormField<P>(mainFormField)
@@ -99,13 +99,13 @@ export function createSubformInterface<
     return adaptMainFormField<P>(mainField)
   }
 
-  const getFields = <P extends SP>(): FormField<PickProps<ST, P>, P>[] => {
+  const getFields = <P extends SP>() => {
     return (mainForm.getFields() as FormField<PickProps<T, ScopedMainPaths>, ScopedMainPaths>[])
       .filter((field) => {
         const fieldPath = field.path.value
         return fieldPath.startsWith(path + '.') || fieldPath === path
       })
-      .map(field => adaptMainFormField(field))
+      .map(field => adaptMainFormField(field)) as FieldsTuple<ST, P>
   }
 
   // Helper function to get all fields without type parameter
