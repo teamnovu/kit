@@ -1,3 +1,4 @@
+import { object } from 'zod'
 import type { FormDataDefault } from './form'
 
 /**
@@ -45,14 +46,21 @@ export type PickProps<Entity, PropertyKeys extends string> =
 /**
  * Resolves to a union of dot-connected paths of all nested properties of T.
  */
-export type Paths<T, Seen = never> =
+
+type AntiCollapse = '__anticollapse__'
+type CleanupAntiCollapse<T extends string> =
+  T extends `${infer Left}${AntiCollapse}${infer Right}` ? `${Left}${CleanupAntiCollapse<Right>}` : T
+
+type RecursePaths<T, Seen = never> =
   T extends Seen ? never :
-    T extends Array<infer ArrayType> ? `${number}` | `${number}.${Paths<ArrayType, Seen | T>}` :
+    T extends Array<infer ArrayType> ? `${number}` | `${number}.${RecursePaths<ArrayType, Seen | T>}` :
       T extends object
         ? {
-            [K in keyof T]-?: `${Exclude<K, symbol>}${'' | `.${Paths<T[K], Seen | T>}`}`
+            [K in keyof T]-?: `${AntiCollapse}${Exclude<K, symbol>}${'' | `.${RecursePaths<T[K], Seen | T>}`}`
           }[keyof T]
         : never
+
+export type Paths<T, Seen = never> = CleanupAntiCollapse<RecursePaths<T, Seen>>
 
 /**
  * Removes the last part of a dot-connected path.
