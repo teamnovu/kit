@@ -1,6 +1,6 @@
 {
   "name": "@teamnovu/kit-vue-forms",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "",
   "main": "index.js",
   "exports": {
@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^13.5.0",
+    "vue-component-type-helpers": "^3.0.5",
     "zod": "^4"
   }
 }
