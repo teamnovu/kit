@@ -1,11 +1,17 @@
 {
   "name": "@teamnovu/kit-api-platform-types",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Frontend typescript types for API Platform",
   "exports": {
     ".": {
-      "types": "./index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
     }
+  },
+  "scripts": {
+    "build": "vite build",
+    "watch": "NODE_ENV=development vite build --watch",
+    "lint": "eslint --fix --ignore-pattern 'dist/**' ."
   },
   "license": "ISC",
   "repository": {
@@ -14,5 +20,12 @@
   },
   "keywords": [],
   "author": "Elias Bernhaut",
-  "homepage": "https://kit.novu.ch/packages/api-platform-types/"
+  "homepage": "https://kit.novu.ch/packages/api-platform-types/",
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "yaml": "^2.8.1"
+  },
+  "peerDependencies": {
+    "vite": "^7.0.0"
+  }
 }
