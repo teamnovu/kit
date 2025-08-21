@@ -3,6 +3,7 @@ import { reactive } from 'vue'
 import { useFieldRegistry } from '../src/composables/useFieldRegistry'
 import { useFormState } from '../src/composables/useFormState'
 import { useForm } from '../src'
+import { useValidation } from '../src/composables/useValidation'
 
 describe('useFormState', () => {
   it('should detect dirty state when form data changes', () => {
@@ -45,10 +46,12 @@ describe('useFormState', () => {
       email: 'john@example.com',
     }
     const data = reactive(initialData)
-    const fields = useFieldRegistry({
+    const state = reactive({
       data,
       initialData,
     })
+    const validationState = useValidation(state, {})
+    const fields = useFieldRegistry(state, validationState)
 
     const nameField = fields.defineField({ path: 'name' })
     fields.defineField({ path: 'email' })
@@ -62,12 +65,16 @@ describe('useFormState', () => {
   })
 
   it('should handle empty fields map', () => {
-    const initialData = { name: 'John' }
+    const initialData = {
+      name: 'John',
+    }
     const data = reactive(initialData)
-    const fields = useFieldRegistry({
+    const state = reactive({
       data,
       initialData,
     })
+    const validationState = useValidation(state, {})
+    const fields = useFieldRegistry(state, validationState)
 
     const formState = useFormState(fields)
 
