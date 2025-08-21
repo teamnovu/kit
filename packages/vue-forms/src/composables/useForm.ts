@@ -7,7 +7,6 @@ import { useFieldRegistry } from './useFieldRegistry'
 import { useFormState } from './useFormState'
 import { createSubformInterface, type SubformOptions } from './useSubform'
 import { useValidation, type ValidationOptions } from './useValidation'
-import { syncRef } from '@vueuse/core'
 
 // TODO @Elias implement validation strategy handling
 
