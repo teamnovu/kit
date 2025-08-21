@@ -377,7 +377,7 @@ export type SpecifyResource<
 }
 
 /**
- * The main specification function used for API outputs based on the interfaces generated with the generateResourceGroups plugin (types we get back the API).
+ * The main specification function used for API outputs based on the interfaces generated with the generateResourceGroups plugin (types we get back from the API).
  */
 export type SpecifyGeneratedApiOutput<
   T extends ApiEntity,
@@ -401,7 +401,7 @@ export type SpecifyGeneratedApiInput<
       : never
 
 /**
- * The main specification function used for API outputs (types we get back the API).
+ * The main specification function used for API outputs (types we get back from the API).
  */
 export type SpecifyApiOutput<T extends ApiEntity, TGroup extends AllGroups<T>> = DeepRequired<UnwrapEntity<T, TGroup>>
 

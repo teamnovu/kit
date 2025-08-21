@@ -6,9 +6,11 @@ export interface GenerateSerializationGroupsPluginOptions {
   /** the directory where the generated TypeScript files will be written */
   outputDirectory: string
   /** a function to modify the serialization groups of resource properties before they are written */
-  modifyResourceSerializationGroups?: (groups: string[], context: ParsedResourceSerializationGroupsPropertyDefinition) => string[]
+  modifyResourceSerializationPropertyDefinition?:
+  (propertyDefinition: ParsedResourceSerializationGroupsPropertyDefinition) => ParsedResourceSerializationGroupsPropertyDefinition
   /** a function to modify the serialization groups of operation inputs and outputs before they are written */
-  modifyOperationSerializationGroups?: (groups: string[], context: ParsedOperationSerializationGroupsPropertyDefinition) => string[]
+  modifyOperationSerializationPropertyDefinition?: (operationDefinition:
+  ParsedOperationSerializationGroupsPropertyDefinition) => ParsedOperationSerializationGroupsPropertyDefinition
 }
 
 export interface ParsedResourceSerializationGroupsPropertyDefinition {

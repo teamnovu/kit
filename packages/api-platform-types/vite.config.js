@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [
     dts({
       staticImport: true,
+      copyDtsFiles: true,
     }),
   ],
   build: {
@@ -24,6 +25,7 @@ export default defineConfig({
       external: [
         ...Object.keys(pkg.dependencies ?? {}),
         ...Object.keys(pkg.peerDependencies ?? {}),
+        'fs/promises',
       ],
     },
   },

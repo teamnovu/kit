@@ -1,8 +1,9 @@
 import type { Plugin } from 'vite'
-import fs from 'fs'
+import fs from 'fs/promises'
 import ts, { NodeFlags } from 'typescript'
 import type { GenerateSerializationGroupsPluginOptions } from './types'
 import { loadOperationSerializationGroups, loadResourceSerializationGroups } from './parser/yaml'
+import { trimEnd, trimStart } from 'lodash-es'
 
 /**
  * Extracts the name of the resource class (i.e. last part) from its full namespace name.
@@ -22,7 +23,7 @@ export default function generateSerializationGroups(options: GenerateSerializati
   /**
    * Writes the given TypeScript statements to a file with the given name.
    */
-  function writeToFile(statements: readonly ts.Statement[], fileName: string) {
+  async function writeToFile(statements: readonly ts.Statement[], fileName: string) {
     const printer = ts.createPrinter({
       newLine: ts.NewLineKind.LineFeed,
       omitTrailingSemicolon: true,
@@ -31,21 +32,21 @@ export default function generateSerializationGroups(options: GenerateSerializati
 
     const output = printer.printFile(sourceFile)
 
-    fs.writeFileSync(`${options.outputDirectory}/${fileName}`, output, 'utf8')
+    await fs.writeFile(`${trimEnd(options.outputDirectory, '/')}/${trimStart(fileName, '/')}`, output, 'utf8')
   }
 
   /**
    * Generates TypeScript interfaces for resource serialization groups.
    */
-  function generateResourceGroups() {
-    const resourceSerializationGroups = loadResourceSerializationGroups(options.serializationFileDirectory)
+  async function generateResourceGroups() {
+    const resourceSerializationGroups = await loadResourceSerializationGroups(options.serializationFileDirectory)
 
     const interfaces = resourceSerializationGroups.map((resourceSerializationGroup) => {
       const propertyDeclarations = resourceSerializationGroup.properties.map((propertyGroups) => {
-        const groups = options.modifyResourceSerializationGroups?.(propertyGroups.groups, propertyGroups) ?? propertyGroups.groups
+        const { groups, name } = options.modifyResourceSerializationPropertyDefinition?.(propertyGroups) ?? propertyGroups
         return ts.factory.createPropertySignature(
           undefined,
-          propertyGroups.name,
+          name,
           undefined,
           ts.factory.createTypeLiteralNode([
             ts.factory.createPropertySignature(
@@ -84,22 +85,26 @@ export default function generateSerializationGroups(options: GenerateSerializati
     })
 
     // Ensure parent directories exist
-    fs.mkdirSync(options.outputDirectory, { recursive: true })
-    writeToFile(interfaces, 'resourceSerializationGroups.ts')
+    await fs.mkdir(options.outputDirectory, { recursive: true })
+    await writeToFile(interfaces, 'resourceSerializationGroups.ts')
+
+    // eslint-disable-next-line no-console
+    console.log('✅ ApiPlatform resource serialization group interfaces generated successfully.')
   }
 
   /**
    * Generates TypeScript interfaces for operation serialization groups.
    */
-  function generateOperationsGroups() {
-    const mappingSerializationGroups = loadOperationSerializationGroups(options.mappingFileDirectory)
+  async function generateOperationsGroups() {
+    const mappingSerializationGroups = await loadOperationSerializationGroups(options.mappingFileDirectory)
 
     const interfaceDeclarations = mappingSerializationGroups.map((mappingSerializationGroup) => {
       const propertyDeclarations = mappingSerializationGroup.operations.map((operation) => {
         const propertySignatures: ts.TypeElement[] = []
 
-        if (operation.inputGroups?.length) {
-          const groups = options.modifyOperationSerializationGroups?.(operation.inputGroups, operation) ?? operation.inputGroups
+        const { inputGroups, outputGroups, operationName } = options.modifyOperationSerializationPropertyDefinition?.(operation) ?? operation
+
+        if (inputGroups?.length) {
           propertySignatures.push(
             ts.factory.createPropertySignature(
               undefined,
@@ -111,7 +116,7 @@ export default function generateSerializationGroups(options: GenerateSerializati
                   'groups',
                   undefined,
                   ts.factory.createUnionTypeNode(
-                    groups.map(group => ts.factory.createLiteralTypeNode(ts.factory.createStringLiteral(group, true))),
+                    inputGroups.map(group => ts.factory.createLiteralTypeNode(ts.factory.createStringLiteral(group, true))),
                   ),
                 ),
               ]),
@@ -119,8 +124,7 @@ export default function generateSerializationGroups(options: GenerateSerializati
           )
         }
 
-        if (operation.outputGroups.length) {
-          const groups = options.modifyOperationSerializationGroups?.(operation.outputGroups, operation) ?? operation.outputGroups
+        if (outputGroups.length) {
           propertySignatures.push(
             ts.factory.createPropertySignature(
               undefined,
@@ -132,7 +136,7 @@ export default function generateSerializationGroups(options: GenerateSerializati
                   'groups',
                   undefined,
                   ts.factory.createUnionTypeNode(
-                    groups.map(group => ts.factory.createLiteralTypeNode(ts.factory.createStringLiteral(group, true))),
+                    outputGroups.map(group => ts.factory.createLiteralTypeNode(ts.factory.createStringLiteral(group, true))),
                   ),
                 ),
               ]),
@@ -142,7 +146,7 @@ export default function generateSerializationGroups(options: GenerateSerializati
 
         return ts.factory.createPropertySignature(
           undefined,
-          operation.operationName,
+          operationName,
           undefined,
           ts.factory.createTypeLiteralNode(
             propertySignatures,
@@ -174,8 +178,11 @@ export default function generateSerializationGroups(options: GenerateSerializati
     })
 
     // Ensure parent directories exist
-    fs.mkdirSync(options.outputDirectory, { recursive: true })
-    writeToFile(interfaceDeclarations, 'operations.ts')
+    await fs.mkdir(options.outputDirectory, { recursive: true })
+    await writeToFile(interfaceDeclarations, 'operations.ts')
+
+    // eslint-disable-next-line no-console
+    console.log('✅ ApiPlatform operation serialization group interfaces generated successfully.')
   }
 
   return {
@@ -183,8 +190,20 @@ export default function generateSerializationGroups(options: GenerateSerializati
     buildStart() {
       generateResourceGroups()
       generateOperationsGroups()
-      // eslint-disable-next-line no-console
-      console.log('✅ ApiPlatform serialization group interfaces generated successfully.')
+      this.addWatchFile(options.serializationFileDirectory)
+      this.addWatchFile(options.mappingFileDirectory)
+    },
+    handleHotUpdate(args) {
+      const filePath = args.file
+
+      // only handle updates for files in the specified directories
+      if (filePath.startsWith(options.serializationFileDirectory)) {
+        // If a watched file has changed, re-generate the serialization groups
+        generateResourceGroups()
+      }
+      if (filePath.startsWith(options.mappingFileDirectory)) {
+        generateOperationsGroups()
+      }
     },
   }
 }
