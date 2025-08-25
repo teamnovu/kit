@@ -209,8 +209,10 @@ describe('useForm', () => {
     expect(form.errors.value.general).toEqual([])
     expect(form.errors.value.propertyErrors).toEqual({})
 
-    const field = form.defineField({ path: '1' })
+    const rootField = form.defineField({ path: '' })
+    const itemField = form.defineField({ path: '1' })
 
-    expect(field.data.value).toBe('item2')
+    expect(rootField.data.value).toEqual(['item1', 'item2'])
+    expect(itemField.data.value).toBe('item2')
   })
 })
