@@ -315,7 +315,93 @@ type PickDot<Entity, PropertyKeys extends string> =
       : Entity
 
 /**
- * The main specification function used for API outputs (types we get back the API).
+ * The interface for the generated resource serialization groups file.
+ */
+export interface ResourceSerializationDefinition {
+  resourceClass: string
+  properties: {
+    [propertyName: string]: {
+      groups: string
+    }
+  }
+}
+
+/**
+ * The interface for the generated operation serialization groups file.
+ */
+export interface OperationSerializationDefinition {
+  resourceClass: string
+  operations: {
+    [operationName: string]: {
+      input?: {
+        groups: string
+      }
+      output?: {
+        groups: string
+      }
+    }
+  }
+}
+
+/**
+ * Restricts the properties of Original to the properties of RestrictTo, so that an extends cannot have more properties.
+ */
+type Restrict<Original, RestrictTo> = {
+  [K in keyof Original]: K extends keyof RestrictTo ? RestrictTo[K] : never
+} & RestrictTo
+
+/**
+ * Helper type to extract the resource type from a serialization definition.
+ */
+type ExtractResourceTypeFromSerializationDefintion<
+  TResourceType,
+  TDefinition extends ResourceSerializationDefinition,
+> = Restrict<TResourceType, Record<keyof TDefinition['properties'], unknown>>
+
+/**
+ * Helper type to extract the operation definition from an OperationSerializationDefinition.
+ */
+type ExtractOperation<
+  TOperationDefinition extends OperationSerializationDefinition,
+  TOperationName extends keyof TOperationDefinition['operations'],
+> = TOperationDefinition['operations'][TOperationName]
+
+/**
+ * The main specification function used for API resources.
+ */
+export type SpecifyResource<
+  TSerializationObject extends ResourceSerializationDefinition,
+  TResourceType extends ExtractResourceTypeFromSerializationDefintion<TResourceType, TSerializationObject>,
+> = ApiEntity & {
+  [K in keyof TResourceType]: ApiProperty<TResourceType[K], TSerializationObject['properties'][K]['groups']>
+}
+
+/**
+ * The main specification function used for API outputs based on the interfaces generated with the generateResourceGroups plugin (types we get back from the API).
+ */
+export type SpecifyGeneratedApiOutput<
+  T extends ApiEntity,
+  TOperationDefinition extends OperationSerializationDefinition,
+  TOperationName extends keyof TOperationDefinition['operations'],
+> =
+    ExtractOperation<TOperationDefinition, TOperationName> extends { output: unknown }
+      ? DeepRequired<UnwrapEntity<T, ExtractOperation<TOperationDefinition, TOperationName>['output']['groups']>>
+      : never
+
+/**
+ * The main specification function used for API inputs based on the interfaces generated with the generateResourceGroups plugin (types we send to the API).
+ */
+export type SpecifyGeneratedApiInput<
+  T extends ApiEntity,
+  TOperationDefinition extends OperationSerializationDefinition,
+  TOperationName extends keyof TOperationDefinition['operations'],
+> =
+    ExtractOperation<TOperationDefinition, TOperationName> extends { input: unknown }
+      ? DeepPartial<UnwrapEntity<T, ExtractOperation<TOperationDefinition, TOperationName>['input']['groups'], true>>
+      : never
+
+/**
+ * The main specification function used for API outputs (types we get back from the API).
  */
 export type SpecifyApiOutput<T extends ApiEntity, TGroup extends AllGroups<T>> = DeepRequired<UnwrapEntity<T, TGroup>>
 
