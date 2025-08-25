@@ -3,7 +3,7 @@ import fs from 'fs/promises'
 import ts, { NodeFlags } from 'typescript'
 import type { GenerateSerializationGroupsPluginOptions } from './types'
 import { loadOperationSerializationGroups, loadResourceSerializationGroups } from './parser/yaml'
-import { trimEnd, trimStart } from 'lodash-es'
+import path from 'node:path'
 
 /**
  * Extracts the name of the resource class (i.e. last part) from its full namespace name.
@@ -32,7 +32,7 @@ export default function generateSerializationGroups(options: GenerateSerializati
 
     const output = printer.printFile(sourceFile)
 
-    await fs.writeFile(`${trimEnd(options.outputDirectory, '/')}/${trimStart(fileName, '/')}`, output, 'utf8')
+    await fs.writeFile(path.join(options.outputDirectory.trim(), fileName.trim()), output, 'utf8')
   }
 
   /**

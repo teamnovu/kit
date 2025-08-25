@@ -23,6 +23,7 @@ To automatically generate types, import `generateSerializationGroups` from the b
 ```typescript
 // vite.config.ts
 import { generateSerializationGroups } from '@teamnovu/kit-api-platform-types';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig(({ mode }) => ({
   plugins: [
@@ -36,6 +37,14 @@ export default defineConfig(({ mode }) => ({
 }));
 ```
 There are two more optional parameters `modifyResourceSerializationPropertyDefinition` and `modifyOperationSerializationPropertyDefinition` with which you can modify the groups before they are written (e.g. to add a prefix for role based serialization groups).
+An example to add the prefix `role_admin:` to every output group of the operation definitions:
+```typescript
+modifyOperationSerializationPropertyDefinition: definition => ({
+  ...definition,
+  outputGroups: definition.outputGroups.concat(definition.outputGroups.map(group => `role_admin:${group}`)),
+})
+```
+
 This plugin will generate the groups on every start of the dev server and it will also hot update if you change one of the files in the `serializationFileDirectory` or `mappingFileDirectory`.
 
 Note: You should add the `outputDirectory` to your `.gitignore` file, as it is generated automatically.
