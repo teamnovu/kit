@@ -59,7 +59,7 @@ type RecursePaths<T, Seen = never> =
           }[keyof T]
         : never
 
-export type Paths<T, Seen = never> = CleanupAntiCollapse<RecursePaths<T, Seen>>
+export type Paths<T, Seen = never> = CleanupAntiCollapse<RecursePaths<T, Seen>> | ''
 
 /**
  * Removes the last part of a dot-connected path.

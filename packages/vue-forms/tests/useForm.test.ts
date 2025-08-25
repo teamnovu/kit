@@ -193,4 +193,26 @@ describe('useForm', () => {
     expect(form.errors.value.general).toEqual([])
     expect(form.errors.value.propertyErrors).toEqual({})
   })
+
+  it('can handle arrays on top level', async () => {
+    const schema = z.array(z.string())
+
+    const form = useForm({
+      initialData: ['item1', 'item2'],
+      schema,
+    })
+
+    const result = await form.validateForm()
+
+    expect(result.isValid).toBe(true)
+    expect(form.isValidated.value).toBe(true)
+    expect(form.errors.value.general).toEqual([])
+    expect(form.errors.value.propertyErrors).toEqual({})
+
+    const rootField = form.defineField({ path: '' })
+    const itemField = form.defineField({ path: '1' })
+
+    expect(rootField.data.value).toEqual(['item1', 'item2'])
+    expect(itemField.data.value).toBe('item2')
+  })
 })

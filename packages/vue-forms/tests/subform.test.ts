@@ -1345,4 +1345,23 @@ describe('Subform Implementation', () => {
       })
     })
   })
+
+  describe('Toplevel array subform', () => {
+    it('can handle arrays on top level', async () => {
+      const schema = z.array(z.string())
+
+      const form = useForm({
+        initialData: { test: ['item1', 'item2'] },
+        schema,
+      })
+
+      const subform = form.getSubForm('test')
+
+      const rootField = subform.defineField({ path: '' })
+      const itemField = subform.defineField({ path: '0' })
+
+      expect(rootField.data.value).toEqual(['item1', 'item2'])
+      expect(itemField.data.value).toEqual('item1')
+    })
+  })
 })
