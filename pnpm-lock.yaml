@@ -313,6 +313,9 @@ importers:
       '@vueuse/core':
         specifier: ^13.5.0
         version: 13.5.0(vue@3.5.13(typescript@5.9.2))
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
       vue-component-type-helpers:
         specifier: ^3.0.5
         version: 3.0.5
