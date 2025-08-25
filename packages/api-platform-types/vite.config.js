@@ -26,6 +26,7 @@ export default defineConfig({
         ...Object.keys(pkg.dependencies ?? {}),
         ...Object.keys(pkg.peerDependencies ?? {}),
         'fs/promises',
+        'node:path',
       ],
     },
   },

@@ -1,6 +1,6 @@
 {
   "name": "@teamnovu/kit-api-platform-types",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Frontend typescript types for API Platform",
   "exports": {
     ".": {
