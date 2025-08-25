@@ -187,22 +187,22 @@ export default function generateSerializationGroups(options: GenerateSerializati
 
   return {
     name: 'generate-serialization-groups',
-    buildStart() {
-      generateResourceGroups()
-      generateOperationsGroups()
+    async buildStart() {
       this.addWatchFile(options.serializationFileDirectory)
       this.addWatchFile(options.mappingFileDirectory)
+      await generateResourceGroups()
+      await generateOperationsGroups()
     },
-    handleHotUpdate(args) {
+    async handleHotUpdate(args) {
       const filePath = args.file
 
       // only handle updates for files in the specified directories
       if (filePath.startsWith(options.serializationFileDirectory)) {
         // If a watched file has changed, re-generate the serialization groups
-        generateResourceGroups()
+        await generateResourceGroups()
       }
       if (filePath.startsWith(options.mappingFileDirectory)) {
-        generateOperationsGroups()
+        await generateOperationsGroups()
       }
     },
   }
