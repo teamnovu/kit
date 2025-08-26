@@ -17,7 +17,7 @@ export interface ResponseType<TKey> {
 }
 
 export type BrandedResponse<Operations, OperationKey extends (keyof Operations) & string> =
-  ResponseType<OperationKey> & OperationProp<Operations, OperationKey, 'response'> & { __BLBL: string }
+  ResponseType<OperationKey> & OperationProp<Operations, OperationKey, 'response'> & { __brand: string }
 
 export class ShopwareClient<Operations> extends EventEmitter {
   private options: ShopwareClientOptions = {
@@ -32,15 +32,15 @@ export class ShopwareClient<Operations> extends EventEmitter {
   constructor(options: ShopwareClientOptions) {
     super()
 
-    this.setBaseURL(options.baseURL ?? this.options.baseURL)
-    this.setApiKey(options.apiKey ?? this.options.apiKey)
-    this.setLanguage(options.language ?? this.options.language)
-    this.setContextToken(options.contextToken ?? this.options.contextToken)
-    this.setIncludeSeoUrls(options.includeSeoUrls ?? this.options.includeSeoUrls)
-    this.setReflectContextToken(options.reflectContextToken ?? this.options.reflectContextToken)
+    this.baseURL = options.baseURL ?? this.options.baseURL
+    this.apiKey = options.apiKey ?? this.options.apiKey
+    this.language = options.language ?? this.options.language
+    this.contextToken = options.contextToken ?? this.options.contextToken
+    this.includeSeoUrls = options.includeSeoUrls ?? this.options.includeSeoUrls
+    this.reflectContextToken = options.reflectContextToken ?? this.options.reflectContextToken
   }
 
-  public setBaseURL(baseURL: string) {
+  set baseURL(baseURL: string) {
     if (typeof baseURL !== 'string') {
       throw new Error('Invalid baseURL: It must be a string.')
     }
@@ -48,7 +48,11 @@ export class ShopwareClient<Operations> extends EventEmitter {
     this.options.baseURL = baseURL
   }
 
-  public setApiKey(apiKey: string) {
+  get baseURL() {
+    return this.options.baseURL
+  }
+
+  set apiKey(apiKey: string) {
     if (typeof apiKey !== 'string') {
       throw new Error('Invalid apiKey: It must be a string.')
     }
@@ -56,7 +60,11 @@ export class ShopwareClient<Operations> extends EventEmitter {
     this.options.apiKey = apiKey
   }
 
-  public setLanguage(language: string | undefined) {
+  get apiKey() {
+    return this.options.apiKey
+  }
+
+  set language(language: string | undefined) {
     if (language && typeof language !== 'string') {
       throw new Error('Invalid language: If provided, it must be a string.')
     }
@@ -64,7 +72,11 @@ export class ShopwareClient<Operations> extends EventEmitter {
     this.options.language = language
   }
 
-  public setContextToken(contextToken: string | undefined) {
+  get language() {
+    return this.options.language
+  }
+
+  set contextToken(contextToken: string | undefined) {
     if (contextToken && typeof contextToken !== 'string') {
       throw new Error('Invalid contextToken: If provided, it must be a string.')
     }
@@ -73,12 +85,24 @@ export class ShopwareClient<Operations> extends EventEmitter {
     this.emit('contextToken', contextToken)
   }
 
-  public setIncludeSeoUrls(includeSeoUrls: boolean = true) {
+  get contextToken() {
+    return this.options.contextToken
+  }
+
+  set includeSeoUrls(includeSeoUrls: boolean | undefined) {
     this.options.includeSeoUrls = includeSeoUrls
   }
 
-  public setReflectContextToken(reflectContextToken: boolean = true) {
+  get includeSeoUrls() {
+    return this.options.includeSeoUrls
+  }
+
+  set reflectContextToken(reflectContextToken: boolean | undefined) {
     this.options.reflectContextToken = reflectContextToken
+  }
+
+  get reflectContextToken() {
+    return this.options.reflectContextToken
   }
 
   private parseOperation(operation: keyof Operations & string): {
@@ -146,7 +170,7 @@ export class ShopwareClient<Operations> extends EventEmitter {
       if (this.options.reflectContextToken) {
         const contextToken = response.headers.get('sw-context-token')
         if (contextToken) {
-          this.setContextToken(contextToken)
+          this.contextToken = contextToken
         }
       }
 
