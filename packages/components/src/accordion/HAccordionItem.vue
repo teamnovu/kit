@@ -13,6 +13,7 @@ import { useVModel } from '@vueuse/core'
 // #region Types
 
 interface Props {
+  id?: string
   open?: boolean
   dimension?: 'width' | 'height'
   duration?: number

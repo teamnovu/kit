@@ -20,11 +20,11 @@ import {
   type EasingFunction,
   type MaybeRef,
 } from '@vueuse/core'
-import { nanoid } from 'nanoid'
 
 // #region Types
 
 interface Props {
+  id?: string
   open?: boolean
   dimension?: 'width' | 'height'
   duration?: number
@@ -42,10 +42,9 @@ const emit = defineEmits(['update:open'])
 
 const collapseRef = ref<HTMLElement>()
 const isTransitioning = ref(false)
-const id = nanoid()
 const isOpen = useCollapse(collapseRef, {
   ...omit(props, ['open']),
-  id,
+  id: props.id,
   provide: true,
   initiallyClosed:
     props.open === undefined ? props.initiallyClosed : !props.open,

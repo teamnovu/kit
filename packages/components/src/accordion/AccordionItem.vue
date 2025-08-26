@@ -32,6 +32,7 @@ import { omit } from 'lodash-es'
 
 interface Props {
   is?: any
+  id?: string
   open?: boolean
   dimension?: 'width' | 'height'
   duration?: number
