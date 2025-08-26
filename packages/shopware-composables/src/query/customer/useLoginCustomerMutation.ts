@@ -27,7 +27,7 @@ export function useLoginCustomerMutation(
       const contextToken = response.headers.get('sw-context-token')
 
       if (contextToken) {
-        client.setContextToken(contextToken)
+        client.contextToken = contextToken
       }
 
       return response.json()

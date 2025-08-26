@@ -25,7 +25,7 @@ export function useRegisterConfirmMutation(
       const contextToken = response.headers.get('sw-context-token')
 
       if (contextToken) {
-        client.setContextToken(contextToken)
+        client.contextToken = contextToken
       }
 
       return response.json() as Promise<never>
