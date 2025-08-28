@@ -1,6 +1,6 @@
 {
   "name": "@teamnovu/kit-shopware-api-client",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A client for the Shopware API",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",

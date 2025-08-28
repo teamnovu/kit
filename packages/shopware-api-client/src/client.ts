@@ -134,6 +134,8 @@ export class ShopwareClient<Operations> extends EventEmitter {
     operation: OperationKey,
     options?: OperationOptions<Operations, OperationKey>,
   ): Promise<Response> {
+    let response: Response
+
     try {
       const { method, url } = this.parseOperation(operation)
 
@@ -141,7 +143,7 @@ export class ShopwareClient<Operations> extends EventEmitter {
 
       const query = options?.query ? `?${createQueryParams(options.query)}` : ''
 
-      const response = await fetch(`${this.options.baseURL}/store-api${interpolatedUrl}${query}`, {
+      response = await fetch(`${this.options.baseURL}/store-api${interpolatedUrl}${query}`, {
         ...options,
         method,
         headers: {
@@ -154,38 +156,38 @@ export class ShopwareClient<Operations> extends EventEmitter {
         },
         body: options?.body ? JSON.stringify(options.body) : undefined,
       })
-
-      if (!response.ok) {
-        const error = new ShopwareApiError(
-          `Shopware API request failed: ${response.statusText}`,
-          response.status,
-          await response.json().catch(() => undefined),
-        )
-
-        this.emit('error', error)
-
-        throw error
-      }
-
-      if (this.options.reflectContextToken) {
-        const contextToken = response.headers.get('sw-context-token')
-        if (contextToken) {
-          this.contextToken = contextToken
-        }
-      }
-
-      return response
     } catch (error) {
-      if (error instanceof ShopwareApiError) {
-        throw error
-      }
-
-      throw new ShopwareApiError(
+      const shopwareError = new ShopwareApiError(
         'Failed to communicate with Shopware API',
         500,
         error instanceof Error ? error.message : undefined,
       )
+
+      this.emit('error', shopwareError)
+
+      throw shopwareError
     }
+
+    if (!response.ok) {
+      const error = new ShopwareApiError(
+        `Shopware API request failed: ${response.statusText}`,
+        response.status,
+        await response.json().catch(() => undefined),
+      )
+
+      this.emit('error', error)
+
+      throw error
+    }
+
+    if (this.options.reflectContextToken) {
+      const contextToken = response.headers.get('sw-context-token')
+      if (contextToken) {
+        this.contextToken = contextToken
+      }
+    }
+
+    return response
   }
 
   async query<OperationKey extends (keyof Operations) & string>(
