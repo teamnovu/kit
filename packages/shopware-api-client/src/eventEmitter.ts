@@ -1,3 +1,5 @@
+// TODO: Move naming to hooks - deprecate event emitter
+
 interface EventListenerEntry {
   listener: EventListenerOrEventListenerObject
   options: AddEventListenerOptions
@@ -68,15 +70,10 @@ export class EventEmitter implements EventTarget {
     for (const entry of entriesCopy) {
       if (entry.signal?.aborted) continue
 
-      try {
-        if (typeof entry.listener === 'function') {
-          entry.listener.call(this, event)
-        } else {
-          entry.listener.handleEvent(event)
-        }
-      } catch (error) {
-        // In a real implementation, you might want to handle errors differently
-        console.error('Error in event listener:', error)
+      if (typeof entry.listener === 'function') {
+        entry.listener.call(this, event)
+      } else {
+        entry.listener.handleEvent(event)
       }
 
       // Remove if 'once' option was set
