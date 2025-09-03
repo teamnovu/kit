@@ -15,7 +15,7 @@ export function useReadCustomProductDetailOptions(
   body?: OperationOptions<typeof readCustomProductDetailOperation, 'params'>,
 ) {
   const client = useShopwareQueryClient()
-  const queryKey = productKeys.detail(seoUrl, body)
+  const queryKey = productKeys.customDetail(seoUrl, body)
 
   return queryOptions({
     queryKey,

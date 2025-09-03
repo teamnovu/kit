@@ -57,12 +57,19 @@ export const productKeys = {
       },
     ] as const,
   details: () => [...productKeys.all(), 'detail'] as const,
-  detail: (url: MaybeRef<string>, body: MaybeRef<unknown>) =>
+  customDetail: (url: MaybeRef<string>, body: MaybeRef<unknown>) =>
     [
-      ...productKeys.all(),
-      'detail',
+      ...productKeys.details(),
+      'custom',
       {
         url,
+        body,
+      },
+    ] as const,
+  detail: (body: MaybeRef<unknown>) =>
+    [
+      ...productKeys.details(),
+      {
         body,
       },
     ] as const,
