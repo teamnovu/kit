@@ -3,10 +3,11 @@
  * https://github.com/shopware/frontends/blob/main/packages/composables/src/useProductPrice/useProductPrice.ts
  */
 
-import type { Schemas } from '#store-types'
+import type { Schemas } from '../../query/types/operations'
 import { getProductTierPrices } from '@shopware/helpers'
 import type { ComputedRef, Ref } from 'vue'
 import { computed } from 'vue'
+import type { BrandedSchema } from '../types/schema'
 
 /**
  * The purpose of the `useProductPrice` function is to abstract the logic
@@ -19,20 +20,20 @@ export function useProductPrice(
   product: Ref<Schemas['Product'] | undefined>,
 ) {
   const _cheapest: ComputedRef<
-    Schemas['Product']['calculatedCheapestPrice'] | undefined
+    BrandedSchema<'Product'>['calculatedCheapestPrice'] | undefined
   > = computed(() => product.value?.calculatedCheapestPrice)
 
   /**
    * calculatedPrices are used for product with tier prices
    */
-  const _real: ComputedRef<Schemas['CalculatedPrice'] | undefined> = computed(
+  const _real: ComputedRef<BrandedSchema<'CalculatedPrice'> | undefined> = computed(
     () =>
       (product.value?.calculatedPrices?.length ?? 0) > 0
         ? product.value?.calculatedPrices?.[0]
         : product.value?.calculatedPrice,
   )
   const referencePrice: ComputedRef<
-    Schemas['CalculatedPrice']['referencePrice'] | undefined
+    BrandedSchema<'CartPriceReference'> | null | undefined
   > = computed(() => _real?.value?.referencePrice)
 
   const displayFrom: ComputedRef<boolean> = computed(() => {
@@ -50,7 +51,7 @@ export function useProductPrice(
     },
   )
 
-  const _price: ComputedRef<Schemas['CalculatedPrice'] | undefined> = computed(
+  const _price: ComputedRef<BrandedSchema<'CalculatedPrice'> | undefined> = computed(
     () => {
       if (displayFrom.value && getProductTierPrices(product.value).length > 1) {
         return product.value?.calculatedPrices?.reduce((previous, current) => {
@@ -67,7 +68,7 @@ export function useProductPrice(
   const totalPrice: ComputedRef<number | undefined> = computed(
     () => _price.value?.totalPrice,
   )
-  const price: ComputedRef<Schemas['CalculatedPrice'] | undefined> = computed(
+  const price: ComputedRef<BrandedSchema<'CalculatedPrice'> | undefined> = computed(
     () => _price.value,
   )
 

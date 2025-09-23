@@ -240,9 +240,6 @@ importers:
 
   packages/shopware-api-client:
     dependencies:
-      vue:
-        specifier: ^3.0.0
-        version: 3.5.13(typescript@5.9.2)
       zod:
         specifier: ^3.25.67
         version: 3.25.67
