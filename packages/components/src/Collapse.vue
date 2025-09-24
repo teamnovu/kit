@@ -64,8 +64,8 @@ syncRef(isOpen, model)
 
 // #region Methods
 
-const updateRef = (next: HTMLElement) => {
-  collapseRef.value = next
+const updateRef = (next: HTMLElement | null | undefined) => {
+  collapseRef.value = next ?? undefined
 }
 
 const handleOpen = () => {
