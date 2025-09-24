@@ -64,7 +64,7 @@ syncRef(isOpen, model)
 
 // #region Methods
 
-const updateRef = (next: VNodeRef | undefined) => {
+const updateRef: VNodeRef = (next) => {
   if (typeof next !== 'object') {
     collapseRef.value = undefined
     return
