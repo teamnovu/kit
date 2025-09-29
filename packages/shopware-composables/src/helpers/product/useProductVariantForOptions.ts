@@ -1,11 +1,11 @@
-import type { Schemas } from '#store-types'
+import type { Schemas } from '../../query/types/operations'
 import type { MaybeRef } from 'vue'
 import { computed, unref } from 'vue'
 
-type DetailProduct<S extends Schemas> = S['CustomProductDetailResponse']['product']
+type DetailProduct = Schemas['CustomProductDetailResponse']['product']
 
-export function getProductVariantForOptions<S extends Schemas>(
-  product: DetailProduct<S>,
+export function getProductVariantForOptions<S extends DetailProduct>(
+  product: S,
   optionIds: string[],
 ) {
   const variants = product.extensions?.variants
@@ -19,8 +19,8 @@ export function getProductVariantForOptions<S extends Schemas>(
   return variants?.find(v => v.optionIds?.every(optId => optionIds.includes(optId)))
 }
 
-export function useProductVariantForOptions<S extends Schemas>(
-  product: MaybeRef<DetailProduct<S>>,
+export function useProductVariantForOptions<S extends DetailProduct>(
+  product: MaybeRef<S>,
   optionIds: MaybeRef<string[]>,
 ) {
   return computed(() => getProductVariantForOptions(unref(product), unref(optionIds)))
