@@ -25,7 +25,7 @@ export function useLogoutCustomerMutation(
     },
     onSuccess: async (data, variables, context) => {
       await Promise.all([
-        queryClient.removeQueries({ queryKey: contextKeys.all() }),
+        queryClient.resetQueries({ queryKey: contextKeys.all() }),
         queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
         queryClient.invalidateQueries({ queryKey: customerKeys.all() }),
       ])
