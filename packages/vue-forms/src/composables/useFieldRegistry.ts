@@ -1,4 +1,4 @@
-import { computed, markRaw, reactive, toRef, unref, watch } from 'vue'
+import { computed, markRaw, onUnmounted, reactive, toRef, unref, watch } from 'vue'
 import type { FieldsTuple, FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
 import { getLens, getNestedValue } from '../utils/path'
@@ -26,6 +26,10 @@ export function useFieldRegistry<T extends FormDataDefault>(
   const registerField = <K extends Paths<T>>(field: ResolvedFormField<T, K>) => {
     const path = unref(field.path) as Paths<T>
     fields[path] = markRaw(field)
+  }
+
+  const deregisterField = (path: Paths<T>) => {
+    delete fields[path]
   }
 
   const getField = <K extends Paths<T>>(path: K): ResolvedFormField<T, K> => {
@@ -57,6 +61,11 @@ export function useFieldRegistry<T extends FormDataDefault>(
 
     // TODO: If more options are ever needed than only the path we have to update the field
     // here with the new options
+    
+    onUnmounted(() => {
+      // Clean up field on unmount
+      deregisterField(unref(field.path))
+    })
 
     return field
   }
@@ -65,6 +74,7 @@ export function useFieldRegistry<T extends FormDataDefault>(
     fields: computed(() => Object.values(fields) as FieldsTuple<T>),
     getField,
     registerField,
+    deregisterField,
     defineField,
   }
 }
