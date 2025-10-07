@@ -215,4 +215,27 @@ describe('useForm', () => {
     expect(rootField.data.value).toEqual(['item1', 'item2'])
     expect(itemField.data.value).toBe('item2')
   })
+
+  it('can handle late initialized fields', async () => {
+    const form = useForm({
+      initialData: {
+        name: 'John',
+        age: 30,
+      },
+    })
+
+    // No fields defined yet
+    expect(form.fields.value).toEqual([])
+    expect(form.isDirty.value).toBe(false)
+
+    const nameField = form.defineField({ path: 'name' })
+
+
+    expect(form.fields.value.length).toBe(1)
+    expect(form.isDirty.value).toBe(false)
+
+    nameField.setData('Bob')
+
+    expect(form.isDirty.value).toBe(true)
+  })
 })
