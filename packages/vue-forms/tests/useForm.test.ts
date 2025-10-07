@@ -1,9 +1,14 @@
-import { describe, it, expect } from 'vitest'
-import { ref, nextTick, effectScope, watch, unref, reactive, toRef } from 'vue'
-import { useForm } from '../src/composables/useForm'
+import { describe, expect, it } from 'vitest'
+import { effectScope, isReactive, nextTick, reactive, ref } from 'vue'
 import { z } from 'zod'
+import { useForm } from '../src/composables/useForm'
+
+const scope = effectScope()
 
 describe('useForm', () => {
+  beforeAll(() => {
+
+  })
   it('should initialize form with initial data', () => {
     const initialData = {
       name: 'John',
@@ -230,12 +235,59 @@ describe('useForm', () => {
 
     const nameField = form.defineField({ path: 'name' })
 
-
     expect(form.fields.value.length).toBe(1)
     expect(form.isDirty.value).toBe(false)
 
     nameField.setData('Bob')
 
     expect(form.isDirty.value).toBe(true)
+  })
+
+  it('fields can be made reactive', async () => {
+    const form = useForm({
+      initialData: {
+        name: 'John',
+        age: 30,
+      },
+    })
+
+    const nameField = form.defineField({ path: 'name' })
+
+    expect(isReactive(reactive(nameField))).toBe(true)
+  })
+
+  it('fields should only be removed when all references are gone', async () => {
+    const form = useForm({
+      initialData: {
+        name: 'John',
+        age: 30,
+      },
+    })
+
+    expect(form.fields.value).toEqual([])
+
+    const scope1 = effectScope()
+
+    scope1.run(() => {
+      form.defineField({ path: 'name' })
+    })
+
+    expect(form.fields.value.length).toBe(1)
+
+    const scope2 = effectScope()
+
+    scope2.run(() => {
+      form.defineField({ path: 'name' })
+    })
+
+    expect(form.fields.value.length).toBe(1)
+
+    scope1.stop()
+
+    expect(form.fields.value.length).toBe(1)
+
+    scope2.stop()
+
+    expect(form.fields.value.length).toBe(0)
   })
 })
