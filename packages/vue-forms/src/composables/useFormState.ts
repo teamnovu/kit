@@ -6,11 +6,11 @@ export function useFormState<T extends FormDataDefault>(
   formFieldRegistry: FieldRegistry<T>,
 ) {
   const isDirty = computed(() => {
-    return formFieldRegistry.getFields().some((field: AnyField<T>) => unref(field.dirty))
+    return formFieldRegistry.fields.value.some((field: AnyField<T>) => unref(field.dirty))
   })
 
   const isTouched = computed(() => {
-    return formFieldRegistry.getFields().some((field: AnyField<T>) => unref(field.touched))
+    return formFieldRegistry.fields.value.some((field: AnyField<T>) => unref(field.touched))
   })
 
   return {

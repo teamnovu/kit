@@ -187,7 +187,7 @@ describe('Integration Tests', () => {
     form.defineField({ path: 'email' })
 
     // Check registry
-    expect(form.getFields().length).toBe(2)
+    expect(form.fields.value.length).toBe(2)
 
     // Get specific field
     const retrievedNameField = form.getField('name')

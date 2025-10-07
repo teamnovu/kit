@@ -564,7 +564,7 @@ describe('Nested Path Handling', () => {
       }
 
       expect(fields.length).toBeGreaterThan(0)
-      expect(form.getFields().length).toBeGreaterThan(0)
+      expect(form.fields.value.length).toBeGreaterThan(0)
     })
   })
 

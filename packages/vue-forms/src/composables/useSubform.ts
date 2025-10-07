@@ -99,18 +99,18 @@ export function createSubformInterface<
     return adaptMainFormField<P>(mainField)
   }
 
-  const getFields = <P extends SP>() => {
-    return (mainForm.getFields() as FormField<PickProps<T, ScopedMainPaths>, ScopedMainPaths>[])
+  const fields = computed(<P extends SP>() => {
+    return (mainForm.fields.value as FormField<PickProps<T, ScopedMainPaths>, ScopedMainPaths>[])
       .filter((field) => {
         const fieldPath = field.path.value
         return fieldPath.startsWith(path + '.') || fieldPath === path
       })
       .map(field => adaptMainFormField(field)) as FieldsTuple<ST, P>
-  }
+  })
 
   // Helper function to get all fields without type parameter
   const getAllSubformFields = () => {
-    return (mainForm.getFields() as FormField<PickProps<T, ScopedMainPaths>, ScopedMainPaths>[])
+    return (mainForm.fields.value as FormField<PickProps<T, ScopedMainPaths>, ScopedMainPaths>[])
       .filter((field) => {
         const fieldPath = field.path.value
         return fieldPath.startsWith(path + '.') || fieldPath === path
@@ -156,10 +156,10 @@ export function createSubformInterface<
 
   return {
     data: data,
+    fields,
     initialData,
     defineField,
     getField,
-    getFields,
     isDirty,
     isTouched,
     isValid,

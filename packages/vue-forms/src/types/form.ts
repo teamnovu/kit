@@ -37,10 +37,11 @@ export interface Form<T extends FormDataDefault> {
   data: Ref<T>
   initialData: Readonly<Ref<T>>
 
+  fields: Ref<FieldsTuple<T>>
+
   // Field operations
   defineField: <P extends Paths<T>>(options: DefineFieldOptions<PickProps<T, P>, P>) => FormField<PickProps<T, P>, P>
   getField: <P extends Paths<T>>(path: P) => FormField<PickProps<T, P>, P>
-  getFields: <TData extends T>() => FieldsTuple<TData>
 
   // State properties
   isDirty: Ref<boolean>

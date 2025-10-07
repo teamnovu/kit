@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, effectScope, watch, unref, reactive, toRef } from 'vue'
 import { useForm } from '../src/composables/useForm'
 import { z } from 'zod'
 
@@ -87,7 +87,7 @@ describe('useForm', () => {
 
     expect(nameField.path.value).toBe('name')
     expect(emailField.path.value).toBe('email')
-    expect(form.getFields().length).toBe(2)
+    expect(form.fields.value.length).toBe(2)
   })
 
   it('should get registered fields', () => {

@@ -31,12 +31,12 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
   })
 
   const validationState = useValidation(state, options)
-  const fields = useFieldRegistry(state, validationState)
-  const formState = useFormState(fields)
+  const fieldRegistry = useFieldRegistry(state, validationState)
+  const formState = useFormState(fieldRegistry)
 
   const reset = () => {
     data.value = cloneRefValue(initialData)
-    fields.getFields().forEach(
+    fieldRegistry.fields.value.forEach(
       (field: AnyField<T>) => field.reset(),
     )
   }
@@ -49,7 +49,7 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
   }
 
   const formInterface: Form<T> = {
-    ...fields,
+    ...fieldRegistry,
     ...validationState,
     ...formState,
     reset,

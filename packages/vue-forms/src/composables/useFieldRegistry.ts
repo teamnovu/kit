@@ -1,4 +1,4 @@
-import { computed, toRef, unref } from 'vue'
+import { computed, markRaw, reactive, toRef, unref, watch } from 'vue'
 import type { FieldsTuple, FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
 import { getLens, getNestedValue } from '../utils/path'
@@ -21,11 +21,11 @@ export function useFieldRegistry<T extends FormDataDefault>(
   formState: FormState<T>,
   validationState: ValidationState<T>,
 ) {
-  const fields = {} as FieldRegistryCache<T>
+  const fields = reactive({}) as FieldRegistryCache<T>
 
   const registerField = <K extends Paths<T>>(field: ResolvedFormField<T, K>) => {
     const path = unref(field.path) as Paths<T>
-    fields[path] = field
+    fields[path] = markRaw(field)
   }
 
   const getField = <K extends Paths<T>>(path: K): ResolvedFormField<T, K> => {
@@ -52,10 +52,6 @@ export function useFieldRegistry<T extends FormDataDefault>(
     return fields[path] as ResolvedFormField<T, K>
   }
 
-  const getFields = <TData extends T>() => {
-    return Object.values(fields) as FieldsTuple<TData>
-  }
-
   const defineField = <K extends Paths<T>>(options: DefineFieldOptions<PickProps<T, K>, K>): ResolvedFormField<T, K> => {
     const field = getField(options.path)
 
@@ -66,9 +62,8 @@ export function useFieldRegistry<T extends FormDataDefault>(
   }
 
   return {
-    fields,
+    fields: computed(() => Object.values(fields) as FieldsTuple<T>),
     getField,
-    getFields,
     registerField,
     defineField,
   }

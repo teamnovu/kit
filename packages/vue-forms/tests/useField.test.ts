@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { ref, nextTick } from 'vue'
+import { watch, ref, nextTick, effectScope } from 'vue'
 import { useField } from '../src/composables/useField'
+import { cloneDeep } from 'lodash-es'
 
 describe('useField', () => {
   it('should initialize field with path', () => {
@@ -144,4 +145,25 @@ describe('useField', () => {
     field.setData(['a', 'b', 'c', 'd'])
     expect(field.dirty.value).toBe(true)
   })
+
+  it('should trigger reactivity', { timeout: 500 }, () => new Promise((resolve) => {
+    effectScope().run(() => {
+      const initialValue = ref(['a', 'b', 'c'])
+      const field = useField({
+        path: 'array',
+        value: initialValue,
+        initialValue: cloneDeep(initialValue.value),
+      })
+
+      expect(field.data.value).toEqual(initialValue.value)
+      expect(field.dirty.value).toBe(false)
+
+      watch(initialValue, () => {
+        resolve(true)
+      }, { once: true, deep: true })
+
+      field.setData(['a', 'b', 'c', 'd'])
+      expect(field.dirty.value).toBe(true)
+    })
+  }))
 })
