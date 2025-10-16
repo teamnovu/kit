@@ -41,8 +41,12 @@ features:
     details: Vue 3 composables for Shopware integration with TanStack Query
     link: ./packages/shopware-composables/index
   - icon: 🔊
-    title: '@teamnovu/api-platform-types'
+    title: '@teamnovu/kit-api-platform-types'
     details: Frontend typescript types for API Platform
     link: ./packages/api-platform-types/index
+  - icon: 📋
+    title: '@teamnovu/kit-vue-forms'
+    details: Forms data management and validation library
+    link: ./packages/vue-forms/index
 ---
 
