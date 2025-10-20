@@ -16,6 +16,8 @@ The data structure of the form is as follows:
 }
 ```
 
+We can create a form like this:
+
 ```vue
 <template>
   <form @submit.prevent="submit">

@@ -87,10 +87,50 @@ interface Form<T extends object> {
 ```
 
 ## Type `ErrorBag`
+The errors in the form are structured in an `ErrorBag` object. Most errors are tied to properties in the form. However,
+there might be cases where there are errors, that cannot be tied to one property. To account for that the `ErrorBag` satisfies the following interface:
+```typescript
+interface ErrorBag {
+  // an array of general error messages not tied to a specific property
+  general: string[] | undefined
+  // a record of property paths to arrays of error messages
+  // nested properties are dot-separated and array indices are just numbers, e.g. "person.address.street" or "person.hobbies.0.name"
+  // for subforms the errors will be all errors that start with the path of the subform
+  propertyErrors: Record<string, ValidationErrorMessage[] | undefined>
+}
+```
 
 ## Component `FormPart`
+A component to define a subform part for a nested object or array property of the form data. This corresponds to the
+`getSubForm` method of the `Form<T>` object, but in component form to be easily used in the template. An example usage is as follows:
+```vue
+<template>
+  <FormPart :form="form" path="person.address" #="{ subform }">
+    <MyAdddressComponent :form="subform" />
+  </FormPart>
+</template>
+```
+Here, the `subform` will be a `Form` object with the type of the `address` property of the `person` object of the main form data.
+Note that the errors of the subform will only contain the errors that start with the path of the subform.
 
 ## Component `Field`
+This is a helper component to access form fields. It corresponds to the `defineField` method of the `Form<T>` object,
+but in component form to be easily used in the template.
+
+An example usage is as follows:
+```vue
+<template>
+    <Field :form="form" path="firstName" #="{ data, setData, onBlur, errors }">
+        <input :value="data" @input="setData" @blur="onBlur" />
+        <div v-if="errors.length > 0">
+            <span v-for="error in errors" :key="error">{{ error }}</span>
+        </div>
+    </Field>
+</template>
+```
+
+Note: it is recommended to use the `FormFieldWrapper` component and create a reusable form input component instead.
 
 ## Component `FormFieldWrapper`
-
+This component is a helper component to easily create form input components based on plain input components.
+See the [FormInput Example](./FormInput-example.md) for details and an example implementation of a form input component.
