@@ -122,6 +122,10 @@ export function useValidation<T extends FormDataDefault>(
     errors: unref(options.errors) ?? SuccessValidationResult.errors,
   })
 
+  const updateErrors = (newErrors: ErrorBag = SuccessValidationResult.errors) => {
+    validationState.errors = mergeErrors(unref(options.errors) ?? SuccessValidationResult.errors, newErrors)
+  }
+
   // Watch for changes in the error bag and update validation state
   watch(() => unref(options.errors), async () => {
     if (validationState.isValidated) {
@@ -196,10 +200,6 @@ export function useValidation<T extends FormDataDefault>(
       errors,
       isValid,
     }
-  }
-
-  const updateErrors = (newErrors: ErrorBag = SuccessValidationResult.errors) => {
-    validationState.errors = mergeErrors(unref(options.errors) ?? SuccessValidationResult.errors, newErrors)
   }
 
   const validateForm = async (): Promise<ValidationResult> => {
