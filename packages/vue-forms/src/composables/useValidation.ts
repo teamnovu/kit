@@ -124,9 +124,13 @@ export function useValidation<T extends FormDataDefault>(
 
   // Watch for changes in the error bag and update validation state
   watch(() => unref(options.errors), async () => {
-    const validationResults = await getValidationResults()
+    if (validationState.isValidated) {
+      const validationResults = await getValidationResults()
 
-    updateErrors(validationResults.errors)
+      updateErrors(validationResults.errors)
+    } else {
+      updateErrors()
+    }
   }, { immediate: true })
 
   // Watch for changes in validation function or schema
@@ -194,7 +198,7 @@ export function useValidation<T extends FormDataDefault>(
     }
   }
 
-  const updateErrors = (newErrors: ErrorBag) => {
+  const updateErrors = (newErrors: ErrorBag = SuccessValidationResult.errors) => {
     validationState.errors = mergeErrors(unref(options.errors) ?? SuccessValidationResult.errors, newErrors)
   }
 
