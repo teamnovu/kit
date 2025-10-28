@@ -36,6 +36,7 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
 
   const reset = () => {
     data.value = cloneRefValue(initialData)
+    validationState.reset()
     fieldRegistry.fields.value.forEach(
       (field: AnyField<T>) => field.reset(),
     )

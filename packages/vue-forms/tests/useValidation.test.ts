@@ -238,4 +238,45 @@ describe('useValidation', () => {
 
     expect(field.errors.value).toEqual(['Name error'])
   })
+
+  it('should initialize properly when using a zod schema', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+    })
+
+    const formState = { data: { name: 'A' } }
+    const validation = useValidation(formState, {
+      schema,
+    })
+
+    expect(validation.errors.value).toEqual(SuccessValidationResult.errors)
+    expect(validation.isValid.value).toEqual(true)
+
+    const result = await validation.validateForm()
+
+    expect(result.isValid).toBe(false)
+    expect(result.errors.propertyErrors.name).toEqual(['Too small: expected string to have >=2 characters']) // From schema validation
+  })
+
+  it('should reset the form errors', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+    })
+
+    const formState = { data: { name: 'A' } }
+    const validation = useValidation(formState, {
+      schema,
+    })
+
+    await validation.validateForm()
+
+    expect(validation.isValidated.value).toBe(true)
+    expect(validation.isValid.value).toBe(false)
+    expect(validation.errors.value.propertyErrors.name).toEqual(['Too small: expected string to have >=2 characters']) // From schema validation
+
+    validation.reset()
+
+    expect(validation.isValidated.value).toBe(false)
+    expect(validation.errors.value).toEqual(SuccessValidationResult.errors)
+  })
 })

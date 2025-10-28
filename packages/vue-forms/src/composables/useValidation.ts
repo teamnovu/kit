@@ -217,11 +217,17 @@ export function useValidation<T extends FormDataDefault>(
 
   const isValid = computed(() => !hasErrors(validationState.errors))
 
+  const reset = () => {
+    validationState.isValidated = false
+    validationState.errors = unref(options.errors) ?? SuccessValidationResult.errors
+  }
+
   return {
     ...toRefs(validationState),
     validateForm,
     defineValidator,
     isValid,
+    reset,
   }
 }
 
