@@ -107,7 +107,7 @@ export class ShopwareClient<Operations> extends EventEmitter {
     return this.options.reflectContextToken
   }
 
-  set headers(headers: HeadersInit) {
+  set headers(headers: HeadersInit | undefined) {
     this.options.headers = headers
   }
 
