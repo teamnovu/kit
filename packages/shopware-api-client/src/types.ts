@@ -42,6 +42,7 @@ export interface ShopwareClientOptions {
   apiKey: string
   includeSeoUrls?: boolean
   language?: string
+  headers: HeadersInit
 
   /**
    * If true, the context token will be reflected in the response headers.
@@ -56,4 +57,5 @@ export interface ShopwareClientOptions {
    * @default undefined
    */
   contextToken?: string
+
 }

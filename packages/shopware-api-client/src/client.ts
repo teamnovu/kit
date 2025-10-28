@@ -27,6 +27,7 @@ export class ShopwareClient<Operations> extends EventEmitter {
     contextToken: '',
     includeSeoUrls: false,
     reflectContextToken: true,
+    headers: {},
   }
 
   constructor(options: ShopwareClientOptions) {
@@ -38,6 +39,7 @@ export class ShopwareClient<Operations> extends EventEmitter {
     this.contextToken = options.contextToken ?? this.options.contextToken
     this.includeSeoUrls = options.includeSeoUrls ?? this.options.includeSeoUrls
     this.reflectContextToken = options.reflectContextToken ?? this.options.reflectContextToken
+    this.headers = options.headers ?? this.options.headers
   }
 
   set baseURL(baseURL: string) {
@@ -105,6 +107,14 @@ export class ShopwareClient<Operations> extends EventEmitter {
     return this.options.reflectContextToken
   }
 
+  set headers(headers: HeadersInit) {
+    this.options.headers = headers
+  }
+
+  get headers() {
+    return this.options.headers
+  }
+
   private parseOperation(operation: keyof Operations & string): {
     name: string
     method: string
@@ -143,15 +153,16 @@ export class ShopwareClient<Operations> extends EventEmitter {
 
       const query = options?.query ? `?${createQueryParams(options.query)}` : ''
 
-      response = await fetch(`${this.options.baseURL}/store-api${interpolatedUrl}${query}`, {
+      response = await fetch(`${this.baseURL}/store-api${interpolatedUrl}${query}`, {
         ...options,
         method,
         headers: {
           'Content-Type': 'application/json',
-          'sw-access-key': this.options.apiKey,
-          ...(this.options.contextToken && { 'sw-context-token': this.options.contextToken }),
-          ...(this.options.includeSeoUrls && { 'sw-include-seo-urls': 'true' }),
-          ...(this.options.language && { 'sw-language-id': this.options.language }),
+          'sw-access-key': this.apiKey,
+          ...(this.contextToken && { 'sw-context-token': this.contextToken }),
+          ...(this.includeSeoUrls && { 'sw-include-seo-urls': 'true' }),
+          ...(this.language && { 'sw-language-id': this.language }),
+          ...this.headers,
           ...options?.headers,
         },
         body: options?.body ? JSON.stringify(options.body) : undefined,

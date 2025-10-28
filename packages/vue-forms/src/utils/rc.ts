@@ -1,3 +1,6 @@
+/**
+ * Reference counter for fields
+ */
 export class Rc {
   private rc: number = 1
 
