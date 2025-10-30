@@ -124,12 +124,19 @@ type MapArray<T, F> = T extends Array<unknown> ? F[] : F
 type UnpackArray<T> = T extends Array<infer U> ? U : T
 
 /**
+ * Tests if T is the type any. Resolves to true if yes and to false otherwise.
+ */
+type IfAny<T> = 0 extends (1 & T) ? true : false
+
+/**
  * Takes an ApiProperty and if it holds a reference resolves to the type of the reference. Preserves
  * arrays.
  * Resolves to never in all other cases.
  */
 type UnpackReference<T> = T extends ApiProperty<infer R, string>
-  ? (R extends IsEntityReference ? R : never)
+  ? IfAny<R> extends true
+    ? never
+    : (R extends IsEntityReference ? R : never)
   : never
 
 /**
