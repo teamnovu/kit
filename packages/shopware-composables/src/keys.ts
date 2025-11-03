@@ -90,6 +90,7 @@ export const cartKeys = {
 export const customerKeys = {
   all: () => ['customer'] as const,
   detail: (body: MaybeRef<unknown>) => ['customer', { body }] as const,
+  imitateLogin: (body: MaybeRef<unknown>) => ['customer', 'imitateLogin', { body }] as const,
 }
 
 export const addressKeys = {
