@@ -1,4 +1,4 @@
-import { computed, isRef, reactive, shallowRef, triggerRef, unref, watch, type MaybeRef } from 'vue'
+import { computed, isRef, unref, type MaybeRef } from 'vue'
 import type { Paths, PickProps, SplitPath } from '../types/util'
 import type { ErrorBag, ValidationErrors } from '../types/validation'
 
@@ -17,19 +17,27 @@ export function getNestedValue<T, K extends Paths<T>>(obj: T, path: K | SplitPat
   ) as PickProps<T, K>
 }
 
-export function setNestedValue<T, K extends Paths<T>>(obj: T, path: K | SplitPath<K>, value: PickProps<T, K>): void {
+export function setNestedValue<T, K extends Paths<T>>(obj: MaybeRef<T>, path: K | SplitPath<K>, value: PickProps<T, K>): void {
   const keys = Array.isArray(path) ? path : splitPath(path)
 
   const lastKey = keys.at(-1)!
-  const target = keys
-    .slice(0, -1)
-    .reduce(
-      (current, key) => current[key],
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      obj as Record<string, any>,
-    )
 
-  target[lastKey] = lastKey ? value : target
+  if (!lastKey && isRef(obj)) {
+    obj.value = value
+  } else if (!isRef(obj)) {
+    // We cannot do anything here as we have nothing we can assign to
+    return
+  } else {
+    const target = keys
+      .slice(0, -1)
+      .reduce(
+        (current, key) => current[key],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        unref(obj) as Record<string, any>,
+      )
+
+    target[lastKey] = value
+  }
 }
 
 export const getLens = <T, K extends Paths<T>>(data: MaybeRef<T>, key: MaybeRef<K | SplitPath<K>>) => {
@@ -38,7 +46,7 @@ export const getLens = <T, K extends Paths<T>>(data: MaybeRef<T>, key: MaybeRef<
       return getNestedValue(unref(data), unref(key))
     },
     set(value: PickProps<T, K>) {
-      setNestedValue(unref(data), unref(key), value)
+      setNestedValue(data, unref(key), value)
     },
   })
 }
