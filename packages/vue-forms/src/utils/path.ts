@@ -22,11 +22,13 @@ export function setNestedValue<T, K extends Paths<T>>(obj: MaybeRef<T>, path: K 
 
   const lastKey = keys.at(-1)!
 
-  if (!lastKey && isRef(obj)) {
+  if (!lastKey) {
+    if (!isRef(obj)) {
+      // We cannot do anything here as we have nothing we can assign to
+      return
+    }
+
     obj.value = value
-  } else if (!isRef(obj)) {
-    // We cannot do anything here as we have nothing we can assign to
-    return
   } else {
     const target = keys
       .slice(0, -1)
