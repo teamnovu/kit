@@ -19,9 +19,6 @@ export function getNestedValue<T, K extends Paths<T>>(obj: T, path: K | SplitPat
 
 export function setNestedValue<T, K extends Paths<T>>(obj: T, path: K | SplitPath<K>, value: PickProps<T, K>): void {
   const keys = Array.isArray(path) ? path : splitPath(path)
-  if (keys.length === 0) {
-    throw new Error('Path cannot be empty')
-  }
 
   const lastKey = keys.at(-1)!
   const target = keys
@@ -32,7 +29,7 @@ export function setNestedValue<T, K extends Paths<T>>(obj: T, path: K | SplitPat
       obj as Record<string, any>,
     )
 
-  target[lastKey] = value
+  target[lastKey] = lastKey ? value : target
 }
 
 export const getLens = <T, K extends Paths<T>>(data: MaybeRef<T>, key: MaybeRef<K | SplitPath<K>>) => {
