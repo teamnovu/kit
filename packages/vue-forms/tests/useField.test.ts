@@ -160,10 +160,51 @@ describe('useField', () => {
 
       watch(initialValue, () => {
         resolve(true)
-      }, { once: true, deep: true })
+      }, {
+        once: true,
+        deep: true,
+      })
 
       field.setData(['a', 'b', 'c', 'd'])
       expect(field.dirty.value).toBe(true)
     })
   }))
+
+  it('it should set the initial value if the field is not dirty', { timeout: 500 }, () => {
+    const field = useField({
+      initialValue: 'foo',
+      value: 'foo',
+      path: 'name',
+    })
+
+    expect(field.data.value).toBe('foo')
+    expect(field.path.value).toBe('name')
+    expect(field.touched.value).toBe(false)
+    expect(field.dirty.value).toBe(false)
+
+    field.setInitialData('bar')
+
+    expect(field.initialValue.value).toBe('bar')
+    expect(field.data.value).toBe('bar')
+  })
+
+  it('it should set the initial value but not the data if the field is dirty', { timeout: 500 }, () => {
+    const field = useField({
+      initialValue: 'foo',
+      value: 'foo',
+      path: 'name',
+    })
+
+    expect(field.data.value).toBe('foo')
+    expect(field.path.value).toBe('name')
+    expect(field.touched.value).toBe(false)
+    expect(field.dirty.value).toBe(false)
+
+    field.data.value = 'modified'
+
+    field.setInitialData('bar')
+
+    expect(field.initialValue.value).toBe('bar')
+    expect(field.data.value).toBe('modified')
+  })
 })

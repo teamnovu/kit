@@ -1,4 +1,4 @@
-import { computed, reactive, toRefs, type MaybeRef, type MaybeRefOrGetter, type WritableComputedRef } from 'vue'
+import { computed, reactive, ref, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter, type Ref, type WritableComputedRef } from 'vue'
 import type { FormField } from '../types/form'
 import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
@@ -11,10 +11,19 @@ export interface UseFieldOptions<T, K extends string> {
 }
 
 export function useField<T, K extends string>(options: UseFieldOptions<T, K>): FormField<T, K> {
+  const initialValue = ref(Object.freeze(cloneRefValue(options.initialValue))) as Ref<Readonly<T | undefined>>
+
+  watch(
+    () => unref(options.initialValue),
+    (newInitialValue) => {
+      initialValue.value = Object.freeze(cloneRefValue(newInitialValue))
+    },
+  )
+
   const state = reactive({
     value: options.value,
     path: options.path,
-    initialValue: computed(() => Object.freeze(cloneRefValue(options.initialValue))),
+    initialValue,
     errors: options.errors,
     touched: false,
   })
@@ -41,10 +50,6 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
     state.errors = []
   }
 
-  /**
-   * Sets the initial data for the field. If the field is not dirty, it also updates the current data.
-   * @param newData - The new initial data to set.
-   */
   const setInitialData = (newData: T): void => {
     if (!dirty.value) {
       setData(cloneRefValue(newData))

@@ -15,6 +15,10 @@ export interface FormField<T, P extends string> {
   touched: Ref<boolean>
   dirty: Ref<boolean>
   setData: (newData: T) => void
+  /**
+   * Sets the initial data for the field. If the field is not dirty, it also updates the current data.
+   * @param newData - The new initial data to set.
+   */
   setInitialData: (newData: T) => void
   onBlur: () => void
   onFocus: () => void
