@@ -15,6 +15,7 @@ export interface FormField<T, P extends string> {
   touched: Ref<boolean>
   dirty: Ref<boolean>
   setData: (newData: T) => void
+  setInitialData: (newData: T) => void
   onBlur: () => void
   onFocus: () => void
   reset: () => void

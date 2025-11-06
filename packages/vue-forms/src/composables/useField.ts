@@ -41,6 +41,17 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
     state.errors = []
   }
 
+  /**
+   * Sets the initial data for the field. If the field is not dirty, it also updates the current data.
+   * @param newData - The new initial data to set.
+   */
+  const setInitialData = (newData: T): void => {
+    if (!dirty.value) {
+      setData(cloneRefValue(newData))
+    }
+    state.initialValue = newData
+  }
+
   const setErrors = (newErrors: ValidationErrorMessage[]): void => {
     state.errors = newErrors
   }
@@ -59,6 +70,7 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
     touched: refs.touched as FormField<T, K>['touched'],
     dirty,
     setData,
+    setInitialData,
     onBlur,
     onFocus,
     reset,
