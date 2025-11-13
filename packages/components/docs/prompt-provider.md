@@ -22,18 +22,16 @@ composable package and they can be fully customized as discussed there.
 ## Examples
 
 ```vue
-<PromptProvider>
-  <template #dialog="{ isOpen, resolve, promptOptions }">
-    <Modal :model-value="isOpen" :title="promptOptions?.title ?? 'Default Title'">
-      <p>{{ promptOptions?.message ?? 'Default Message' }}</p>
-      <button type="button" @click="resolve({ ok: false })">
-        {{ promptOptions?.cancelButtonText ?? 'No' }}
-      </button>
-      <button type="button" @click="resolve({ ok: true })">
-        {{ promptOptions?.confirmButtonText ?? 'Yes' }}
-      </button>
-    </Modal>
-  </template>
+<PromptProvider v-slot="{ isOpen, resolve, promptOptions }">
+  <Modal :model-value="isOpen" :title="promptOptions?.title ?? 'Default Title'">
+    <p>{{ promptOptions?.message ?? 'Default Message' }}</p>
+    <button type="button" @click="resolve({ ok: false })">
+      {{ promptOptions?.cancelButtonText ?? 'No' }}
+    </button>
+    <button type="button" @click="resolve({ ok: true })">
+      {{ promptOptions?.confirmButtonText ?? 'Yes' }}
+    </button>
+  </Modal>
   <RouterView />
 </PromptProvider>
 ```

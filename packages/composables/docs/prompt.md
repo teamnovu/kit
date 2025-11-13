@@ -1,8 +1,8 @@
 # Prompt
 
-A utility to easily create confirmation prompts.
-It is recommended to use the main composable `usePrompt` together with the `PromptProvider` component of the component package, but it is
-also possible to use `usePromptProvider` directly instead of in component form.
+A utility to easily create confirmation prompts. The main composable to use is `usePrompt`, which relies on a provider of
+the prompt functionality. This provider can either be used in component form via the `PromptProvider` component from the
+component package (recommended), or directly via the `usePromptProvider` composable from this package.
 
 ## Contents
 

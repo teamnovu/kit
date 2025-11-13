@@ -1,6 +1,5 @@
 <template>
-  <slot />
-  <slot name="dialog" v-bind="usePromptSlotProps" />
+  <slot v-bind="usePromptSlotProps" />
 </template>
 
 <script setup lang="ts">

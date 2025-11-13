@@ -34,12 +34,10 @@ export type ResultingPromptAnswer = keyof PromptAnswer extends never ? DefaultPr
 export type PromptFn = (options: ResultingPromptInvokeOptions) => Promise<ResultingPromptAnswer>
 export const promptKey = Symbol('jk/prompt') as InjectionKey<PromptFn>
 
-export const usePrompt = () => (
-  inject(promptKey)
-  || (async () => {
-    console.warn('Prompt was not properly provided.')
-    return {
-      ok: false,
-    }
-  }) as PromptFn
-)
+export const usePrompt = () => {
+  const promptFn = inject(promptKey)
+  if (!promptFn) {
+    throw new Error('The prompt function was not properly provided.')
+  }
+  return promptFn
+}
