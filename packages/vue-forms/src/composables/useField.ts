@@ -1,4 +1,4 @@
-import { computed, reactive, ref, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter, type Ref, type WritableComputedRef } from 'vue'
+import { computed, reactive, shallowRef, toRefs, watch, type MaybeRef, type MaybeRefOrGetter, type Ref, type WritableComputedRef } from 'vue'
 import type { FormField } from '../types/form'
 import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
@@ -11,15 +11,7 @@ export interface UseFieldOptions<T, K extends string> {
 }
 
 export function useField<T, K extends string>(options: UseFieldOptions<T, K>): FormField<T, K> {
-  const initialValue = ref(Object.freeze(cloneRefValue(options.initialValue))) as Ref<Readonly<T | undefined>>
-
-  watch(
-    () => unref(options.initialValue),
-    (newInitialValue) => {
-      initialValue.value = Object.freeze(cloneRefValue(newInitialValue))
-    },
-    { flush: 'sync' },
-  )
+  const initialValue = shallowRef(Object.freeze(cloneRefValue(options.initialValue))) as Ref<Readonly<T | undefined>>
 
   const state = reactive({
     value: options.value,
@@ -28,6 +20,15 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
     errors: options.errors,
     touched: false,
   })
+
+  watch(
+    shallowRef(options.initialValue),
+    () => {
+      initialValue.value = Object.freeze(cloneRefValue(options.initialValue))
+      state.value = cloneRefValue(options.initialValue)
+    },
+    { flush: 'sync' },
+  )
 
   const dirty = computed(() => {
     return JSON.stringify(state.value) !== JSON.stringify(state.initialValue)

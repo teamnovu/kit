@@ -1,4 +1,4 @@
-import { computed, onScopeDispose, shallowReactive, toRef, unref } from 'vue'
+import { computed, onScopeDispose, shallowReactive, shallowRef, toRef, triggerRef, unref, watch, watchEffect, type MaybeRef, type WatchSource } from 'vue'
 import type { FieldsTuple, FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
 import { getLens, getNestedValue } from '../utils/path'
@@ -16,6 +16,22 @@ export type DefineFieldOptions<F, K extends string> = Pick<UseFieldOptions<F, K>
 interface FormState<T extends FormDataDefault, TIn extends FormDataDefault = T> {
   data: T
   initialData: TIn
+}
+
+// A computed that always reflects the latest value from the getter
+// This computed forces updates even if the value is the same (to trigger watchers)
+function alwaysComputed<T>(getter: () => T) {
+  const initialValueRef = shallowRef(getter())
+
+  watchEffect(
+    () => {
+      initialValueRef.value = getter()
+      triggerRef(initialValueRef)
+    },
+    { flush: 'sync' },
+  )
+
+  return initialValueRef
 }
 
 export function useFieldRegistry<T extends FormDataDefault>(
@@ -53,7 +69,9 @@ export function useFieldRegistry<T extends FormDataDefault>(
       const field = useField({
         path,
         value: getLens(toRef(formState, 'data'), path),
-        initialValue: computed(() => getNestedValue(formState.initialData, path)),
+        initialValue: alwaysComputed(
+          () => getNestedValue(formState.initialData, path),
+        ),
         errors: computed({
           get() {
             return validationState.errors.value.propertyErrors[path] || []

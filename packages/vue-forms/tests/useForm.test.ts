@@ -323,4 +323,37 @@ describe('useForm', () => {
     expect(nameField.initialValue.value).toBe('another')
     expect(nameField.data.value).toBe('another')
   })
+
+  it('it should take over the new initial data from the form after setting initial data on field', { timeout: 500 }, async () => {
+    const initialData = ref({
+      name: null as null | number,
+    })
+
+    const form = useForm({
+      initialData,
+    })
+
+    const nameField = form.getField('name')
+
+    expect(form.isDirty.value).toBe(false)
+    expect(nameField.dirty.value).toBe(false)
+
+    nameField.setInitialData(0)
+
+    expect(form.isDirty.value).toBe(false)
+    expect(nameField.dirty.value).toBe(false)
+
+    initialData.value = {
+      name: null,
+    }
+
+    expect(form.initialData.value.name).toBe(null)
+    expect(nameField.initialValue.value).toBe(null)
+    expect(nameField.data.value).toBe(null)
+
+    nameField.setInitialData(23)
+
+    expect(nameField.initialValue.value).toBe(23)
+    expect(nameField.data.value).toBe(23)
+  })
 })

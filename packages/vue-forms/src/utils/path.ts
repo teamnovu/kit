@@ -33,7 +33,7 @@ export function setNestedValue<T, K extends Paths<T>>(obj: MaybeRef<T>, path: K 
     const target = keys
       .slice(0, -1)
       .reduce(
-        (current, key) => current[key],
+        (current, key) => current?.[key],
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         unref(obj) as Record<string, any>,
       )
