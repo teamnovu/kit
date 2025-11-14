@@ -18,6 +18,7 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
     (newInitialValue) => {
       initialValue.value = Object.freeze(cloneRefValue(newInitialValue))
     },
+    { flush: 'sync' },
   )
 
   const state = reactive({

@@ -28,7 +28,7 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
 
   watch(initialData, (newValue) => {
     state.data = cloneRefValue(newValue)
-  })
+  }, { flush: 'sync' })
 
   const validationState = useValidation(state, options)
   const fieldRegistry = useFieldRegistry(state, validationState)
