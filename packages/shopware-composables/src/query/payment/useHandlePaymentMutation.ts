@@ -1,10 +1,9 @@
+import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
-import { useMutation, useQueryClient, type UseMutationOptions } from '@tanstack/vue-query'
 import { unref } from 'vue'
-import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
 import { unrefOptions } from '../../util/unrefOptions'
-import { cartKeys } from '../../keys'
+import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
 const handlePaymentOperation = 'handlePaymentMethod post /handle-payment' satisfies OperationKey
 
@@ -16,7 +15,6 @@ export function useHandlePaymentMutation(
   >,
 ) {
   const client = useShopwareQueryClient()
-  const queryClient = useQueryClient()
 
   return useMutation({
     ...mutationOptions,
@@ -24,8 +22,6 @@ export function useHandlePaymentMutation(
       return client.query(handlePaymentOperation, unrefOptions(options))
     },
     onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries({ queryKey: cartKeys.get() })
-
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
   })
