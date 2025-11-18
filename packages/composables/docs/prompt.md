@@ -46,7 +46,7 @@ There are currently no options for neither `usePrompt`, nor `usePromptProvider`.
   const prompt = usePrompt()
   
   const askForPermission = async () => {
-    const { ok } = prompt({
+    const { ok } = await prompt({
       title: 'Delete Item',
       message: 'Are you sure you want to delete this item?',
     })
