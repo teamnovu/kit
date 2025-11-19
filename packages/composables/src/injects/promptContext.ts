@@ -17,6 +17,12 @@ export interface DefaultPromptInvokeOptions {
 // this allows users to completely override the interface
 export type ResultingPromptInvokeOptions = keyof PromptInvokeOptions extends never ? DefaultPromptInvokeOptions : PromptInvokeOptions
 
+// Brand symbol to create nominal type that prevents resolution
+declare const __promptOptionsType: unique symbol
+export type BrandedResultingPromptInvokeOptions = ResultingPromptInvokeOptions & {
+  readonly [__promptOptionsType]: 'ResultingPromptInvokeOptions'
+}
+
 /**
  * Use Module Augmentation to extend or change this interface in your project
  */
