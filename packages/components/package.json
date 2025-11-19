@@ -1,6 +1,6 @@
 {
   "name": "@teamnovu/kit-components",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A collection of vue(3) components for jkweb",
   "type": "module",
   "main": "dist/index.mjs",

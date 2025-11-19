@@ -10,8 +10,9 @@ export {
   type PromptInvokeOptions,
   type DefaultPromptInvokeOptions,
   type ResultingPromptInvokeOptions,
+  type BrandedResultingPromptInvokeOptions,
   type PromptAnswer,
   type DefaultPromptAnswer,
   type ResultingPromptAnswer,
-  type PromptFn
+  type PromptFn,
 } from './injects/promptContext'
