@@ -157,7 +157,7 @@ export function useValidation<T extends FormDataDefault>(
   )
 
   // Watch for changes in form data to trigger validation
-  watch(() => formState.data, () => {
+  watch([() => formState.data, () => unref(options.schema)], () => {
     if (validationState.isValidated) {
       validateForm()
     }
