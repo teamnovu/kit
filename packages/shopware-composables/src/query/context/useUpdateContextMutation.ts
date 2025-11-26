@@ -2,7 +2,7 @@ import { useMutation, type UseMutationOptions, useQueryClient } from '@tanstack/
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
-import { contextKeys } from '../../keys'
+import { cartKeys, contextKeys } from '../../keys'
 import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 
 const updateContextOperation = 'updateContext patch /context' satisfies OperationKey
@@ -29,7 +29,10 @@ export function useUpdateContextMutation(
     },
 
     onSuccess: async (newContext, variables, context) => {
-      await queryClient.invalidateQueries({ queryKey: contextKeys.all() })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
+        queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
+      ])
 
       await unref(unref(mutationOptions)?.onSuccess)?.(newContext, variables, context)
     },
