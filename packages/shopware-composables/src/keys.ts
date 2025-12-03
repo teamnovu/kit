@@ -89,6 +89,14 @@ export const productKeys = {
         body,
       },
     ] as const,
+  searchSuggest: (body: MaybeRef<unknown>) =>
+    [
+      ...productKeys.all(),
+      'searchSuggest',
+      {
+        body,
+      },
+    ] as const,
 }
 
 export const cartKeys = {
