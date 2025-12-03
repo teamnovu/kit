@@ -12,7 +12,7 @@ export function useReadProductDetailQueryOptions(
   body?: OperationOptions<typeof readProductDetailOperation, 'params'>,
 ) {
   const client = useShopwareQueryClient()
-  const queryKey = productKeys.detail(body)
+  const queryKey = productKeys.detail(productId, body)
 
   return queryOptions({
     queryKey,
