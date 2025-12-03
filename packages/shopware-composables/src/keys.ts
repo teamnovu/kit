@@ -66,6 +66,13 @@ export const productKeys = {
         body,
       },
     ] as const,
+  headlessDetail: (body: MaybeRef<unknown>) =>
+    [
+      ...productKeys.details(),
+      {
+        body,
+      },
+    ] as const,
   detail: (body: MaybeRef<unknown>) =>
     [
       ...productKeys.details(),
