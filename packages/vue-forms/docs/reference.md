@@ -19,7 +19,6 @@ function useForm<T extends object>(options: {
   // if the form data of a property should be reset or kept if all fields corresponding to this property are unmounted
   keepValuesOnUnmount?: MaybeRef<boolean>
   // when validation should be done (on touch, pre submit, etc.)
-  // !! currently not implemented !!
   validationStrategy?: MaybeRef<ValidationStrategy>
 }): Form<T>
 ```

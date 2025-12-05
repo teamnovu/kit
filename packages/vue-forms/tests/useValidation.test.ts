@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
 import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
@@ -278,5 +278,77 @@ describe('useValidation', () => {
 
     expect(validation.isValidated.value).toBe(false)
     expect(validation.errors.value).toEqual(SuccessValidationResult.errors)
+  })
+
+  it('should validate the form on blur if configured', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+    })
+
+    const initialData = { name: 'A' }
+    const form = useForm({
+      initialData,
+      schema,
+      validationStrategy: 'onTouch',
+    })
+
+    const nameField = form.getField('name')
+
+    expect(form.isValidated.value).toBe(false)
+
+    // Simulate blur event
+    nameField.onBlur()
+
+    // onBlur is not async but the validation runs async
+    await delay()
+
+    expect(form.isValidated.value).toBe(true)
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(1)
+  })
+
+  it('should validate the form on form open if configured', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+    })
+
+    const initialData = { name: 'A' }
+    const form = useForm({
+      initialData,
+      schema,
+      validationStrategy: 'onFormOpen',
+    })
+
+    form.getField('name')
+
+    await delay()
+
+    expect(form.isValidated.value).toBe(true)
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(1)
+  })
+
+  it('should not the form on submit if validation strategy is "none"', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+    })
+
+    const initialData = { name: 'A' }
+    const form = useForm({
+      initialData,
+      schema,
+      validationStrategy: 'none',
+    })
+
+    form.getField('name')
+
+    const cb = vi.fn()
+
+    const submitHandler = form.submitHandler(cb)
+
+    await submitHandler(new SubmitEvent('submit'))
+
+    expect(form.isValidated.value).toBe(false)
+    expect(form.isValid.value).toBe(true)
   })
 })

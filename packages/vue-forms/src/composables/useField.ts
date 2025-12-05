@@ -2,12 +2,15 @@ import { computed, reactive, shallowRef, toRefs, watch, type MaybeRef, type Mayb
 import type { FormField } from '../types/form'
 import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
+import type { Awaitable } from '@vueuse/core'
 
 export interface UseFieldOptions<T, K extends string> {
   value?: MaybeRef<T>
   initialValue?: MaybeRefOrGetter<Readonly<T>>
   path: K
   errors?: Ref<ValidationErrors>
+  onBlur?: () => Awaitable<void>
+  onFocus?: () => Awaitable<void>
 }
 
 export function useField<T, K extends string>(options: UseFieldOptions<T, K>): FormField<T, K> {
@@ -41,10 +44,12 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
   const onBlur = (): void => {
     state.touched = true
     state.errors = []
+
+    options.onBlur?.()
   }
 
   const onFocus = (): void => {
-    // TODO: Implement focus logic if needed
+    options.onFocus?.()
   }
 
   const reset = (): void => {
