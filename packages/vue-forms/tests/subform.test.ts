@@ -1031,6 +1031,23 @@ describe('Subform Implementation', () => {
         expect(result.isValid).toBe(false)
         expect(result.errors.general).toContain('Data is undefined')
       })
+
+      it('can create subforms on non-existent paths', async () => {
+        const form = useForm<{
+          test: string[]
+          nonExistentPath?: { name: string }
+        }>({
+          initialData: { test: ['item1', 'item2'] },
+        })
+
+        const subform = form.getSubForm('nonExistentPath')
+
+        const nameField = subform.defineField({ path: 'name' })
+
+        nameField.setData('Test Name')
+
+        expect(nameField.data.value).toEqual('Test Name')
+      })
     })
 
     describe('Path Edge Cases', () => {
