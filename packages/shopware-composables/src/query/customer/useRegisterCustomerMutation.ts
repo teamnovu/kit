@@ -2,7 +2,7 @@ import { useMutation, type UseMutationOptions, useQueryClient } from '@tanstack/
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
-import { customerKeys } from '../../keys'
+import { contextKeys, customerKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
@@ -24,7 +24,10 @@ export function useRegisterCustomerMutation(
       return client.query(registerOperation, unrefOptions(options))
     },
     onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries({ queryKey: customerKeys.all() })
+      await Promise.all([
+        queryClient.resetQueries({ queryKey: contextKeys.all() }),
+        queryClient.invalidateQueries({ queryKey: customerKeys.all() }),
+      ])
 
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
