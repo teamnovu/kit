@@ -294,7 +294,31 @@ describe('useValidation', () => {
 
     const nameField = form.getField('name')
 
-    expect(form.isValidated.value).toBe(false)
+    // Simulate blur event
+    nameField.onBlur()
+
+    // onBlur is not async but the validation runs async
+    await delay()
+
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(1)
+  })
+
+  it('should not validate other fields than the blurred one', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+      email: z.string().email(),
+    })
+
+    const initialData = { name: 'A', email: 'invalid-email' }
+    const form = useForm({
+      initialData,
+      schema,
+      validationStrategy: 'onTouch',
+    })
+
+    const nameField = form.getField('name')
+    form.getField('email')
 
     // Simulate blur event
     nameField.onBlur()
@@ -302,9 +326,9 @@ describe('useValidation', () => {
     // onBlur is not async but the validation runs async
     await delay()
 
-    expect(form.isValidated.value).toBe(true)
     expect(form.isValid.value).toBe(false)
     expect(form.errors.value.propertyErrors.name).toHaveLength(1)
+    expect(form.errors.value.propertyErrors.email ?? []).toHaveLength(0)
   })
 
   it('should validate the form on form open if configured', async () => {

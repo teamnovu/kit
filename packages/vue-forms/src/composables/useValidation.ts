@@ -215,6 +215,22 @@ export function useValidation<T extends FormDataDefault>(
     }
   }
 
+  const validateField = async (path: string): Promise<ValidationResult> => {
+    const validationResults = await getValidationResults()
+
+    updateErrors({
+      general: validationResults.errors.general,
+      propertyErrors: {
+        [path]: validationResults.errors.propertyErrors[path],
+      },
+    })
+
+    return {
+      isValid: !hasErrors(validationResults.errors),
+      errors: validationState.errors,
+    }
+  }
+
   const isValid = computed(() => !hasErrors(validationState.errors))
 
   const reset = () => {
@@ -225,6 +241,7 @@ export function useValidation<T extends FormDataDefault>(
   return {
     ...toRefs(validationState),
     validateForm,
+    validateField,
     defineValidator,
     isValid,
     reset,

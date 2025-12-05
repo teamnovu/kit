@@ -51,10 +51,10 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
   const validationState = useValidation(state, options);
   const fieldRegistry = useFieldRegistry(state, validationState, {
     keepValuesOnUnmount: options.keepValuesOnUnmount,
-    onBlur: async () => {
+    onBlur: async (path: string) => {
       if (unref(options.validationStrategy) === "onTouch") {
         // TODO: Only validate the specific field that was touched
-        validationState.validateForm();
+        validationState.validateField(path);
       }
     },
   });
