@@ -11,7 +11,7 @@ import {
 } from "vue";
 import type { FieldsTuple, FormDataDefault, FormField } from "../types/form";
 import type { Paths, PickProps } from "../types/util";
-import { getLens, getNestedValue, setNestedValue } from "../utils/path";
+import { getLens, getNestedValue } from "../utils/path";
 import { Rc } from "../utils/rc";
 import { useField, type UseFieldOptions } from "./useField";
 import type { ValidationState } from "./useValidation";
