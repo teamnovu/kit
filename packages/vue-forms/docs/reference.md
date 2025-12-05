@@ -17,7 +17,6 @@ function useForm<T extends object>(options: {
   // this is additional to the schema for custom validations
   validateFn?: MaybeRef<ValidationFunction<T>>
   // if the form data of a property should be reset or kept if all fields corresponding to this property are unmounted
-  // !! currently not implemented !!
   keepValuesOnUnmount?: MaybeRef<boolean>
   // when validation should be done (on touch, pre submit, etc.)
   // !! currently not implemented !!

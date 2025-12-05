@@ -7,6 +7,7 @@ import { useFieldRegistry } from './useFieldRegistry'
 import { useFormState } from './useFormState'
 import { createSubformInterface, type SubformOptions } from './useSubform'
 import { useValidation, type ValidationOptions } from './useValidation'
+import type { Awaitable } from '@vueuse/core'
 
 // TODO @Elias implement validation strategy handling
 
@@ -31,8 +32,24 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
   }, { flush: 'sync' })
 
   const validationState = useValidation(state, options)
-  const fieldRegistry = useFieldRegistry(state, validationState)
+  const fieldRegistry = useFieldRegistry(state, validationState, {
+    keepValuesOnUnmount: options.keepValuesOnUnmount,
+  })
   const formState = useFormState(fieldRegistry)
+
+  const submitHandler = (onSubmit: (data: T) => Awaitable<void>) => {
+    return async (event: SubmitEvent) => {
+      event.preventDefault()
+
+      await validationState.validateForm()
+
+      if (!validationState.isValid.value) {
+        return
+      }
+
+      await onSubmit(state.data)
+    }
+  }
 
   const reset = () => {
     data.value = cloneRefValue(initialData)
@@ -55,6 +72,7 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
     ...formState,
     reset,
     getSubForm,
+    submitHandler,
     initialData: toRef(state, 'initialData') as Form<T>['initialData'],
     data: toRef(state, 'data') as Form<T>['data'],
   }

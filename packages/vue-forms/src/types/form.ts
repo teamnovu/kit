@@ -4,6 +4,7 @@ import type { SubformOptions } from '../composables/useSubform'
 import type { EntityPaths, Paths, PickEntity, PickProps } from './util'
 import type { ErrorBag, ValidationErrorMessage, ValidationErrors, ValidationResult, Validator } from './validation'
 import type { ValidatorOptions } from '../composables/useValidation'
+import type { Awaitable } from '@vueuse/core'
 
 export type FormDataDefault = object
 
@@ -60,6 +61,8 @@ export interface Form<T extends FormDataDefault> {
   // Operations
   reset: () => void
   validateForm: () => Promise<ValidationResult>
+
+  submitHandler: (onSubmit: (data: T) => Awaitable<void>) => (event: SubmitEvent) => Promise<void>
 
   // Nested subforms
   getSubForm: <P extends EntityPaths<T>>(
