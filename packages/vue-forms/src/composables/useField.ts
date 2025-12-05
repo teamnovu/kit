@@ -1,19 +1,28 @@
-import { computed, reactive, shallowRef, toRefs, watch, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
+import type { Awaitable } from '@vueuse/core'
+import { computed, reactive, shallowRef, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
 import type { FormField } from '../types/form'
 import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
-import type { Awaitable } from '@vueuse/core'
 
 export interface UseFieldOptions<T, K extends string> {
   value?: MaybeRef<T>
   initialValue?: MaybeRefOrGetter<Readonly<T>>
   path: K
   errors?: Ref<ValidationErrors>
+  existsInForm?: MaybeRef<boolean>
   onBlur?: () => Awaitable<void>
   onFocus?: () => Awaitable<void>
 }
 
-export function useField<T, K extends string>(options: UseFieldOptions<T, K>): FormField<T, K> {
+export function useField<T, K extends string>(fieldOptions: UseFieldOptions<T, K>): FormField<T, K> {
+  const defaultOptions = {
+    existsInForm: true,
+  }
+
+  const options = {
+    ...defaultOptions,
+    ...fieldOptions,
+  }
   const initialValue = shallowRef(Object.freeze(cloneRefValue(options.initialValue))) as Ref<Readonly<T | undefined>>
 
   const state = reactive({
@@ -53,7 +62,10 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
   }
 
   const reset = (): void => {
-    state.value = cloneRefValue(state.initialValue)
+    const lastPathPart = state.path.split('.').at(-1) || ''
+    if (unref(options.existsInForm) && !/^\d+$/.test(lastPathPart)) {
+      state.value = cloneRefValue(state.initialValue)
+    }
     state.touched = false
     state.errors = []
   }

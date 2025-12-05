@@ -405,6 +405,46 @@ describe("useForm", () => {
     expect(form.data.value.name).toBe("A");
   });
 
+  it("it not create empty objects if the field is going to be destroyed", async () => {
+    const form = useForm({
+      initialData: {
+        data: { names: [] as string[] },
+      },
+    });
+
+    const scope = effectScope();
+
+    scope.run(() => {
+      const nameField = form.defineField({ path: "data.names.0" });
+      nameField.setData("Modified");
+      form.reset();
+    });
+
+    scope.stop();
+
+    expect(form.data.value.data.names).toHaveLength(0);
+  });
+
+  it("it not create empty objects if the nested array field is going to be destroyed", async () => {
+    const form = useForm({
+      initialData: {
+        data: [] as Array<{ name: string }>,
+      },
+    });
+
+    const scope = effectScope();
+
+    scope.run(() => {
+      const nameField = form.defineField({ path: "data.0.name" });
+      nameField.setData("Modified");
+      form.reset();
+    });
+
+    scope.stop();
+
+    expect(form.data.value.data).toHaveLength(0);
+  });
+
   describe("useForm - submit handler", () => {
     it(
       "it should not call the handler when validation errors exist",

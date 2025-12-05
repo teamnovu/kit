@@ -11,7 +11,7 @@ import {
 } from 'vue'
 import type { FieldsTuple, FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
-import { getLens, getNestedValue } from '../utils/path'
+import { existsPath, getLens, getNestedValue } from '../utils/path'
 import { Rc } from '../utils/rc'
 import { useField, type UseFieldOptions } from './useField'
 import type { ValidationState } from './useValidation'
@@ -118,6 +118,7 @@ export function useFieldRegistry<T extends FormDataDefault>(
         value: getLens(toRef(formState, 'data'), path),
         initialValue: alwaysComputed(() =>
           getNestedValue(formState.initialData, path)),
+        existsInForm: computed(() => existsPath(formState.data, unref(path))),
         errors: computed({
           get() {
             return validationState.errors.value.propertyErrors[path] || []
