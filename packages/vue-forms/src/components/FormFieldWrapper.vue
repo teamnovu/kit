@@ -13,6 +13,14 @@
       @update:model-value="setData"
     >
       <slot />
+
+      <!-- https://vue-land.github.io/faq/forwarding-slots#passing-all-slots -->
+      <template
+        v-for="(_, slotName) in $slots"
+        #[slotName]="slotProps"
+      >
+        <slot :name="slotName" v-bind="slotProps ?? {}" />
+      </template>
     </component>
   </Field>
 </template>
