@@ -6,10 +6,8 @@ import {
   toRef,
   triggerRef,
   unref,
-  watch,
   watchEffect,
   type MaybeRef,
-  type WatchSource,
 } from "vue";
 import type { FieldsTuple, FormDataDefault, FormField } from "../types/form";
 import type { Paths, PickProps } from "../types/util";
