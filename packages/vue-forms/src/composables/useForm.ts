@@ -53,7 +53,6 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
     keepValuesOnUnmount: options.keepValuesOnUnmount,
     onBlur: async (path: string) => {
       if (unref(options.validationStrategy) === "onTouch") {
-        // TODO: Only validate the specific field that was touched
         validationState.validateField(path);
       }
     },
