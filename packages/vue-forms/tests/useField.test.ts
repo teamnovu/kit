@@ -207,4 +207,21 @@ describe('useField', () => {
     expect(field.initialValue.value).toBe('bar')
     expect(field.data.value).toBe('modified')
   })
+
+  it('it should reset errors on a field on blur', () => {
+    const errors = ref(['Initial error'])
+
+    const field = useField({
+      initialValue: 'foo',
+      value: 'foo',
+      path: 'name',
+      errors,
+    })
+
+    expect(field.errors.value).toEqual(['Initial error'])
+
+    field.onBlur()
+
+    expect(field.errors.value).toEqual([])
+  })
 })

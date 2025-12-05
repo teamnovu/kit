@@ -1,4 +1,4 @@
-import { computed, reactive, shallowRef, toRefs, watch, type MaybeRef, type MaybeRefOrGetter, type Ref, type WritableComputedRef } from 'vue'
+import { computed, reactive, shallowRef, toRefs, watch, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
 import type { FormField } from '../types/form'
 import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
@@ -7,7 +7,7 @@ export interface UseFieldOptions<T, K extends string> {
   value?: MaybeRef<T>
   initialValue?: MaybeRefOrGetter<Readonly<T>>
   path: K
-  errors?: WritableComputedRef<ValidationErrors>
+  errors?: Ref<ValidationErrors>
 }
 
 export function useField<T, K extends string>(options: UseFieldOptions<T, K>): FormField<T, K> {
@@ -40,6 +40,7 @@ export function useField<T, K extends string>(options: UseFieldOptions<T, K>): F
 
   const onBlur = (): void => {
     state.touched = true
+    state.errors = []
   }
 
   const onFocus = (): void => {
