@@ -33,6 +33,7 @@ export class ShopwareClient<Operations> extends EventEmitter {
   constructor(options: ShopwareClientOptions) {
     super()
 
+    this.requestInitDefaults = options.requestInitDefaults
     this.baseURL = options.baseURL ?? this.options.baseURL
     this.apiKey = options.apiKey ?? this.options.apiKey
     this.language = options.language ?? this.options.language
@@ -40,6 +41,14 @@ export class ShopwareClient<Operations> extends EventEmitter {
     this.includeSeoUrls = options.includeSeoUrls ?? this.options.includeSeoUrls
     this.reflectContextToken = options.reflectContextToken ?? this.options.reflectContextToken
     this.headers = options.headers ?? this.options.headers
+  }
+
+  set requestInitDefaults(defaults: RequestInit | undefined) {
+    this.options.requestInitDefaults = defaults
+  }
+
+  get requestInitDefaults() {
+    return this.options.requestInitDefaults
   }
 
   set baseURL(baseURL: string) {
@@ -154,11 +163,13 @@ export class ShopwareClient<Operations> extends EventEmitter {
       const query = options?.query ? `?${createQueryParams(options.query)}` : ''
 
       response = await fetch(`${this.baseURL}/store-api${interpolatedUrl}${query}`, {
+        ...this.requestInitDefaults,
         ...options,
         method,
         headers: {
           'Content-Type': 'application/json',
           'sw-access-key': this.apiKey,
+          ...this.requestInitDefaults?.headers,
           ...(this.contextToken && { 'sw-context-token': this.contextToken }),
           ...(this.includeSeoUrls && { 'sw-include-seo-urls': 'true' }),
           ...(this.language && { 'sw-language-id': this.language }),
