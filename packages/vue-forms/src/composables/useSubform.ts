@@ -50,7 +50,7 @@ export function createSubformInterface<
   mainForm: Form<T>,
   path: K,
   _options?: SubformOptions<PickEntity<T, K>>,
-): Form<PickEntity<T, K>> {
+): Omit<Form<PickEntity<T, K>>, 'submitHandler'> {
   type ST = PickEntity<T, K>
   type SP = Paths<ST>
   type MP<P extends SP> = `${K}.${P}`

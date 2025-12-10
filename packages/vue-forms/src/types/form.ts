@@ -80,5 +80,5 @@ export interface Form<T extends FormDataDefault> {
   getSubForm: <P extends EntityPaths<T>>(
     path: P,
     options?: SubformOptions<PickEntity<T, P>>,
-  ) => Form<PickEntity<T, P>>
+  ) => Omit<Form<PickEntity<T, P>>, 'submitHandler'>
 }
