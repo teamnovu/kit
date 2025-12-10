@@ -1,4 +1,3 @@
-import type { Awaitable } from "@vueuse/core";
 import {
   computed,
   reactive,
@@ -17,8 +16,8 @@ import { cloneRefValue } from "../utils/general";
 import { useFieldRegistry } from "./useFieldRegistry";
 import { useFormState } from "./useFormState";
 import { createSubformInterface, type SubformOptions } from "./useSubform";
-import { useValidation, type ValidationOptions } from "./useValidation";
 import { useSubmitHandler } from "./useSubmitHandler";
+import { useValidation, type ValidationOptions } from "./useValidation";
 
 export interface UseFormOptions<T extends FormDataDefault>
   extends ValidationOptions<T> {
@@ -27,7 +26,9 @@ export interface UseFormOptions<T extends FormDataDefault>
   keepValuesOnUnmount?: MaybeRef<boolean>;
 }
 
-export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
+export function useForm<T extends FormDataDefault>(
+  options: UseFormOptions<T>,
+): Form<T> {
   const initialData = computed(() => cloneRefValue(options.initialData));
 
   const data = ref<T>(cloneRefValue(initialData)) as Ref<T>;
