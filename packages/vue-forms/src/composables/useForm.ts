@@ -67,7 +67,7 @@ export function useForm<T extends FormDataDefault>(options: UseFormOptions<T>) {
   function getSubForm<K extends EntityPaths<T>>(
     path: K,
     subformOptions?: SubformOptions<PickEntity<T, K>>,
-  ): Omit<Form<PickEntity<T, K>>, "submitHandler"> {
+  ): Form<PickEntity<T, K>> {
     return createSubformInterface(formInterface, path, options, subformOptions);
   }
 
