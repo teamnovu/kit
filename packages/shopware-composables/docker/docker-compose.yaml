@@ -2,8 +2,15 @@ name: shopware-for-kit
 
 services:
   shopware-for-kit:
-    image: dockware/dev:6.7.0.0-rc2
+    image: dockware/dev:6.7.2.2
     container_name: shopware-for-kit
+    environment:
+      COMPOSER_AUTH: |-
+        {
+          "bearer": {
+            "satis.novu.ch": "${INBUDGET_TOKEN}"
+          }
+        }
     ports:
       - "8500:80"
     volumes:
