@@ -1162,16 +1162,7 @@ export type Schemas = {
     cross_sellings: components["schemas"]["CrossSellingElementCollection"];
     /** Custom fields with their labels and values */
     custom_fields: GenericRecord;
-    product: components["schemas"]["Product"] & {
-      extensions?: {
-        /** SEO URL information for the product */
-        novuSeoUrls?: GenericRecord;
-        /** Search related information for the product */
-        search?: GenericRecord;
-        /** Array of product variants. */
-        variants?: components["schemas"]["Product"][];
-      };
-    };
+    product: components["schemas"]["Product"];
   };
   Customer: {
     active?: boolean;
@@ -1440,6 +1431,14 @@ export type Schemas = {
     };
     /** Format: date-time */
     readonly updatedAt?: string;
+  };
+  EasyCouponPrice: components["schemas"]["Price"] & {
+    /** Minimum price for the voucher */
+    from?: number;
+    /** List of selectable voucher values */
+    selectableValues?: number[];
+    /** Maximum price for the voucher */
+    to?: number;
   };
   EntitySearchResult: {
     /** Contains aggregated data. A simple example is the determination of the average price from a product search query. */
@@ -2425,91 +2424,283 @@ export type Schemas = {
     readonly updatedAt?: string;
     versionId?: string;
   };
-  OrderLineItem: {
-    /** @enum {string} */
-    apiAlias: "order_line_item";
-    children: components["schemas"]["OrderLineItem"][];
-    cover?: components["schemas"]["Media"];
-    coverId?: string;
-    /** Format: date-time */
-    readonly createdAt?: string;
-    customFields?: GenericRecord;
-    description?: string;
-    downloads?: components["schemas"]["OrderLineItemDownload"][];
-    extensions?: {
-      novuSeoUrls?: GenericRecord;
-    };
-    good?: boolean;
-    id: string;
-    identifier: string;
-    label: string;
-    orderDeliveryPositions?: components["schemas"]["OrderDeliveryPosition"][];
-    orderId: string;
-    orderVersionId?: string;
-    parent?: components["schemas"]["OrderLineItem"];
-    parentId?: string;
-    parentVersionId?: string;
-    payload?: {
-      readonly categoryIds?: string[];
-      /** Format: date-time */
-      readonly createdAt?: string;
-      customFields?: GenericRecord;
-      features?: unknown[];
-      isCloseout?: boolean;
-      isNew?: boolean;
-      manufacturerId?: string;
-      markAsTopseller?: boolean;
-      readonly optionIds?: string[];
-      options?: components["schemas"]["PropertyGroupOption"][];
-      parentId?: string;
-      productNumber?: string;
-      readonly propertyIds?: string[];
-      purchasePrices?: string;
-      /** Format: date-time */
-      releaseDate?: string;
-      /** Format: int64 */
-      stock?: number;
-      readonly streamIds?: string[];
-      readonly tagIds?: string[];
-      taxId?: string;
-    };
-    /** Format: int64 */
-    position?: number;
-    priceDefinition?: components["schemas"]["CartPriceQuantity"];
-    productId?: string;
-    productVersionId?: string;
-    promotionId?: string;
-    /** Format: int64 */
-    quantity: number;
-    referencedId?: string;
-    removable?: boolean;
-    stackable?: boolean;
-    states: string[];
-    /** Format: float */
-    totalPrice?: number;
-    translated: {
-      coverId: string;
-      description: string;
-      identifier: string;
-      label: string;
-      orderId: string;
-      orderVersionId: string;
-      parentId: string;
-      parentVersionId: string;
-      productId: string;
-      productVersionId: string;
-      promotionId: string;
-      referencedId: string;
-      type: string;
-      versionId: string;
-    };
-    type?: string;
-    /** Format: float */
-    unitPrice?: number;
-    /** Format: date-time */
-    readonly updatedAt?: string;
-    versionId?: string;
-  };
+  OrderLineItem:
+    | {
+        /** @enum {string} */
+        apiAlias: "order_line_item";
+        children: components["schemas"]["OrderLineItem"][];
+        cover?: components["schemas"]["Media"];
+        coverId?: string;
+        /** Format: date-time */
+        readonly createdAt?: string;
+        customFields?: GenericRecord;
+        description?: string;
+        downloads?: components["schemas"]["OrderLineItemDownload"][];
+        extensions?: {
+          novuSeoUrls?: GenericRecord;
+        };
+        good?: boolean;
+        id: string;
+        identifier: string;
+        label: string;
+        orderDeliveryPositions?: components["schemas"]["OrderDeliveryPosition"][];
+        orderId: string;
+        orderVersionId?: string;
+        parent?: components["schemas"]["OrderLineItem"];
+        parentId?: string;
+        parentVersionId?: string;
+        payload?:
+          | {
+              readonly categoryIds?: string[];
+              cover?: components["schemas"]["Media"];
+              /** Format: date-time */
+              readonly createdAt?: string;
+              customFields?: GenericRecord;
+              features?: unknown[];
+              /** Name of the category to be sent to Google Tag Manager */
+              gtagCategory?: string;
+              isCloseout?: boolean;
+              isNew?: boolean;
+              /** List of category names for Klaviyo */
+              klaviyoCategoryNames?: string[];
+              manufacturerId?: string;
+              /** Name of the manufacturer */
+              manufacturerName?: string;
+              markAsTopseller?: boolean;
+              netiNextEasyCoupon?: {
+                /** The value of the voucher */
+                voucherValue?: number;
+              };
+              readonly optionIds?: string[];
+              /** List of product options */
+              options?:
+                | components["schemas"]["PropertyGroupOption"][]
+                | components["schemas"]["PropertyGroupOption"][];
+              parentId?: string;
+              productNumber?: string;
+              readonly propertyIds?: string[];
+              purchasePrices?: string;
+              /** Format: date-time */
+              releaseDate?: string;
+              /** Format: int64 */
+              stock?: number;
+              readonly streamIds?: string[];
+              readonly tagIds?: string[];
+              taxId?: string;
+            }
+          | {
+              readonly categoryIds?: string[];
+              cover?: components["schemas"]["Media"];
+              /** Format: date-time */
+              readonly createdAt?: string;
+              customFields?: GenericRecord;
+              features?: unknown[];
+              /** Name of the category to be sent to Google Tag Manager */
+              gtagCategory?: string;
+              isCloseout?: boolean;
+              isNew?: boolean;
+              /** List of category names for Klaviyo */
+              klaviyoCategoryNames?: string[];
+              manufacturerId?: string;
+              /** Name of the manufacturer */
+              manufacturerName?: string;
+              markAsTopseller?: boolean;
+              netiNextEasyCoupon?: {
+                /** The value of the voucher */
+                voucherValue?: number;
+              };
+              readonly optionIds?: string[];
+              /** List of product options */
+              options?:
+                | components["schemas"]["PropertyGroupOption"][]
+                | components["schemas"]["PropertyGroupOption"][];
+              parentId?: string;
+              productNumber?: string;
+              readonly propertyIds?: string[];
+              purchasePrices?: string;
+              /** Format: date-time */
+              releaseDate?: string;
+              /** Format: int64 */
+              stock?: number;
+              readonly streamIds?: string[];
+              readonly tagIds?: string[];
+              taxId?: string;
+            };
+        /** Format: int64 */
+        position?: number;
+        priceDefinition?: components["schemas"]["CartPriceQuantity"];
+        productId?: string;
+        productVersionId?: string;
+        promotionId?: string;
+        /** Format: int64 */
+        quantity: number;
+        referencedId?: string;
+        removable?: boolean;
+        stackable?: boolean;
+        states: string[];
+        /** Format: float */
+        totalPrice?: number;
+        translated: {
+          coverId: string;
+          description: string;
+          identifier: string;
+          label: string;
+          orderId: string;
+          orderVersionId: string;
+          parentId: string;
+          parentVersionId: string;
+          productId: string;
+          productVersionId: string;
+          promotionId: string;
+          referencedId: string;
+          type: string;
+          versionId: string;
+        };
+        type?: string;
+        /** Format: float */
+        unitPrice?: number;
+        /** Format: date-time */
+        readonly updatedAt?: string;
+        versionId?: string;
+      }
+    | {
+        /** @enum {string} */
+        apiAlias: "order_line_item";
+        children: components["schemas"]["OrderLineItem"][];
+        cover?: components["schemas"]["Media"];
+        coverId?: string;
+        /** Format: date-time */
+        readonly createdAt?: string;
+        customFields?: GenericRecord;
+        description?: string;
+        downloads?: components["schemas"]["OrderLineItemDownload"][];
+        extensions?: {
+          novuSeoUrls?: GenericRecord;
+        };
+        good?: boolean;
+        id: string;
+        identifier: string;
+        label: string;
+        orderDeliveryPositions?: components["schemas"]["OrderDeliveryPosition"][];
+        orderId: string;
+        orderVersionId?: string;
+        parent?: components["schemas"]["OrderLineItem"];
+        parentId?: string;
+        parentVersionId?: string;
+        payload?:
+          | {
+              readonly categoryIds?: string[];
+              cover?: components["schemas"]["Media"];
+              /** Format: date-time */
+              readonly createdAt?: string;
+              customFields?: GenericRecord;
+              features?: unknown[];
+              /** Name of the category to be sent to Google Tag Manager */
+              gtagCategory?: string;
+              isCloseout?: boolean;
+              isNew?: boolean;
+              /** List of category names for Klaviyo */
+              klaviyoCategoryNames?: string[];
+              manufacturerId?: string;
+              /** Name of the manufacturer */
+              manufacturerName?: string;
+              markAsTopseller?: boolean;
+              netiNextEasyCoupon?: {
+                /** The value of the voucher */
+                voucherValue?: number;
+              };
+              readonly optionIds?: string[];
+              /** List of product options */
+              options?:
+                | components["schemas"]["PropertyGroupOption"][]
+                | components["schemas"]["PropertyGroupOption"][];
+              parentId?: string;
+              productNumber?: string;
+              readonly propertyIds?: string[];
+              purchasePrices?: string;
+              /** Format: date-time */
+              releaseDate?: string;
+              /** Format: int64 */
+              stock?: number;
+              readonly streamIds?: string[];
+              readonly tagIds?: string[];
+              taxId?: string;
+            }
+          | {
+              readonly categoryIds?: string[];
+              cover?: components["schemas"]["Media"];
+              /** Format: date-time */
+              readonly createdAt?: string;
+              customFields?: GenericRecord;
+              features?: unknown[];
+              /** Name of the category to be sent to Google Tag Manager */
+              gtagCategory?: string;
+              isCloseout?: boolean;
+              isNew?: boolean;
+              /** List of category names for Klaviyo */
+              klaviyoCategoryNames?: string[];
+              manufacturerId?: string;
+              /** Name of the manufacturer */
+              manufacturerName?: string;
+              markAsTopseller?: boolean;
+              netiNextEasyCoupon?: {
+                /** The value of the voucher */
+                voucherValue?: number;
+              };
+              readonly optionIds?: string[];
+              /** List of product options */
+              options?:
+                | components["schemas"]["PropertyGroupOption"][]
+                | components["schemas"]["PropertyGroupOption"][];
+              parentId?: string;
+              productNumber?: string;
+              readonly propertyIds?: string[];
+              purchasePrices?: string;
+              /** Format: date-time */
+              releaseDate?: string;
+              /** Format: int64 */
+              stock?: number;
+              readonly streamIds?: string[];
+              readonly tagIds?: string[];
+              taxId?: string;
+            };
+        /** Format: int64 */
+        position?: number;
+        priceDefinition?: components["schemas"]["CartPriceQuantity"];
+        productId?: string;
+        productVersionId?: string;
+        promotionId?: string;
+        /** Format: int64 */
+        quantity: number;
+        referencedId?: string;
+        removable?: boolean;
+        stackable?: boolean;
+        states: string[];
+        /** Format: float */
+        totalPrice?: number;
+        translated: {
+          coverId: string;
+          description: string;
+          identifier: string;
+          label: string;
+          orderId: string;
+          orderVersionId: string;
+          parentId: string;
+          parentVersionId: string;
+          productId: string;
+          productVersionId: string;
+          promotionId: string;
+          referencedId: string;
+          type: string;
+          versionId: string;
+        };
+        type?: string;
+        /** Format: float */
+        unitPrice?: number;
+        /** Format: date-time */
+        readonly updatedAt?: string;
+        versionId?: string;
+      };
   OrderLineItemDownload: {
     accessGranted: boolean;
     /** Format: date-time */
@@ -2858,6 +3049,13 @@ export type Schemas = {
         downloads?: components["schemas"]["ProductDownload"][];
         ean?: string;
         extensions?: {
+          netiEasyCouponProduct?: {
+            createdAt?: string;
+            updatedAt?: string;
+            value?: components["schemas"]["EasyCouponPrice"][];
+            valueType?: number;
+          };
+          /** SEO URL information for the product */
           novuSeoUrls?: GenericRecord;
           /** Configuration for variant listing display */
           productVariantListingConfig?: {
@@ -2868,7 +3066,15 @@ export type Schemas = {
             /** ID of the main variant */
             mainVariantId?: string;
           };
-          variants?: GenericRecord;
+          /** Search related information for the product */
+          search?: GenericRecord;
+          /** Aggregated stock availability across all variants */
+          variantAvailability?: {
+            /** Total available stock across all variants of the product */
+            totalStock?: number;
+          };
+          /** Array of product variants. */
+          variants?: components["schemas"]["Product"][];
         };
         /** Format: float */
         height?: number;
@@ -2939,6 +3145,14 @@ export type Schemas = {
           cmsPageId: string;
           cmsPageVersionId: string;
           coverId: string;
+          customFields?: {
+            /** Determines whether the tax info is shown on the product page */
+            novu_headless_gtag_category?: boolean;
+            /** Determines whether the tax info is shown on the product page */
+            novu_headless_hide_delivery_cost?: boolean;
+            /** Determines whether the tax info is shown on the product page */
+            novu_headless_sales_channel_product_show_tax_info?: boolean;
+          };
           deliveryTimeId: string;
           description: string;
           displayGroup: string;
@@ -3029,6 +3243,13 @@ export type Schemas = {
         downloads?: components["schemas"]["ProductDownload"][];
         ean?: string;
         extensions?: {
+          netiEasyCouponProduct?: {
+            createdAt?: string;
+            updatedAt?: string;
+            value?: components["schemas"]["EasyCouponPrice"][];
+            valueType?: number;
+          };
+          /** SEO URL information for the product */
           novuSeoUrls?: GenericRecord;
           /** Configuration for variant listing display */
           productVariantListingConfig?: {
@@ -3039,7 +3260,15 @@ export type Schemas = {
             /** ID of the main variant */
             mainVariantId?: string;
           };
-          variants?: GenericRecord;
+          /** Search related information for the product */
+          search?: GenericRecord;
+          /** Aggregated stock availability across all variants */
+          variantAvailability?: {
+            /** Total available stock across all variants of the product */
+            totalStock?: number;
+          };
+          /** Array of product variants. */
+          variants?: components["schemas"]["Product"][];
         };
         /** Format: float */
         height?: number;
@@ -3110,6 +3339,14 @@ export type Schemas = {
           cmsPageId: string;
           cmsPageVersionId: string;
           coverId: string;
+          customFields?: {
+            /** Determines whether the tax info is shown on the product page */
+            novu_headless_gtag_category?: boolean;
+            /** Determines whether the tax info is shown on the product page */
+            novu_headless_hide_delivery_cost?: boolean;
+            /** Determines whether the tax info is shown on the product page */
+            novu_headless_sales_channel_product_show_tax_info?: boolean;
+          };
           deliveryTimeId: string;
           description: string;
           displayGroup: string;
@@ -3226,7 +3463,26 @@ export type Schemas = {
     /** Format: date-time */
     readonly updatedAt?: string;
   };
-  ProductJsonApi: components["schemas"]["resource"] & {
+  ProductJsonApi: {
+    cover?: components["schemas"]["Media"];
+    /** Name of the category to be sent to Google Tag Manager */
+    gtagCategory?: string;
+    /** List of category names for Klaviyo */
+    klaviyoCategoryNames?: string[];
+    /** Name of the manufacturer */
+    manufacturerName?: string;
+    netiNextEasyCoupon?: {
+      /** The value of the voucher */
+      voucherValue?: number;
+    };
+    /** List of product options */
+    options?: {
+      /** The group name of the option */
+      group?: string;
+      /** The name of the option */
+      option?: string;
+    }[];
+  } & (components["schemas"]["resource"] & {
     active?: boolean;
     readonly available?: boolean;
     /** Format: int64 */
@@ -3693,7 +3949,7 @@ export type Schemas = {
     weight?: number;
     /** Format: float */
     width?: number;
-  };
+  });
   ProductKeywordDictionary: {
     id?: string;
     keyword: string;
@@ -4151,6 +4407,10 @@ export type Schemas = {
       countryId: string;
       currencyId: string;
       customerGroupId: string;
+      customFields?: {
+        /** Show tax information */
+        novu_headless_sales_channel_product_show_tax_info?: boolean;
+      };
       footerCategoryId: string;
       footerCategoryVersionId: string;
       hreflangDefaultDomainId: string;

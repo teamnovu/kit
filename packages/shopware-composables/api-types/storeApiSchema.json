@@ -3309,7 +3309,7 @@
           "quantity": { "type": "integer", "format": "int64" },
           "label": { "type": "string" },
           "payload": {
-            "type": "object",
+            "type": ["object", "object"],
             "properties": {
               "categoryIds": {
                 "type": "array",
@@ -3336,8 +3336,22 @@
                 "readOnly": true
               },
               "options": {
-                "type": "array",
-                "items": { "$ref": "#/components/schemas/PropertyGroupOption" }
+                "type": ["array", "array"],
+                "items": {
+                  "$ref": "#/components/schemas/PropertyGroupOption",
+                  "type": "object",
+                  "properties": {
+                    "group": {
+                      "type": "string",
+                      "description": "The group name of the option"
+                    },
+                    "option": {
+                      "type": "string",
+                      "description": "The name of the option"
+                    }
+                  }
+                },
+                "description": "List of product options"
               },
               "parentId": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
               "productNumber": { "type": "string" },
@@ -3359,7 +3373,30 @@
                 "items": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
                 "readOnly": true
               },
-              "taxId": { "type": "string", "pattern": "^[0-9a-f]{32}$" }
+              "taxId": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
+              "netiNextEasyCoupon": {
+                "type": "object",
+                "properties": {
+                  "voucherValue": {
+                    "type": "number",
+                    "description": "The value of the voucher"
+                  }
+                }
+              },
+              "manufacturerName": {
+                "type": "string",
+                "description": "Name of the manufacturer"
+              },
+              "klaviyoCategoryNames": {
+                "type": "array",
+                "description": "List of category names for Klaviyo",
+                "items": { "type": "string" }
+              },
+              "gtagCategory": {
+                "type": "string",
+                "description": "Name of the category to be sent to Google Tag Manager"
+              },
+              "cover": { "$ref": "#/components/schemas/Media" }
             }
           },
           "good": { "type": "boolean" },
@@ -3407,7 +3444,7 @@
           "apiAlias": { "type": "string", "enum": ["order_line_item"] },
           "translated": { "type": "object" }
         },
-        "type": "object"
+        "type": ["object", "object"]
       },
       "OrderLineItemDownload": {
         "description": "Added since version: 6.4.19.0",
@@ -4686,7 +4723,50 @@
             },
             "type": "object"
           }
-        ]
+        ],
+        "type": "object",
+        "properties": {
+          "netiNextEasyCoupon": {
+            "type": "object",
+            "properties": {
+              "voucherValue": {
+                "type": "number",
+                "description": "The value of the voucher"
+              }
+            }
+          },
+          "manufacturerName": {
+            "type": "string",
+            "description": "Name of the manufacturer"
+          },
+          "klaviyoCategoryNames": {
+            "type": "array",
+            "description": "List of category names for Klaviyo",
+            "items": { "type": "string" }
+          },
+          "gtagCategory": {
+            "type": "string",
+            "description": "Name of the category to be sent to Google Tag Manager"
+          },
+          "cover": { "$ref": "#/components/schemas/Media" },
+          "options": {
+            "type": "array",
+            "description": "List of product options",
+            "items": {
+              "type": "object",
+              "properties": {
+                "group": {
+                  "type": "string",
+                  "description": "The group name of the option"
+                },
+                "option": {
+                  "type": "string",
+                  "description": "The name of the option"
+                }
+              }
+            }
+          }
+        }
       },
       "Product": {
         "description": "Represents a product along with detailed information required to display a variant selection.",
@@ -4887,11 +4967,43 @@
             "format": "date-time",
             "readOnly": true
           },
-          "translated": { "type": "object" },
+          "translated": {
+            "type": "object",
+            "properties": {
+              "customFields": {
+                "type": "object",
+                "properties": {
+                  "novu_headless_sales_channel_product_show_tax_info": {
+                    "type": "boolean",
+                    "description": "Determines whether the tax info is shown on the product page"
+                  },
+                  "novu_headless_hide_delivery_cost": {
+                    "type": "boolean",
+                    "description": "Determines whether the tax info is shown on the product page"
+                  },
+                  "novu_headless_gtag_category": {
+                    "type": "boolean",
+                    "description": "Determines whether the tax info is shown on the product page"
+                  }
+                }
+              }
+            }
+          },
           "extensions": {
             "properties": {
-              "novuSeoUrls": { "type": "object" },
-              "variants": { "type": "object" },
+              "novuSeoUrls": {
+                "type": "object",
+                "description": "SEO URL information for the product"
+              },
+              "variants": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/Product" },
+                "description": "Array of product variants."
+              },
+              "search": {
+                "type": "object",
+                "description": "Search related information for the product"
+              },
               "productVariantListingConfig": {
                 "type": "object",
                 "description": "Configuration for variant listing display",
@@ -4909,6 +5021,28 @@
                     "description": "Configuration for configurator groups",
                     "items": { "type": "object" }
                   }
+                }
+              },
+              "variantAvailability": {
+                "type": "object",
+                "description": "Aggregated stock availability across all variants",
+                "properties": {
+                  "totalStock": {
+                    "type": "integer",
+                    "description": "Total available stock across all variants of the product"
+                  }
+                }
+              },
+              "netiEasyCouponProduct": {
+                "type": "object",
+                "properties": {
+                  "createdAt": { "type": "string" },
+                  "updatedAt": { "type": "string" },
+                  "value": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/EasyCouponPrice" }
+                  },
+                  "valueType": { "type": "number" }
                 }
               }
             },
@@ -5650,7 +5784,20 @@
             "format": "date-time",
             "readOnly": true
           },
-          "translated": { "type": "object" },
+          "translated": {
+            "type": "object",
+            "properties": {
+              "customFields": {
+                "type": "object",
+                "properties": {
+                  "novu_headless_sales_channel_product_show_tax_info": {
+                    "type": "boolean",
+                    "description": "Show tax information"
+                  }
+                }
+              }
+            }
+          },
           "language": { "$ref": "#/components/schemas/Language" },
           "currency": { "$ref": "#/components/schemas/Currency" },
           "paymentMethod": { "$ref": "#/components/schemas/PaymentMethod" },
@@ -8575,34 +8722,7 @@
         "type": "object",
         "description": "Represents a product along with detailed information, cross-sellings and custom fields",
         "properties": {
-          "product": {
-            "allOf": [
-              { "$ref": "#/components/schemas/Product" },
-              {
-                "type": "object",
-                "properties": {
-                  "extensions": {
-                    "type": "object",
-                    "properties": {
-                      "variants": {
-                        "type": "array",
-                        "items": { "$ref": "#/components/schemas/Product" },
-                        "description": "Array of product variants."
-                      },
-                      "novuSeoUrls": {
-                        "type": "object",
-                        "description": "SEO URL information for the product"
-                      },
-                      "search": {
-                        "type": "object",
-                        "description": "Search related information for the product"
-                      }
-                    }
-                  }
-                }
-              }
-            ]
-          },
+          "product": { "$ref": "#/components/schemas/Product" },
           "configurator": {
             "type": "array",
             "description": "List of property groups with their corresponding options and information on how to display them.",
@@ -8645,6 +8765,29 @@
               "category": {
                 "$ref": "#/components/schemas/Criteria",
                 "description": "Criteria to filter the category"
+              }
+            }
+          }
+        ]
+      },
+      "EasyCouponPrice": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Price" },
+          {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "integer",
+                "description": "Minimum price for the voucher"
+              },
+              "to": {
+                "type": "integer",
+                "description": "Maximum price for the voucher"
+              },
+              "selectableValues": {
+                "type": "array",
+                "description": "List of selectable voucher values",
+                "items": { "type": "integer" }
               }
             }
           }

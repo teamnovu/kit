@@ -9,8 +9,9 @@ done
 
 cd ..
 
+sleep 10
 
 pnpm dlx @shopware/api-gen loadSchema --apiType=store
 pnpm dlx @shopware/api-gen generate --apiType=store
 
-cd docker && docker compose down
+cd docker && docker compose stop
