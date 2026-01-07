@@ -37,7 +37,9 @@ export function useField<T, K extends string>(fieldOptions: UseFieldOptions<T, K
     shallowRef(options.initialValue),
     () => {
       initialValue.value = Object.freeze(cloneRefValue(options.initialValue))
-      state.value = cloneRefValue(options.initialValue)
+      if (state.value !== unref(options.initialValue)) {
+        state.value = cloneRefValue(options.initialValue)
+      }
     },
     { flush: 'sync' },
   )
