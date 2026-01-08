@@ -108,5 +108,5 @@ export interface Form<T extends FormDataDefault> {
     options?: FieldArrayOptions<
       PickProps<T, K> extends (infer U)[] ? U : never
     >,
-  ) => FieldArray<PickProps<T, K> extends (infer U)[] ? U : never>
+  ) => FieldArray<PickProps<T, K> extends (infer U)[] ? U : never, typeof path>
 }
