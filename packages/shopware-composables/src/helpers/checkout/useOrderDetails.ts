@@ -1,11 +1,14 @@
 import type { MaybeRef } from 'vue'
 import { computed, unref } from 'vue'
+import type { OperationOptions } from '../../query'
 import { useReadOrderQuery } from '../../query/order'
 import type { BrandedSchema } from '../types/schema'
 
+type Criteria = OperationOptions<'readOrder post /order'>
+
 export function useOrderDetails(
   orderId: MaybeRef<string>,
-  criteria?: BrandedSchema<'Criteria'>,
+  criteria?: Criteria,
 ) {
   // Create reactive order query options
   const orderQueryOptions = computed(() => {
@@ -23,8 +26,8 @@ export function useOrderDetails(
         ],
         ...criteria,
         checkPromotion: true,
-      } as BrandedSchema<'Criteria'>,
-    }
+      },
+    } as Criteria
   })
 
   // Create order query
