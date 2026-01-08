@@ -149,10 +149,24 @@ export function useFieldArray<T extends FormDataDefault, K extends Paths<T>>(
     )
   }
 
+  const insert = (item: Item, index: number) => {
+    const currentData = (arrayField.data.value ?? []) as Item[]
+
+    arrayField.setData(
+      currentData
+        .slice(0, index)
+        .concat([item])
+        .concat(currentData.slice(index)) as Items,
+    )
+
+    return items.value[index]!
+  }
+
   return {
     items,
     push,
     remove,
+    insert,
     field: arrayField,
   }
 }

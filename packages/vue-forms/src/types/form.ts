@@ -30,6 +30,7 @@ export interface FieldArray<Item, Path extends string> {
   items: ShallowRef<FieldItem<Item, Path>[]>
   push: (item: Item) => FieldItem<Item, Path>
   remove: (id: string) => void
+  insert: (item: Item, index: number) => FieldItem<Item, Path>
   field: FormField<Item[], Path>
 }
 
