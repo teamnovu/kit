@@ -80,7 +80,7 @@ export function useForm<T extends FormDataDefault>(
     getSubForm: (path, subformOptions) => {
       return createSubformInterface(form, path, options, subformOptions)
     },
-    useFieldArray: (path, fieldArrayOptions) => {
+    getFieldArray: (path, fieldArrayOptions) => {
       return useFieldArray(form, path, fieldArrayOptions)
     },
   }

@@ -103,7 +103,7 @@ export interface Form<T extends FormDataDefault> {
   ) => Form<PickEntity<T, P>>
 
   // Field arrays
-  useFieldArray: <K extends Paths<T>>(
+  getFieldArray: <K extends Paths<T>>(
     path: PickProps<T, K> extends unknown[] ? K : never,
     options?: FieldArrayOptions<
       PickProps<T, K> extends (infer U)[] ? U : never

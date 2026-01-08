@@ -203,7 +203,7 @@ export function createSubformInterface<
     validateForm,
     getSubForm,
     submitHandler: onSubmit => makeSubmitHandler(subForm, formOptions ?? {})(onSubmit),
-    useFieldArray: (fieldArrayPath, fieldArrayOptions) => {
+    getFieldArray: (fieldArrayPath, fieldArrayOptions) => {
       return useFieldArray(subForm, fieldArrayPath, fieldArrayOptions)
     },
   }
