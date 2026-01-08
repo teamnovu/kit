@@ -10,13 +10,13 @@ import {
   type Ref,
 } from 'vue'
 import type { Form, FormDataDefault } from '../types/form'
-import type { EntityPaths, PickEntity } from '../types/util'
 import type { ValidationStrategy } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
+import { makeSubmitHandler } from '../utils/submitHandler'
+import { useFieldArray } from './useFieldArray'
 import { useFieldRegistry } from './useFieldRegistry'
 import { useFormState } from './useFormState'
-import { createSubformInterface, type SubformOptions } from './useSubform'
-import { useSubmitHandler } from './useSubmitHandler'
+import { createSubformInterface } from './useSubform'
 import { useValidation, type ValidationOptions } from './useValidation'
 
 export interface UseFormOptions<T extends FormDataDefault>
@@ -65,31 +65,25 @@ export function useForm<T extends FormDataDefault>(
     }
   }
 
-  function getSubForm<K extends EntityPaths<T>>(
-    path: K,
-    subformOptions?: SubformOptions<PickEntity<T, K>>,
-  ): Form<PickEntity<T, K>> {
-    return createSubformInterface(formInterface, path, options, subformOptions)
-  }
-
-  const formInterface: Omit<Form<T>, 'submitHandler'> = {
-    ...fieldRegistry,
-    ...validationState,
-    ...formState,
-    reset,
-    getSubForm,
-    initialData: toRef(state, 'initialData') as Form<T>['initialData'],
-    data: toRef(state, 'data') as Form<T>['data'],
-  }
-
-  const submitHandler = useSubmitHandler(formInterface, options)
-
   if (unref(options.validationStrategy) === 'onFormOpen') {
     validationState.validateForm()
   }
 
-  return {
-    ...formInterface,
-    submitHandler,
+  const form: Form<T> = {
+    ...fieldRegistry,
+    ...validationState,
+    ...formState,
+    reset,
+    initialData: toRef(state, 'initialData') as Form<T>['initialData'],
+    data: toRef(state, 'data') as Form<T>['data'],
+    submitHandler: onSubmit => makeSubmitHandler(form, options)(onSubmit),
+    getSubForm: (path, subformOptions) => {
+      return createSubformInterface(form, path, options, subformOptions)
+    },
+    useFieldArray: (path, fieldArrayOptions) => {
+      return useFieldArray(form, path, fieldArrayOptions)
+    },
   }
+
+  return form
 }

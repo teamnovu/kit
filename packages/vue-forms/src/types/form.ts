@@ -14,6 +14,24 @@ import type {
 
 export type FormDataDefault = object
 
+export type HashFn<H, I> = (item: I) => H
+
+export interface FieldArrayOptions<Item> {
+  hashFn?: HashFn<unknown, Item>
+}
+
+export interface FieldArray<Item> {
+  fields: Ref<{
+    id: string
+    item: Item
+  }[]>
+  push: (item: Item) => void
+  remove: (item: Item) => void
+  removeByIndex: (index: number) => void
+  errors: Ref<ValidationErrors>
+  dirty: Ref<boolean>
+}
+
 export interface FormField<T, P extends string> {
   data: Ref<T>
   path: Ref<P>
@@ -81,4 +99,12 @@ export interface Form<T extends FormDataDefault> {
     path: P,
     options?: SubformOptions<PickEntity<T, P>>,
   ) => Form<PickEntity<T, P>>
+
+  // Field arrays
+  useFieldArray: <K extends Paths<T>>(
+    path: PickProps<T, K> extends unknown[] ? K : never,
+    options?: FieldArrayOptions<
+      PickProps<T, K> extends (infer U)[] ? U : never
+    >,
+  ) => FieldArray<PickProps<T, K> extends (infer U)[] ? U : never>
 }

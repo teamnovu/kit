@@ -7,8 +7,8 @@ interface SubmitHandlerOptions {
   validationStrategy?: MaybeRef<ValidationStrategy>
 }
 
-export function useSubmitHandler<T extends FormDataDefault>(
-  form: Omit<Form<T>, 'submitHandler'>,
+export function makeSubmitHandler<T extends FormDataDefault>(
+  form: Form<T>,
   options: SubmitHandlerOptions,
 ) {
   return (onSubmit: (data: T) => Awaitable<void>) => {
