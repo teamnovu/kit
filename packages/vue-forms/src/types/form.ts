@@ -1,5 +1,5 @@
 import type { Awaitable } from '@vueuse/core'
-import type { Ref } from 'vue'
+import type { Ref, ShallowRef } from 'vue'
 import type { DefineFieldOptions } from '../composables/useFieldRegistry'
 import type { SubformOptions } from '../composables/useSubform'
 import type { ValidatorOptions } from '../composables/useValidation'
@@ -20,16 +20,17 @@ export interface FieldArrayOptions<Item> {
   hashFn?: HashFn<unknown, Item>
 }
 
-export interface FieldArray<Item> {
-  fields: Ref<{
-    id: string
-    item: Item
-  }[]>
-  push: (item: Item) => void
-  remove: (item: Item) => void
-  removeByIndex: (index: number) => void
-  errors: Ref<ValidationErrors>
-  dirty: Ref<boolean>
+export interface FieldItem<Item, Path extends string> {
+  id: string
+  item: Item
+  path: `${Path}.${number}`
+}
+
+export interface FieldArray<Item, Path extends string> {
+  items: ShallowRef<FieldItem<Item, Path>[]>
+  push: (item: Item) => FieldItem<Item, Path>
+  remove: (id: string) => void
+  field: FormField<Item[], Path>
 }
 
 export interface FormField<T, P extends string> {

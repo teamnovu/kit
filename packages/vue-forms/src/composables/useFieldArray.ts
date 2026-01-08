@@ -1,9 +1,11 @@
-import { shallowRef, unref, watch } from 'vue'
+import { shallowRef, watch } from 'vue'
 import type {
   FieldArray,
   FieldArrayOptions,
+  FieldItem,
   Form,
   FormDataDefault,
+  FormField,
   HashFn,
 } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
@@ -49,13 +51,15 @@ export class HashStore<T, Item = unknown> {
   }
 }
 
-function mapIds<Item>(
-  hashStore: HashStore<string[], Item>,
+function mapIds<Item, Path extends string>(
+  hashStore: HashStore<string[],
+    Item>,
   items: Item[],
-) {
+  basePath: Path,
+): FieldItem<Item, Path>[] {
   const mappedIds = new Set<string>()
 
-  return items.map((item) => {
+  return items.map((item, i) => {
     const storeIds = [...(hashStore.get(item) ?? [])]
 
     // Remove all used ids
@@ -70,6 +74,7 @@ function mapIds<Item>(
       return {
         id: matchingId,
         item,
+        path: `${basePath}.${i}`,
       }
     }
 
@@ -82,6 +87,7 @@ function mapIds<Item>(
     return {
       id: newId,
       item,
+      path: `${basePath}.${i}`,
     }
   })
 }
@@ -90,25 +96,28 @@ export function useFieldArray<T extends FormDataDefault, K extends Paths<T>>(
   form: Form<T>,
   path: PickProps<T, K> extends unknown[] ? K : never,
   options?: FieldArrayOptions<PickProps<T, K> extends (infer U)[] ? U : never>,
-): FieldArray<PickProps<T, K> extends (infer U)[] ? U : never> {
+): FieldArray<PickProps<T, K> extends (infer U)[] ? U : never, typeof path> {
   type Items = PickProps<T, K>
   type Item = Items extends (infer U)[] ? U : never
   type Id = string
+  type Path = typeof path
   type Field = {
     id: Id
     item: Item
+    path: `${Path}.${number}`
   }
 
   const hashStore = new HashStore<string[], Item>(options?.hashFn)
 
-  const arrayField = form.getField(path)
+  // We only cast to unknown because we know that the constriant holds true
+  const arrayField = form.getField(path) as unknown as FormField<Item[], Path>
 
-  const fields = shallowRef<Field[]>([])
+  const items = shallowRef<Field[]>([])
 
   watch(
     arrayField.data,
     (newItems) => {
-      fields.value = mapIds(hashStore, newItems) as Field[]
+      items.value = mapIds(hashStore, newItems, path) as Field[]
     },
     {
       immediate: true,
@@ -119,26 +128,31 @@ export function useFieldArray<T extends FormDataDefault, K extends Paths<T>>(
   const push = (item: Item) => {
     const current = (arrayField.data.value ?? []) as Item[]
     arrayField.setData([...current, item] as Items)
+
+    return items.value.at(-1)!
   }
 
-  const remove = (value: Item) => {
-    const current = (arrayField.data.value ?? []) as Item[]
+  const remove = (id: Id) => {
+    const currentData = (arrayField.data.value ?? []) as Item[]
+    const currentItem = items.value.findIndex(
+      ({ id: itemId }) => itemId === id,
+    )
+
+    if (currentItem === -1) {
+      return
+    }
+
     arrayField.setData(
-      (current?.filter(item => item !== unref(value)) ?? []) as Items,
+      currentData
+        .slice(0, currentItem)
+        .concat(currentData.slice(currentItem + 1)) as Items,
     )
   }
 
-  const removeByIndex = (index: number) => {
-    const current = (arrayField.data.value ?? []) as Item[]
-    arrayField.setData((current?.filter((_, i) => i !== index) ?? []) as Items)
-  }
-
   return {
-    fields,
+    items,
     push,
     remove,
-    removeByIndex,
-    errors: arrayField.errors,
-    dirty: arrayField.dirty,
+    field: arrayField,
   }
 }

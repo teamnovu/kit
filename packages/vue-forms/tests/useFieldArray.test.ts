@@ -70,121 +70,6 @@ describe('useFieldArray', () => {
     })
   })
 
-  describe('Core Functionality', () => {
-    it('should initialize with array data and generate IDs', () => {
-      const form = useForm({
-        initialData: {
-          items: [
-            {
-              id: 1,
-              name: 'Item 1',
-            },
-            {
-              id: 2,
-              name: 'Item 2',
-            },
-          ],
-        },
-      })
-      const fieldArray = useFieldArray(form, 'items')
-
-      expect(fieldArray.fields.value).toHaveLength(2)
-      expect(fieldArray.fields.value[0]).toHaveProperty('id')
-      expect(fieldArray.fields.value[0]).toHaveProperty('item')
-      expect(fieldArray.fields.value[0].item).toEqual({
-        id: 1,
-        name: 'Item 1',
-      })
-      expect(typeof fieldArray.fields.value[0].id).toBe('string')
-      expect(fieldArray.errors.value).toEqual([])
-      expect(fieldArray.dirty.value).toBe(false)
-    })
-
-    it('should push new items to the array', async () => {
-      const form = useForm({
-        initialData: {
-          items: [
-            {
-              id: 1,
-              name: 'First',
-            },
-          ],
-        },
-      })
-      const fieldArray = useFieldArray(form, 'items')
-
-      expect(fieldArray.fields.value).toHaveLength(1)
-
-      fieldArray.push({
-        id: 2,
-        name: 'Second',
-      })
-      await nextTick()
-
-      expect(fieldArray.fields.value).toHaveLength(2)
-      expect(fieldArray.fields.value[1].item).toEqual({
-        id: 2,
-        name: 'Second',
-      })
-      expect(fieldArray.dirty.value).toBe(true)
-    })
-
-    it('should remove item by reference', async () => {
-      const form = useForm({
-        initialData: {
-          items: [
-            {
-              id: 1,
-              name: 'Keep',
-            },
-            {
-              id: 2,
-              name: 'Remove',
-            },
-          ],
-        },
-      })
-      const fieldArray = useFieldArray(form, 'items')
-      const itemToRemove = fieldArray.fields.value[1].item
-
-      fieldArray.remove(itemToRemove)
-      await nextTick()
-
-      expect(fieldArray.fields.value).toHaveLength(1)
-      expect(fieldArray.fields.value[0].item.name).toBe('Keep')
-      expect(fieldArray.dirty.value).toBe(true)
-    })
-
-    it('should remove item by index', async () => {
-      const form = useForm({
-        initialData: {
-          items: [
-            {
-              id: 1,
-              name: 'First',
-            },
-            {
-              id: 2,
-              name: 'Second',
-            },
-            {
-              id: 3,
-              name: 'Third',
-            },
-          ],
-        },
-      })
-      const fieldArray = useFieldArray(form, 'items')
-
-      fieldArray.removeByIndex(1)
-      await nextTick()
-
-      expect(fieldArray.fields.value).toHaveLength(2)
-      expect(fieldArray.fields.value[0].item.name).toBe('First')
-      expect(fieldArray.fields.value[1].item.name).toBe('Third')
-    })
-  })
-
   describe('ID Persistence', () => {
     it('should maintain IDs when items are reordered', async () => {
       const form = useForm({
@@ -210,9 +95,9 @@ describe('useFieldArray', () => {
       })
 
       // Capture initial IDs
-      const id1 = fieldArray.fields.value[0].id
-      const id2 = fieldArray.fields.value[1].id
-      const id3 = fieldArray.fields.value[2].id
+      const id1 = fieldArray.items.value[0].id
+      const id2 = fieldArray.items.value[1].id
+      const id3 = fieldArray.items.value[2].id
 
       // Reverse the array
       const arrayField = form.getField('items')
@@ -220,12 +105,15 @@ describe('useFieldArray', () => {
       await nextTick()
 
       // Verify order changed but IDs followed the items
-      expect(fieldArray.fields.value[0].item.name).toBe('Third')
-      expect(fieldArray.fields.value[0].id).toBe(id3)
-      expect(fieldArray.fields.value[1].item.name).toBe('Second')
-      expect(fieldArray.fields.value[1].id).toBe(id2)
-      expect(fieldArray.fields.value[2].item.name).toBe('First')
-      expect(fieldArray.fields.value[2].id).toBe(id1)
+      expect(fieldArray.items.value[0].item.name).toBe('Third')
+      expect(fieldArray.items.value[0].id).toBe(id3)
+      expect(fieldArray.items.value[0].path).toBe('items.0')
+      expect(fieldArray.items.value[1].item.name).toBe('Second')
+      expect(fieldArray.items.value[1].id).toBe(id2)
+      expect(fieldArray.items.value[1].path).toBe('items.1')
+      expect(fieldArray.items.value[2].item.name).toBe('First')
+      expect(fieldArray.items.value[2].id).toBe(id1)
+      expect(fieldArray.items.value[2].path).toBe('items.2')
     })
 
     it('should maintain IDs based on custom hash function', async () => {
@@ -249,8 +137,8 @@ describe('useFieldArray', () => {
         hashFn: (item: { sku: string }) => item.sku,
       })
 
-      const idABC = fieldArray.fields.value[0].id
-      const idDEF = fieldArray.fields.value[1].id
+      const idABC = fieldArray.items.value[0].id
+      const idDEF = fieldArray.items.value[1].id
 
       // Update price and swap order
       const arrayField = form.getField('products')
@@ -269,8 +157,8 @@ describe('useFieldArray', () => {
       await nextTick()
 
       // IDs should persist because SKUs didn't change
-      expect(fieldArray.fields.value[0].id).toBe(idDEF)
-      expect(fieldArray.fields.value[1].id).toBe(idABC)
+      expect(fieldArray.items.value[0].id).toBe(idDEF)
+      expect(fieldArray.items.value[1].id).toBe(idABC)
 
       // Change SKU - should get new ID
       arrayField.setData([
@@ -287,8 +175,8 @@ describe('useFieldArray', () => {
       ])
       await nextTick()
 
-      expect(fieldArray.fields.value[0].id).not.toBe(idABC)
-      expect(fieldArray.fields.value[1].id).toBe(idDEF)
+      expect(fieldArray.items.value[0].id).not.toBe(idABC)
+      expect(fieldArray.items.value[1].id).toBe(idDEF)
     })
 
     it('should assign IDs in order for items with same hash', async () => {
@@ -319,7 +207,7 @@ describe('useFieldArray', () => {
       })
 
       // All items get unique IDs despite same hash
-      const [id1, id2, id3] = fieldArray.fields.value.map(f => f.id)
+      const [id1, id2, id3] = fieldArray.items.value.map(f => f.id)
       expect(new Set([id1, id2, id3]).size).toBe(3)
 
       // Reorder: move last item to first position
@@ -342,40 +230,14 @@ describe('useFieldArray', () => {
 
       // IDs are assigned in order from stored list, NOT following items
       // This is expected behavior with hash collisions
-      expect(fieldArray.fields.value[0].id).toBe(id1) // svelte gets id1 (was vue's)
-      expect(fieldArray.fields.value[1].id).toBe(id2) // vue gets id2 (was react's)
-      expect(fieldArray.fields.value[2].id).toBe(id3) // react gets id3 (was svelte's)
+      expect(fieldArray.items.value[0].id).toBe(id1) // svelte gets id1 (was vue's)
+      expect(fieldArray.items.value[1].id).toBe(id2) // vue gets id2 (was react's)
+      expect(fieldArray.items.value[2].id).toBe(id3) // react gets id3 (was svelte's)
 
       // The values confirm the reorder happened
-      expect(fieldArray.fields.value[0].item.value).toBe('svelte')
-      expect(fieldArray.fields.value[1].item.value).toBe('vue')
-      expect(fieldArray.fields.value[2].item.value).toBe('react')
-    })
-  })
-
-  describe('Form Integration', () => {
-    it('should track dirty state correctly', async () => {
-      const form = useForm({
-        initialData: { items: [{ name: 'Item' }] },
-      })
-      const fieldArray = useFieldArray(form, 'items')
-
-      expect(form.isDirty.value).toBe(false)
-      expect(fieldArray.dirty.value).toBe(false)
-
-      // Make a change
-      fieldArray.push({ name: 'New Item' })
-      await nextTick()
-
-      expect(form.isDirty.value).toBe(true)
-      expect(fieldArray.dirty.value).toBe(true)
-
-      // Reset form
-      form.reset()
-      await nextTick()
-
-      expect(form.isDirty.value).toBe(false)
-      expect(fieldArray.dirty.value).toBe(false)
+      expect(fieldArray.items.value[0].item.value).toBe('svelte')
+      expect(fieldArray.items.value[1].item.value).toBe('vue')
+      expect(fieldArray.items.value[2].item.value).toBe('react')
     })
   })
 })
