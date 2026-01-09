@@ -5,11 +5,11 @@ import type { SubformOptions } from '../composables/useSubform'
 import type { ValidatorOptions } from '../composables/useValidation'
 import type { EntityPaths, Paths, PickEntity, PickProps } from './util'
 import type {
-  ErrorBag,
-  ValidationErrorMessage,
-  ValidationErrors,
-  ValidationResult,
-  Validator,
+    ErrorBag,
+    ValidationErrorMessage,
+    ValidationErrors,
+    ValidationResult,
+    Validator,
 } from './validation'
 
 export type FormDataDefault = object
@@ -64,7 +64,7 @@ export type FieldsTuple<T, TPaths = Paths<T>> = [
 
 export type AnyField<T> = FormField<PickProps<T, Paths<T>>, Paths<T>>
 
-export interface Form<T extends FormDataDefault> {
+export interface Form<T extends FormDataDefault, TOut = T> {
   // Data properties
   data: Ref<T>
   initialData: Readonly<Ref<T>>
@@ -84,16 +84,16 @@ export interface Form<T extends FormDataDefault> {
   isValidated: Ref<boolean>
   errors: Ref<ErrorBag>
 
-  defineValidator: <TData extends T>(
-    options: ValidatorOptions<TData> | Ref<Validator<TData>>,
-  ) => Ref<Validator<TData> | undefined>
+  defineValidator: <TData extends T, TDataOut extends TOut>(
+    options: ValidatorOptions<TData, TDataOut> | Ref<Validator<TData, TDataOut>>,
+  ) => Ref<Validator<TData, TDataOut> | undefined>
 
   // Operations
   reset: () => void
-  validateForm: () => Promise<ValidationResult>
+  validateForm: <TVOut>() => Promise<ValidationResult<TVOut>>
 
   submitHandler: (
-    onSubmit: (data: T) => Awaitable<void>,
+    onSubmit: (data: TOut) => Awaitable<void>,
   ) => (event: SubmitEvent) => Promise<void>
 
   // Nested subforms

@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
 import { SuccessValidationResult, useValidation } from '../src/composables/useValidation'
 import { ErrorBag } from '../src/types/validation'
-import { hasErrors } from '../src/utils/validation'
+import { hasErrors, isValidResult } from '../src/utils/validation'
 
 const delay = (ms: number = 0) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -34,7 +34,7 @@ describe('useValidation', () => {
 
     const result = await validation.validateForm()
 
-    expect(result.isValid).toBe(true)
+    expect(isValidResult(result)).toBe(true)
     expect(validation.isValidated.value).toBe(true)
     expect(result.errors.general).toEqual([])
     expect(result.errors.propertyErrors).toEqual({})
@@ -56,7 +56,7 @@ describe('useValidation', () => {
 
     const result = await validation.validateForm()
 
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
     expect(validation.isValidated.value).toBe(true)
     expect(result.errors.propertyErrors.name).toBeDefined()
     expect(result.errors.propertyErrors.age).toBeDefined()
@@ -88,7 +88,7 @@ describe('useValidation', () => {
 
     const result = await validation.validateForm()
 
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
     expect(result.errors.propertyErrors.name).toEqual(['Name too short'])
   })
 
@@ -113,7 +113,7 @@ describe('useValidation', () => {
 
     const result = await validation.validateForm()
 
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
     expect(result.errors.general).toEqual(['Forbidden name'])
   })
 
@@ -132,7 +132,7 @@ describe('useValidation', () => {
 
     // Initial validation
     let result = await validation.validateForm()
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
 
     // Change schema to be more permissive
     schema.value = z.object({
@@ -141,7 +141,7 @@ describe('useValidation', () => {
 
     await nextTick()
     result = await validation.validateForm()
-    expect(result.isValid).toBe(true)
+    expect(isValidResult(result)).toBe(true)
   })
 
   it('should handle reactive validation function changes', async () => {
@@ -167,13 +167,13 @@ describe('useValidation', () => {
 
     // Initial validation with strict rules
     let result = await validation.validateForm()
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
 
     // Change to lenient validation
     validateFn.value = lenientValidation
     await nextTick()
     result = await validation.validateForm()
-    expect(result.isValid).toBe(true)
+    expect(isValidResult(result)).toBe(true)
   })
 
   it('should handle external error injection', async () => {
@@ -211,7 +211,7 @@ describe('useValidation', () => {
 
     const result = await validation.validateForm()
 
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
     expect(result.errors.general).toEqual(['External error'])
     expect(result.errors.propertyErrors.name).toEqual(['Too small: expected string to have >=2 characters']) // From schema validation
     expect(result.errors.propertyErrors.email).toEqual(['External email error'])
@@ -254,7 +254,7 @@ describe('useValidation', () => {
 
     const result = await validation.validateForm()
 
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
     expect(result.errors.propertyErrors.name).toEqual(['Too small: expected string to have >=2 characters']) // From schema validation
   })
 

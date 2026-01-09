@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { nextTick, ref } from 'vue'
 import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
+import { isValidResult } from '../src/utils/validation'
 
 describe('Integration Tests', () => {
   it('should handle complete form workflow', async () => {
@@ -48,7 +49,7 @@ describe('Integration Tests', () => {
 
     // Validate form
     const result = await form.validateForm()
-    expect(result.isValid).toBe(true)
+    expect(isValidResult(result)).toBe(true)
     expect(form.isValidated.value).toBe(true)
   })
 
@@ -71,7 +72,7 @@ describe('Integration Tests', () => {
 
     // Validate with invalid data
     const result = await form.validateForm()
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
     expect(result.errors.propertyErrors.name).toBeDefined()
     expect(result.errors.propertyErrors.email).toBeDefined()
 
@@ -81,7 +82,7 @@ describe('Integration Tests', () => {
 
     // Re-validate
     const result2 = await form.validateForm()
-    expect(result2.isValid).toBe(true)
+    expect(isValidResult(result2)).toBe(true)
   })
 
   it('should handle reactive initial data changes', async () => {
@@ -135,7 +136,7 @@ describe('Integration Tests', () => {
     })
 
     const result = await form.validateForm()
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
     expect(result.errors.propertyErrors['user.name']).toBeDefined()
     expect(result.errors.propertyErrors['user.contact.email']).toBeDefined()
   })
@@ -166,7 +167,7 @@ describe('Integration Tests', () => {
     })
 
     const result = await form.validateForm()
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
 
     // Should have errors from all sources
     expect(result.errors.general).toContain('Forbidden name')

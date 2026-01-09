@@ -1,4 +1,4 @@
-import type { ErrorBag, ValidationErrors } from '../types/validation'
+import type { ErrorBag, ValidationErrors, ValidationResult } from '../types/validation'
 
 function deduplicate<T extends Array<unknown>>(arr: T): T {
   return arr.filter(
@@ -63,4 +63,8 @@ export function hasErrors(errorBag: ErrorBag): boolean {
   const hasGeneralErrors = (errorBag.general?.length ?? 0) > 0
   const hasPropertyErrors = Object.entries(errorBag.propertyErrors).filter(([, errors]) => errors?.length).length > 0
   return hasGeneralErrors || hasPropertyErrors
+}
+
+export function isValidResult<T>(validationResult: ValidationResult<T>) {
+  return !hasErrors(validationResult.errors)
 }

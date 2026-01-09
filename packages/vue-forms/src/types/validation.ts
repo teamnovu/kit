@@ -10,14 +10,13 @@ export interface ErrorBag {
   propertyErrors: Record<string, ValidationErrors>
 }
 
-export interface ValidationResult {
-  // TODO @Elias remove isValid
-  isValid: boolean
+export interface ValidationResult<T> {
   errors: ErrorBag
+  data?: T
 }
 
-export interface Validator<T extends FormDataDefault = FormDataDefault> {
-  validate: (data: T) => Promise<ValidationResult>
+export interface Validator<T extends FormDataDefault = FormDataDefault, TOut = T> {
+  validate: (data: T) => Promise<ValidationResult<TOut>>
 }
 
-export type ValidationFunction<T> = (data: T) => Promise<ValidationResult>
+export type ValidationFunction<T, TOut = T> = (data: T) => Promise<ValidationResult<TOut>>

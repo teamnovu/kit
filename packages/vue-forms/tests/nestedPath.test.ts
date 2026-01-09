@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
 import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
+import { isValidResult } from '../src/utils/validation'
 
 describe('Nested Path Handling', () => {
   interface TestFormData {
@@ -12,7 +13,7 @@ describe('Nested Path Handling', () => {
         age: number
         bio: string
         preferences: {
-          theme: string
+          theme: 'dark' | 'light'
           notifications: boolean
         }
       }
@@ -35,12 +36,13 @@ describe('Nested Path Handling', () => {
       name: string
       email: string
       addresses: Array<{
-        type: string
+        type: 'work' | 'home'
         street: string
         city: string
       }>
     }>
     metadata: Record<string, any>
+    [key: string]: unknown
   }
 
   const initialData: TestFormData = {
@@ -355,7 +357,7 @@ describe('Nested Path Handling', () => {
     const schema = z.looseObject({
       user: z.object({
         name: z.string().min(2, 'Name must be at least 2 characters'),
-        email: z.string().email('Invalid email format'),
+        email: z.email('Invalid email format'),
         profile: z.object({
           age: z.number().min(18, 'Must be at least 18'),
           bio: z.string().min(10, 'Bio must be at least 10 characters'),
@@ -383,13 +385,14 @@ describe('Nested Path Handling', () => {
       contacts: z.array(z.object({
         id: z.string(),
         name: z.string().min(1, 'Contact name is required'),
-        email: z.string().email('Invalid contact email'),
+        email: z.email('Invalid contact email'),
         addresses: z.array(z.object({
           type: z.enum(['home', 'work'], { message: 'Address type must be home or work' }),
           street: z.string().min(1, 'Address street is required'),
           city: z.string().min(1, 'Address city is required'),
         })),
       })),
+      metadata: z.record(z.string(), z.any()),
     })
 
     it('should validate nested field paths', async () => {
@@ -408,7 +411,7 @@ describe('Nested Path Handling', () => {
 
       const result = await form.validateForm()
 
-      expect(result.isValid).toBe(false)
+      expect(isValidResult(result)).toBe(false)
       expect(result.errors.propertyErrors['user.name']).toContain('Name must be at least 2 characters')
       expect(result.errors.propertyErrors['user.email']).toContain('Invalid email format')
     })
@@ -429,7 +432,7 @@ describe('Nested Path Handling', () => {
 
       const result = await form.validateForm()
 
-      expect(result.isValid).toBe(false)
+      expect(isValidResult(result)).toBe(false)
       expect(result.errors.propertyErrors['user.profile.age']).toContain('Must be at least 18')
       expect(result.errors.propertyErrors['user.profile.preferences.theme']).toContain('Theme must be light or dark')
     })
@@ -450,7 +453,7 @@ describe('Nested Path Handling', () => {
 
       const result = await form.validateForm()
 
-      expect(result.isValid).toBe(false)
+      expect(isValidResult(result)).toBe(false)
       expect(result.errors.propertyErrors['contacts.0.name']).toContain('Contact name is required')
       expect(result.errors.propertyErrors['contacts.0.email']).toContain('Invalid contact email')
     })
@@ -471,7 +474,7 @@ describe('Nested Path Handling', () => {
 
       const result = await form.validateForm()
 
-      expect(result.isValid).toBe(false)
+      expect(isValidResult(result)).toBe(false)
       expect(result.errors.propertyErrors['contacts.0.addresses.0.type']).toContain('Address type must be home or work')
       expect(result.errors.propertyErrors['contacts.0.addresses.0.street']).toContain('Address street is required')
     })

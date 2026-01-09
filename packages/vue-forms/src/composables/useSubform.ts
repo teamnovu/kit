@@ -27,14 +27,14 @@ export interface SubformOptions<_T extends FormDataDefault> {
   // Additional subform-specific options can be added here
 }
 
-class NestedValidator<T extends FormDataDefault, P extends Paths<T>>
-implements Validator<T> {
+class NestedValidator<T extends FormDataDefault, P extends Paths<T>, TOut = T>
+implements Validator<T, TOut> {
   constructor(
     private path: P,
     private validator: Validator<PickEntity<T, P>> | undefined,
   ) {}
 
-  async validate(data: T): Promise<ValidationResult> {
+  async validate(data: T): Promise<ValidationResult<TOut>> {
     const subFormData = getNestedValue(data, this.path) as PickEntity<T, P>
 
     if (!this.validator) {
@@ -44,7 +44,6 @@ implements Validator<T> {
     const validationResult = await this.validator.validate(subFormData)
 
     return {
-      isValid: validationResult.isValid,
       errors: {
         general: validationResult.errors.general || [],
         propertyErrors: validationResult.errors.propertyErrors
@@ -62,14 +61,16 @@ implements Validator<T> {
 export function createSubformInterface<
   T extends FormDataDefault,
   K extends EntityPaths<T>,
+  TOut = T,
 >(
-  mainForm: Form<T>,
+  mainForm: Form<T, TOut>,
   path: K,
-  formOptions?: UseFormOptions<T>,
+  formOptions?: UseFormOptions<T, TOut>,
   _options?: SubformOptions<PickEntity<T, K>>,
-): Form<PickEntity<T, K>> {
+): Form<PickEntity<T, K>, PickEntity<TOut, K>> {
   type ST = PickEntity<T, K>
   type SP = Paths<ST>
+  type STOut = PickEntity<TOut, K>
   type MP<P extends SP> = `${K}.${P}`
   type ScopedMainPaths = Paths<T> & MP<SP>
 
@@ -157,7 +158,7 @@ export function createSubformInterface<
   const errors = computed(() =>
     filterErrorsForPath(unref(mainForm.errors), path))
 
-  const validateForm = () => mainForm.validateForm()
+  const validateForm = (() => mainForm.validateForm()) as Form<ST, STOut>['validateForm']
 
   // Nested subforms
   const getSubForm = <P extends EntityPaths<ST>>(
@@ -175,11 +176,11 @@ export function createSubformInterface<
   const reset = () => getAllSubformFields().forEach(field => field.reset())
 
   const defineValidator = (
-    options: ValidatorOptions<ST> | Ref<Validator<ST>>,
+    options: ValidatorOptions<ST, STOut> | Ref<Validator<ST, STOut>>,
   ) => {
     const subValidator = isRef(options) ? options : createValidator(options)
     const validator = computed(
-      () => new NestedValidator<T, K>(path, unref(subValidator)),
+      () => new NestedValidator<T, K, STOut>(path, unref(subValidator)),
     )
 
     mainForm.defineValidator(validator)

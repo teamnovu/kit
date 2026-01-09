@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { effectScope, isReactive, nextTick, reactive, ref } from 'vue'
 import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
+import { isValidResult } from '../src/utils/validation'
 
 const scope = effectScope()
 
@@ -169,7 +170,7 @@ describe('useForm', () => {
 
     const result = await form.validateForm()
 
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
     expect(form.isValidated.value).toBe(true)
     expect(form.errors.value.propertyErrors.name).toBeDefined()
     expect(form.errors.value.propertyErrors.age).toBeDefined()
@@ -199,7 +200,7 @@ describe('useForm', () => {
 
     const result = await form.validateForm()
 
-    expect(result.isValid).toBe(false)
+    expect(isValidResult(result)).toBe(false)
     expect(result.errors.propertyErrors.name).toEqual(['Name too short'])
   })
 
@@ -219,7 +220,7 @@ describe('useForm', () => {
 
     const result = await form.validateForm()
 
-    expect(result.isValid).toBe(true)
+    expect(isValidResult(result)).toBe(true)
     expect(form.isValidated.value).toBe(true)
     expect(form.errors.value.general).toEqual([])
     expect(form.errors.value.propertyErrors).toEqual({})
@@ -235,7 +236,7 @@ describe('useForm', () => {
 
     const result = await form.validateForm()
 
-    expect(result.isValid).toBe(true)
+    expect(isValidResult(result)).toBe(true)
     expect(form.isValidated.value).toBe(true)
     expect(form.errors.value.general).toEqual([])
     expect(form.errors.value.propertyErrors).toEqual({})
