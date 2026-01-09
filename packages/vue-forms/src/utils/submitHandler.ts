@@ -13,8 +13,8 @@ export function makeSubmitHandler<T extends FormDataDefault, TOut = T>(
   options: SubmitHandlerOptions,
 ) {
   return (onSubmit: (data: TOut) => Awaitable<void>) => {
-    return async (event: SubmitEvent) => {
-      event.preventDefault()
+    return async (event?: SubmitEvent) => {
+      event?.preventDefault()
       const strategy = unref(options.validationStrategy)
 
       if (strategy === 'none') {
