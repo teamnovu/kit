@@ -223,7 +223,8 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
     updateErrors({
       general: validationResults.errors.general,
       propertyErrors: {
-        [path]: validationResults.errors.propertyErrors[path],
+        ...validationState.errors.propertyErrors,
+        [path]: validationResults.errors.propertyErrors[path] ?? [],
       },
     })
 

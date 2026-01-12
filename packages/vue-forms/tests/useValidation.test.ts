@@ -352,6 +352,15 @@ describe('useValidation', () => {
 
     await form.validateForm()
 
+    nameField.data.value = 'ab'
+
+    await delay()
+
+    // Data changed, but validation not triggered yet
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(1)
+    expect(form.errors.value.propertyErrors.email ?? []).toHaveLength(1)
+
     // Simulate blur event
     nameField.onBlur()
 
@@ -359,8 +368,8 @@ describe('useValidation', () => {
     await delay()
 
     expect(form.isValid.value).toBe(false)
-    expect(form.errors.value.propertyErrors.name).toHaveLength(1)
-    expect(form.errors.value.propertyErrors.email ?? []).toHaveLength(0)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(0)
+    expect(form.errors.value.propertyErrors.email ?? []).toHaveLength(1)
   })
 
   it('should validate the form on form open if configured', async () => {
@@ -432,5 +441,38 @@ describe('useValidation', () => {
 
     expect(form.isValid.value).toBe(false)
     expect(form.errors.value.propertyErrors.name).toHaveLength(1)
+  })
+
+  it('should not validate other fields on data change', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+      foo: z.string().min(2),
+    })
+
+    const initialData = {
+      name: 'b',
+      foo: 'c',
+    }
+    const form = useForm({
+      initialData,
+      schema,
+      validationStrategy: 'onDataChange',
+    })
+
+    const nameField = form.getField('name')
+
+    await form.validateForm()
+
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(1)
+    expect(form.errors.value.propertyErrors.foo).toHaveLength(1)
+
+    nameField.data.value = 'abc'
+
+    await delay()
+
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(0)
+    expect(form.errors.value.propertyErrors.foo).toHaveLength(1)
   })
 })

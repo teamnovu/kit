@@ -20,18 +20,18 @@ function mergeErrorMessages(...msgs: ValidationErrors[]) {
     }
     const allMessages = (acc ?? []).concat(msg!)
     return deduplicate(allMessages)
-  }, msgs[0] as ValidationErrors)
+  }, msgs[0] as ValidationErrors) ?? []
 }
 
 function mergePropertyErrors(...propertyErrors: Record<string, ValidationErrors>[]): Record<string, ValidationErrors> {
   const allKeys = propertyErrors.map(errs => Object.keys(errs)).flat()
 
   return allKeys.reduce((acc, key) => {
-    const values = propertyErrors.map(errs => errs[key]).filter(Boolean) as ValidationErrors[]
+    const values = propertyErrors.map(errs => errs[key]).filter((v): v is NonNullable<typeof v> => !!v)
 
     return {
       ...acc,
-      [key]: mergeErrorMessages(...values),
+      [key]: mergeErrorMessages(acc[key], ...values),
     }
   }, {} as Record<string, ValidationErrors>)
 }
