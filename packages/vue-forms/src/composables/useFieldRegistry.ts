@@ -72,9 +72,9 @@ function initialDataSync<T extends FormDataDefault>(
   return initialValueRef
 }
 
-export function useFieldRegistry<T extends FormDataDefault>(
+export function useFieldRegistry<T extends FormDataDefault, TOut = T>(
   formState: FormState<T>,
-  validationState: ValidationState<T>,
+  validationState: ValidationState<T, TOut>,
   fieldRegistryOptions?: FieldRegistryOptions,
 ) {
   const fieldReferenceCounter = new Map<Paths<T>, Rc>()

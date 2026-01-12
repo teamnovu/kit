@@ -3,6 +3,7 @@ import { nextTick } from 'vue'
 import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
 import { Form } from '../src/types/form'
+import { isValidResult } from '../src/utils/validation'
 
 describe('Subform Implementation', () => {
   describe('Basic Functionality', () => {
@@ -222,7 +223,7 @@ describe('Subform Implementation', () => {
           name: 'Deep Value',
         })
 
-        const nameField = level5Form.defineField({ path: 'name' })
+        level5Form.defineField({ path: 'name' })
         expect(form.getField('level1.level2.level3.level4.level5.name')).toBeDefined()
       })
 
@@ -274,7 +275,7 @@ describe('Subform Implementation', () => {
         userForm.defineValidator({
           schema: z.object({
             name: z.string().min(1, 'Name required'),
-            email: z.string().email('Invalid email'),
+            email: z.email('Invalid email'),
           }),
         })
 
@@ -284,7 +285,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.propertyErrors['user.name']).toContain('Name required')
         expect(result.errors.propertyErrors['user.email']).toContain('Invalid email')
       })
@@ -317,7 +318,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.propertyErrors['user.profile.name']).toContain('Name required')
         expect(result.errors.propertyErrors['user.profile.bio']).toContain('Bio too short')
       })
@@ -347,7 +348,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.propertyErrors['user.name']).toContain('User name required')
         expect(result.errors.propertyErrors['company.name']).toContain('Company name required')
       })
@@ -385,7 +386,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.propertyErrors['user.name']).toContain('Admin name not allowed')
       })
 
@@ -403,6 +404,7 @@ describe('Subform Implementation', () => {
         userForm.defineValidator({
           schema: z.object({
             name: z.string().min(1, 'Name required'),
+            email: z.email(),
           }),
           validateFn: async (data) => {
             const errors: Record<string, string[]> = {}
@@ -423,7 +425,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.propertyErrors['user.name']).toContain('Name required')
         expect(result.errors.propertyErrors['user.email']).toContain('Test email not allowed')
       })
@@ -463,7 +465,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.propertyErrors['user.profile.name']).toContain('Admin profile name not allowed')
       })
     })
@@ -508,7 +510,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.propertyErrors['globalSetting']).toContain('Global setting too short')
         expect(result.errors.propertyErrors['user.name']).toContain('Admin name not allowed')
       })
@@ -530,7 +532,6 @@ describe('Subform Implementation', () => {
 
         // Define fields to enable dirty state computation
         const userNameField = userForm.defineField({ path: 'name' })
-        const companyNameField = companyForm.defineField({ path: 'name' })
 
         expect(userForm.isDirty.value).toBe(false)
         expect(companyForm.isDirty.value).toBe(false)
@@ -584,7 +585,7 @@ describe('Subform Implementation', () => {
 
         // Define fields to enable dirty state computation
         const firstNameField = firstUserForm.defineField({ path: 'name' })
-        const secondNameField = secondUserForm.defineField({ path: 'name' })
+        secondUserForm.defineField({ path: 'name' })
 
         expect(firstUserForm.isDirty.value).toBe(false)
         expect(secondUserForm.isDirty.value).toBe(false)
@@ -610,7 +611,7 @@ describe('Subform Implementation', () => {
         const companyForm = form.getSubForm('company')
 
         const userNameField = userForm.defineField({ path: 'name' })
-        const companyNameField = companyForm.defineField({ path: 'name' })
+        companyForm.defineField({ path: 'name' })
 
         expect(userForm.isTouched.value).toBe(false)
         expect(companyForm.isTouched.value).toBe(false)
@@ -966,7 +967,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.general).toContain('Validation function error')
       })
 
@@ -993,7 +994,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.general).toContain('Invalid format error')
       })
 
@@ -1028,7 +1029,7 @@ describe('Subform Implementation', () => {
 
         const result = await form.validateForm()
 
-        expect(result.isValid).toBe(false)
+        expect(isValidResult(result)).toBe(false)
         expect(result.errors.general).toContain('Data is undefined')
       })
 
@@ -1233,8 +1234,9 @@ describe('Subform Implementation', () => {
           const userForm = form.getSubForm(`users.${i}`)
           userForm.defineValidator({
             schema: z.object({
+              id: z.number(),
               name: z.string().min(1, 'Name required'),
-              email: z.string().email('Invalid email'),
+              email: z.email('Invalid email'),
             }),
           })
         }
@@ -1246,7 +1248,7 @@ describe('Subform Implementation', () => {
 
         // Should complete within reasonable time (less than 1000ms)
         expect(duration).toBeLessThan(1000)
-        expect(result.isValid).toBe(true)
+        expect(isValidResult(result)).toBe(true)
       })
     })
 
@@ -1365,7 +1367,7 @@ describe('Subform Implementation', () => {
 
   describe('Toplevel array subform', () => {
     it('can handle arrays on top level', async () => {
-      const schema = z.array(z.string())
+      const schema = z.object({ test: z.array(z.string()) })
 
       const form = useForm({
         initialData: { test: ['item1', 'item2'] },

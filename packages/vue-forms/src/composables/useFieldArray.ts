@@ -92,8 +92,8 @@ function mapIds<Item, Path extends string>(
   })
 }
 
-export function useFieldArray<T extends FormDataDefault, K extends Paths<T>>(
-  form: Form<T>,
+export function useFieldArray<T extends FormDataDefault, K extends Paths<T>, TOut = T>(
+  form: Form<T, TOut>,
   path: PickProps<T, K> extends unknown[] ? K : never,
   options?: FieldArrayOptions<PickProps<T, K> extends (infer U)[] ? U : never>,
 ): FieldArray<PickProps<T, K> extends (infer U)[] ? U : never, typeof path> {

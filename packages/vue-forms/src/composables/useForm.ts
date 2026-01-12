@@ -9,6 +9,7 @@ import {
   type MaybeRefOrGetter,
   type Ref,
 } from 'vue'
+import type { z } from 'zod'
 import type { Form, FormDataDefault } from '../types/form'
 import type { ValidationStrategy } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
@@ -18,17 +19,35 @@ import { useFieldRegistry } from './useFieldRegistry'
 import { useFormState } from './useFormState'
 import { createSubformInterface } from './useSubform'
 import { useValidation, type ValidationOptions } from './useValidation'
+import type { DeepPartial } from '../utils/type-helpers'
 
-export interface UseFormOptions<T extends FormDataDefault>
-  extends ValidationOptions<T> {
+export interface UseFormOptions<T extends FormDataDefault, TOut = T>
+  extends ValidationOptions<T, TOut> {
   initialData: MaybeRefOrGetter<T>
   validationStrategy?: MaybeRef<ValidationStrategy>
   keepValuesOnUnmount?: MaybeRef<boolean>
 }
 
+/* eslint-disable no-redeclare */
+// Overload: with schema - infer types from schema
+// initialData can be partial, but provided fields must match schema types
+export function useForm<TSchema extends z.ZodType<FormDataDefault, FormDataDefault>>(
+  options: Omit<UseFormOptions<z.input<TSchema>, z.output<TSchema>>, 'initialData'> & {
+    schema: MaybeRef<TSchema>
+    initialData: MaybeRefOrGetter<DeepPartial<z.input<TSchema>>>
+  },
+): Form<z.input<TSchema>, z.output<TSchema>>
+
+// Overload: without schema - infer types from initialData
 export function useForm<T extends FormDataDefault>(
-  options: UseFormOptions<T>,
-): Form<T> {
+  options: Omit<UseFormOptions<T, T>, 'schema'> & { schema?: undefined },
+): Form<T, T>
+
+// Implementation
+export function useForm<T extends FormDataDefault, TOut = T>(
+  options: UseFormOptions<T, TOut>,
+): Form<T, TOut> {
+  /* eslint-enable no-redeclare */
   const initialData = computed(() => cloneRefValue(options.initialData))
 
   const data = ref<T>(cloneRefValue(initialData)) as Ref<T>
@@ -69,13 +88,14 @@ export function useForm<T extends FormDataDefault>(
     validationState.validateForm()
   }
 
-  const form: Form<T> = {
+  const form: Form<T, TOut> = {
     ...fieldRegistry,
     ...validationState,
     ...formState,
     reset,
     initialData: toRef(state, 'initialData') as Form<T>['initialData'],
     data: toRef(state, 'data') as Form<T>['data'],
+    validateForm: validationState.validateForm as Form<T, TOut>['validateForm'],
     submitHandler: onSubmit => makeSubmitHandler(form, options)(onSubmit),
     getSubForm: (path, subformOptions) => {
       return createSubformInterface(form, path, options, subformOptions)
