@@ -65,7 +65,7 @@ describe('useField', () => {
   it('should handle errors', () => {
     const field = useField({
       path: 'name',
-      errors: ['Required field'],
+      errors: ref(['Required field']),
     })
 
     expect(field.errors.value).toEqual(['Required field'])

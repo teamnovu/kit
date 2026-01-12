@@ -4,8 +4,6 @@ import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
 import { isValidResult } from '../src/utils/validation'
 
-const scope = effectScope()
-
 describe('useForm', () => {
   it('should initialize form with initial data', () => {
     const initialData = {
@@ -481,7 +479,7 @@ describe('useForm', () => {
       { timeout: 500 },
       async () => {
         const initialData = ref({
-          name: null as null | number,
+          name: undefined as undefined | number,
         })
 
         const schema = z.object({

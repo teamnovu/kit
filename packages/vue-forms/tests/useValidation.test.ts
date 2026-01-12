@@ -307,10 +307,14 @@ describe('useValidation', () => {
   it('should not validate other fields than the blurred one', async () => {
     const schema = z.object({
       name: z.string().min(2),
-      email: z.string().email(),
+      email: z.email(),
     })
 
-    const initialData = { name: 'A', email: 'invalid-email' }
+    const initialData = {
+      name: 'A',
+      email: 'invalid-email',
+    }
+
     const form = useForm({
       initialData,
       schema,

@@ -3,6 +3,7 @@ import { nextTick } from 'vue'
 import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
 import { isValidResult } from '../src/utils/validation'
+import { FormField } from '../src'
 
 describe('Nested Path Handling', () => {
   interface TestFormData {
@@ -556,7 +557,7 @@ describe('Nested Path Handling', () => {
     it('should handle large numbers of nested fields', () => {
       const form = useForm({ initialData })
 
-      const fields = []
+      const fields: FormField<string, string>[] = []
 
       // Create many nested fields
       for (let i = 0; i < 100; i++) {
