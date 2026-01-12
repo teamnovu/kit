@@ -33,7 +33,7 @@ export interface UseFormOptions<T extends FormDataDefault, TOut = T>
 export function useForm<
   T extends FormDataDefault,
   TOut = T,
->(options: UseFormOptions<T, TOut> & { schema: MaybeRef<z.ZodType<TOut, T>> }): Form<T, TOut>
+>(options: UseFormOptions<T, TOut> & { schema: MaybeRef<z.ZodType<TOut, unknown>> }): Form<T, TOut>
 
 // Overload: without schema - infer types from initialData
 export function useForm<T extends FormDataDefault>(

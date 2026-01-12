@@ -6,7 +6,7 @@ import { hasErrors, isValidResult, mergeErrors } from '../utils/validation'
 import { flattenError } from '../utils/zod'
 
 export interface ValidatorOptions<T, TOut = T> {
-  schema?: MaybeRef<z.ZodType<TOut, T> | undefined>
+  schema?: MaybeRef<z.ZodType<TOut, unknown> | undefined>
   validateFn?: MaybeRef<ValidationFunction<T, TOut> | undefined>
 }
 
