@@ -6,8 +6,9 @@ export interface FormComponentProps<
   TData extends object,
   TPath extends Paths<TData>,
   TModelValueType,
+  TOutData = TData,
 > {
-  form: Form<TData & DeepPartial<ObjectOf<TPath, TModelValueType>>>
+  form: Form<TData & DeepPartial<ObjectOf<TPath, TModelValueType>>, TOutData>
   path: TPath
 }
 
