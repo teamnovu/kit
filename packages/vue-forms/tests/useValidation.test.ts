@@ -280,6 +280,30 @@ describe('useValidation', () => {
     expect(validation.errors.value).toEqual(SuccessValidationResult.errors)
   })
 
+  it('should not the form on blur if configured but the form was never validated yet', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+    })
+
+    const initialData = { name: 'A' }
+    const form = useForm({
+      initialData,
+      schema,
+      validationStrategy: 'onTouch',
+    })
+
+    const nameField = form.getField('name')
+
+    // Simulate blur event
+    nameField.onBlur()
+
+    // onBlur is not async but the validation runs async
+    await delay()
+
+    expect(form.isValid.value).toBe(true)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(0)
+  })
+
   it('should validate the form on blur if configured', async () => {
     const schema = z.object({
       name: z.string().min(2),
@@ -293,6 +317,8 @@ describe('useValidation', () => {
     })
 
     const nameField = form.getField('name')
+
+    await form.validateForm()
 
     // Simulate blur event
     nameField.onBlur()
@@ -323,6 +349,8 @@ describe('useValidation', () => {
 
     const nameField = form.getField('name')
     form.getField('email')
+
+    await form.validateForm()
 
     // Simulate blur event
     nameField.onBlur()
@@ -378,5 +406,31 @@ describe('useValidation', () => {
 
     expect(form.isValidated.value).toBe(false)
     expect(form.isValid.value).toBe(true)
+  })
+
+  it('should validate the form on data change if configured', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+    })
+
+    const initialData = { name: 'ABC' }
+    const form = useForm({
+      initialData,
+      schema,
+      validationStrategy: 'onDataChange',
+    })
+
+    const nameField = form.getField('name')
+
+    await form.validateForm()
+
+    expect(form.isValid.value).toBe(true)
+
+    nameField.data.value = 'a'
+
+    await delay()
+
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(1)
   })
 })

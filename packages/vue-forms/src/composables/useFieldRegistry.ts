@@ -31,6 +31,7 @@ export type DefineFieldOptions<F, K extends string> = Pick<
 > & {
   onBlur?: () => void
   onFocus?: () => void
+  onChange?: <T>(value: T) => void
 }
 
 interface FormState<
@@ -45,6 +46,7 @@ interface FieldRegistryOptions {
   keepValuesOnUnmount?: MaybeRef<boolean>
   onBlur?: (path: string) => Awaitable<void>
   onFocus?: (path: string) => Awaitable<void>
+  onChange?: <T>(path: string, value: T) => Awaitable<void>
 }
 
 const optionDefaults = {
@@ -141,6 +143,12 @@ export function useFieldRegistry<T extends FormDataDefault, TOut = T>(
           await Promise.all([
             registryOptions?.onFocus?.(unref(path)),
             options.onFocus?.(),
+          ])
+        },
+        onChange: async (value: PickProps<T, K>) => {
+          await Promise.all([
+            registryOptions?.onChange?.(unref(path), value),
+            options.onChange?.(value),
           ])
         },
       })

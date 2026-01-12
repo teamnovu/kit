@@ -30,10 +30,11 @@ export interface UseFormOptions<T extends FormDataDefault, TOut = T>
 /* eslint-disable no-redeclare */
 // Overload: with schema - infer types from schema
 // initialData can be partial, but provided fields must match schema types
-export function useForm<
-  T extends FormDataDefault,
-  TOut = T,
->(options: UseFormOptions<T, TOut> & { schema: MaybeRef<z.ZodType<TOut, unknown>> }): Form<T, TOut>
+export function useForm<T extends FormDataDefault, TOut = T>(
+  options: UseFormOptions<T, TOut> & {
+    schema: MaybeRef<z.ZodType<TOut, unknown>>
+  },
+): Form<T, TOut>
 
 // Overload: without schema - infer types from initialData
 export function useForm<T extends FormDataDefault>(
@@ -67,6 +68,11 @@ export function useForm<T extends FormDataDefault, TOut = T>(
     keepValuesOnUnmount: options.keepValuesOnUnmount,
     onBlur: async (path: string) => {
       if (unref(options.validationStrategy) === 'onTouch') {
+        validationState.validateField(path)
+      }
+    },
+    onChange: async (path: string) => {
+      if (unref(options.validationStrategy) === 'onDataChange') {
         validationState.validateField(path)
       }
     },

@@ -214,6 +214,10 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
   }
 
   const validateField = async (path: string): Promise<ValidationResult<TOut>> => {
+    if (!validationState.isValidated) {
+      return SuccessValidationResult
+    }
+
     const validationResults = await getValidationResults()
 
     updateErrors({

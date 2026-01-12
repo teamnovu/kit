@@ -1,6 +1,6 @@
 import type { FormDataDefault } from './form'
 
-export type ValidationStrategy = 'onTouch' | 'onFormOpen' | 'none' | 'preSubmit'
+export type ValidationStrategy = 'onTouch' | 'onFormOpen' | 'none' | 'preSubmit' | 'onDataChange'
 
 export type ValidationErrorMessage = string
 export type ValidationErrors = ValidationErrorMessage[] | undefined

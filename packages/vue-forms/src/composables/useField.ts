@@ -12,6 +12,7 @@ export interface UseFieldOptions<T, K extends string> {
   existsInForm?: MaybeRef<boolean>
   onBlur?: () => Awaitable<void>
   onFocus?: () => Awaitable<void>
+  onChange?: (value: T) => Awaitable<void>
 }
 
 export function useField<T, K extends string>(fieldOptions: UseFieldOptions<T, K>): FormField<T, K> {
@@ -43,6 +44,10 @@ export function useField<T, K extends string>(fieldOptions: UseFieldOptions<T, K
     },
     { flush: 'sync' },
   )
+
+  watch(() => state.value, (newData) => {
+    fieldOptions.onChange?.(newData as T)
+  }, { deep: true })
 
   const dirty = computed(() => {
     return JSON.stringify(state.value) !== JSON.stringify(state.initialValue)
