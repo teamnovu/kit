@@ -39,6 +39,7 @@ import { type Component } from 'vue'
 import type { ComponentProps } from 'vue-component-type-helpers'
 import type { Paths } from '../types/util.ts'
 import type { Form, FormDataDefault } from '../types/form.ts'
+import Field from './Field.vue'
 
 export interface FormFieldWrapperProps<
   TData extends FormDataDefault,
