@@ -29,9 +29,10 @@
   setup
   lang="ts"
   generic="
-    TForm extends Form<FormDataDefault, unknown>,
-    TPath extends Paths<TForm extends Form<infer Data> ? Data : never>,
-    TComponent extends Component
+    TData extends FormDataDefault,
+    TPath extends Paths<TData>,
+    TComponent extends Component,
+    TDataOut = TData
   "
 >
 import { type Component } from 'vue'
@@ -40,13 +41,14 @@ import type { Paths } from '../types/util.ts'
 import type { Form, FormDataDefault } from '../types/form.ts'
 
 export interface FormFieldWrapperProps<
-  TForm extends Form<FormDataDefault, unknown>,
+  TData extends FormDataDefault,
   TPath extends string,
   TComponent,
+  TDataOut = TData,
 > {
   component: TComponent
   componentProps: Omit<ComponentProps<TComponent>, 'modelValue' | 'update:modelValue' | 'errors'>
-  form: TForm
+  form: Form<TData, TDataOut>
   path: TPath
 }
 
@@ -54,5 +56,5 @@ defineOptions({
   inheritAttrs: false,
 })
 
-defineProps<FormFieldWrapperProps<TForm, TPath, TComponent>>()
+defineProps<FormFieldWrapperProps<TData, TPath, TComponent, TDataOut>>()
 </script>
