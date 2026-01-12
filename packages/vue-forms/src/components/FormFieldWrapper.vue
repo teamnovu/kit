@@ -28,17 +28,25 @@
 <script
   setup
   lang="ts"
-  generic="TData extends object, TPath extends Paths<TData>, TComponent extends Component"
+  generic="
+    TForm extends Form<FormDataDefault, unknown>,
+    TPath extends Paths<TForm extends Form<infer Data> ? Data : never>,
+    TComponent extends Component
+  "
 >
 import { type Component } from 'vue'
 import type { ComponentProps } from 'vue-component-type-helpers'
 import type { Paths } from '../types/util.ts'
-import type { Form } from '../types/form.ts'
+import type { Form, FormDataDefault } from '../types/form.ts'
 
-export interface FormFieldWrapperProps<TData extends object, TPath extends string, TComponent> {
+export interface FormFieldWrapperProps<
+  TForm extends Form<FormDataDefault, unknown>,
+  TPath extends string,
+  TComponent,
+> {
   component: TComponent
   componentProps: Omit<ComponentProps<TComponent>, 'modelValue' | 'update:modelValue' | 'errors'>
-  form: Form<TData>
+  form: TForm
   path: TPath
 }
 
@@ -46,5 +54,5 @@ defineOptions({
   inheritAttrs: false,
 })
 
-defineProps<FormFieldWrapperProps<TData, TPath, TComponent>>()
+defineProps<FormFieldWrapperProps<TForm, TPath, TComponent>>()
 </script>
