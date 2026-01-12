@@ -1,9 +1,31 @@
-import { computed, getCurrentScope, isRef, onBeforeUnmount, reactive, ref, toRefs, unref, watch, type MaybeRef, type Ref } from 'vue'
+import { computed, getCurrentScope, isRef, onBeforeUnmount, reactive, ref, toRefs, toValue, unref, watch, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
 import z from 'zod'
 import type { FormDataDefault } from '../types/form'
 import type { ErrorBag, ValidationFunction, ValidationResult, Validator } from '../types/validation'
 import { hasErrors, isValidResult, mergeErrors } from '../utils/validation'
 import { flattenError } from '../utils/zod'
+
+export const defaults: ValidationOptions<FormDataDefault> = {
+  validationBeforeSubmit: {
+    validateOnBlur: false,
+    validateOnFormOpen: false,
+    validateOnSubmit: true,
+    validateOnDataChange: false,
+  },
+  validationAfterSubmit: {
+    validateOnBlur: false,
+    validateOnFormOpen: false,
+    validateOnSubmit: true,
+    validateOnDataChange: true,
+  },
+}
+
+export interface ValidationFlags {
+  validateOnBlur?: MaybeRefOrGetter<boolean>
+  validateOnFormOpen?: MaybeRefOrGetter<boolean>
+  validateOnSubmit?: MaybeRefOrGetter<boolean>
+  validateOnDataChange?: MaybeRefOrGetter<boolean>
+}
 
 export interface ValidatorOptions<T, TOut = T> {
   schema?: MaybeRef<z.ZodType<TOut, unknown> | undefined>
@@ -12,6 +34,8 @@ export interface ValidatorOptions<T, TOut = T> {
 
 export interface ValidationOptions<T, TOut = T> extends ValidatorOptions<T, TOut> {
   errors?: MaybeRef<ErrorBag | undefined>
+  validationBeforeSubmit?: ValidationFlags
+  validationAfterSubmit?: ValidationFlags
 }
 
 export const SuccessValidationResult: ValidationResult<never> = {
@@ -160,7 +184,7 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
   })
 
   const defineValidator = <TData extends T, TDataOut extends TOut>(
-    options: ValidatorOptions<TData, TDataOut> | Ref<Validator<TData, TDataOut>>
+    options: ValidatorOptions<TData, TDataOut> | Ref<Validator<TData, TDataOut>>,
   ) => {
     const validator = isRef(options) ? options : createValidator(options)
 
@@ -214,10 +238,6 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
   }
 
   const validateField = async (path: string): Promise<ValidationResult<TOut>> => {
-    if (!validationState.isValidated) {
-      return SuccessValidationResult
-    }
-
     const validationResults = await getValidationResults()
 
     updateErrors({
@@ -241,10 +261,28 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
     validationState.errors = unref(options.errors) ?? SuccessValidationResult.errors
   }
 
+  const canValidate = <K extends keyof ValidationFlags>(flag: K) => {
+    const flags = validationState.isValidated
+      ? options.validationAfterSubmit
+      : options.validationBeforeSubmit
+
+    return toValue(flags?.[flag] ?? false)
+  }
+
+  const validateStrategy = <K extends keyof ValidationFlags>(flag: K, path: string) => {
+    if (!canValidate(flag)) {
+      return
+    }
+
+    return validateField(path)
+  }
+
   return {
     ...toRefs(validationState),
     validateForm,
     validateField,
+    validateStrategy,
+    canValidate,
     defineValidator,
     isValid,
     reset,

@@ -280,7 +280,7 @@ describe('useValidation', () => {
     expect(validation.errors.value).toEqual(SuccessValidationResult.errors)
   })
 
-  it('should not the form on blur if configured but the form was never validated yet', async () => {
+  it('should not validate the form on blur if configured but the form was never validated yet', async () => {
     const schema = z.object({
       name: z.string().min(2),
     })
@@ -289,7 +289,9 @@ describe('useValidation', () => {
     const form = useForm({
       initialData,
       schema,
-      validationStrategy: 'onTouch',
+      validationAfterSubmit: {
+        validateOnBlur: true,
+      },
     })
 
     const nameField = form.getField('name')
@@ -313,7 +315,9 @@ describe('useValidation', () => {
     const form = useForm({
       initialData,
       schema,
-      validationStrategy: 'onTouch',
+      validationAfterSubmit: {
+        validateOnBlur: true,
+      },
     })
 
     const nameField = form.getField('name')
@@ -344,7 +348,10 @@ describe('useValidation', () => {
     const form = useForm({
       initialData,
       schema,
-      validationStrategy: 'onTouch',
+      validationAfterSubmit: {
+        validateOnBlur: true,
+        validateOnDataChange: false,
+      },
     })
 
     const nameField = form.getField('name')
@@ -381,7 +388,9 @@ describe('useValidation', () => {
     const form = useForm({
       initialData,
       schema,
-      validationStrategy: 'onFormOpen',
+      validationBeforeSubmit: {
+        validateOnFormOpen: true,
+      },
     })
 
     form.getField('name')
@@ -393,7 +402,7 @@ describe('useValidation', () => {
     expect(form.errors.value.propertyErrors.name).toHaveLength(1)
   })
 
-  it('should not the form on submit if validation strategy is "none"', async () => {
+  it('should not validate the form on submit if is disabled', async () => {
     const schema = z.object({
       name: z.string().min(2),
     })
@@ -402,7 +411,9 @@ describe('useValidation', () => {
     const form = useForm({
       initialData,
       schema,
-      validationStrategy: 'none',
+      validationBeforeSubmit: {
+        validateOnSubmit: false,
+      },
     })
 
     form.getField('name')
@@ -426,7 +437,9 @@ describe('useValidation', () => {
     const form = useForm({
       initialData,
       schema,
-      validationStrategy: 'onDataChange',
+      validationBeforeSubmit: {
+        validateOnDataChange: true,
+      },
     })
 
     const nameField = form.getField('name')
@@ -456,7 +469,9 @@ describe('useValidation', () => {
     const form = useForm({
       initialData,
       schema,
-      validationStrategy: 'onDataChange',
+      validationBeforeSubmit: {
+        validateOnDataChange: true,
+      },
     })
 
     const nameField = form.getField('name')
@@ -470,6 +485,41 @@ describe('useValidation', () => {
     nameField.data.value = 'abc'
 
     await delay()
+
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(0)
+    expect(form.errors.value.propertyErrors.foo).toHaveLength(1)
+  })
+
+  it('should validate again after second try', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+      foo: z.string().min(2),
+    })
+
+    const initialData = {
+      name: 'b',
+      foo: 'c',
+    }
+    const form = useForm({
+      initialData,
+      schema,
+      validationAfterSubmit: {
+        validateOnDataChange: true,
+      },
+    })
+
+    const nameField = form.getField('name')
+
+    await form.validateForm()
+
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(1)
+    expect(form.errors.value.propertyErrors.foo).toHaveLength(1)
+
+    nameField.data.value = 'abc'
+
+    await form.validateForm()
 
     expect(form.isValid.value).toBe(false)
     expect(form.errors.value.propertyErrors.name).toHaveLength(0)

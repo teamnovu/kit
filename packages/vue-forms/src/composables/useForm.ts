@@ -3,7 +3,6 @@ import {
   reactive,
   ref,
   toRef,
-  unref,
   watch,
   type MaybeRef,
   type MaybeRefOrGetter,
@@ -11,19 +10,30 @@ import {
 } from 'vue'
 import type { z } from 'zod'
 import type { Form, FormDataDefault } from '../types/form'
-import type { ValidationStrategy } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
 import { makeSubmitHandler } from '../utils/submitHandler'
 import { useFieldArray } from './useFieldArray'
 import { useFieldRegistry } from './useFieldRegistry'
 import { useFormState } from './useFormState'
 import { createSubformInterface } from './useSubform'
-import { useValidation, type ValidationOptions } from './useValidation'
+import {
+  useValidation,
+  defaults as useValidationDefaults,
+  type ValidationOptions,
+} from './useValidation'
+import { merge, omit } from 'lodash-es'
+
+export const defaults: Omit<
+  UseFormOptions<FormDataDefault>,
+  'initialData' | 'errors' | 'schema' | 'validateFn'
+> = {
+  keepValuesOnUnmount: false,
+  ...useValidationDefaults,
+}
 
 export interface UseFormOptions<T extends FormDataDefault, TOut = T>
   extends ValidationOptions<T, TOut> {
   initialData: MaybeRefOrGetter<T>
-  validationStrategy?: MaybeRef<ValidationStrategy>
   keepValuesOnUnmount?: MaybeRef<boolean>
 }
 
@@ -45,6 +55,8 @@ export function useForm<T extends FormDataDefault>(
 export function useForm<T extends FormDataDefault, TOut = T>(
   options: UseFormOptions<T, TOut>,
 ): Form<T, TOut> {
+  options = merge({}, defaults, options)
+
   /* eslint-enable no-redeclare */
   const initialData = computed(() => cloneRefValue(options.initialData))
 
@@ -67,14 +79,10 @@ export function useForm<T extends FormDataDefault, TOut = T>(
   const fieldRegistry = useFieldRegistry(state, validationState, {
     keepValuesOnUnmount: options.keepValuesOnUnmount,
     onBlur: async (path: string) => {
-      if (unref(options.validationStrategy) === 'onTouch') {
-        validationState.validateField(path)
-      }
+      validationState.validateStrategy('validateOnBlur', path)
     },
     onChange: async (path: string) => {
-      if (unref(options.validationStrategy) === 'onDataChange') {
-        validationState.validateField(path)
-      }
+      validationState.validateStrategy('validateOnDataChange', path)
     },
   })
   const formState = useFormState(fieldRegistry)
@@ -87,19 +95,19 @@ export function useForm<T extends FormDataDefault, TOut = T>(
     }
   }
 
-  if (unref(options.validationStrategy) === 'onFormOpen') {
+  if (validationState.canValidate('validateOnFormOpen')) {
     validationState.validateForm()
   }
 
   const form: Form<T, TOut> = {
     ...fieldRegistry,
-    ...validationState,
     ...formState,
+    ...omit(validationState, ['canValidate', 'validateStrategy']),
     reset,
     initialData: toRef(state, 'initialData') as Form<T>['initialData'],
     data: toRef(state, 'data') as Form<T>['data'],
     validateForm: validationState.validateForm as Form<T, TOut>['validateForm'],
-    submitHandler: onSubmit => makeSubmitHandler(form, options)(onSubmit),
+    submitHandler: onSubmit => makeSubmitHandler(form, validationState)(onSubmit),
     getSubForm: (path, subformOptions) => {
       return createSubformInterface(form, path, options, subformOptions)
     },
