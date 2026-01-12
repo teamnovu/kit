@@ -19,7 +19,6 @@ import { useFieldRegistry } from './useFieldRegistry'
 import { useFormState } from './useFormState'
 import { createSubformInterface } from './useSubform'
 import { useValidation, type ValidationOptions } from './useValidation'
-import type { DeepPartial } from '../utils/type-helpers'
 
 export interface UseFormOptions<T extends FormDataDefault, TOut = T>
   extends ValidationOptions<T, TOut> {
@@ -32,14 +31,9 @@ export interface UseFormOptions<T extends FormDataDefault, TOut = T>
 // Overload: with schema - infer types from schema
 // initialData can be partial, but provided fields must match schema types
 export function useForm<
-  TSchema extends z.ZodType<FormDataDefault, FormDataDefault>,
-  InitialData extends DeepPartial<z.input<TSchema>>,
->(
-  options: Omit<UseFormOptions<z.input<TSchema>, z.output<TSchema>>, 'initialData'> & {
-    schema: MaybeRef<TSchema>
-    initialData: MaybeRef<InitialData>
-  },
-): Form<z.input<TSchema> & InitialData, z.output<TSchema> & InitialData>
+  T extends FormDataDefault,
+  TOut = T,
+>(options: UseFormOptions<T, TOut> & { schema: z.ZodType<TOut, T> }): Form<T, TOut>
 
 // Overload: without schema - infer types from initialData
 export function useForm<T extends FormDataDefault>(
