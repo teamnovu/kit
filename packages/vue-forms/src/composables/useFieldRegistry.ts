@@ -47,6 +47,7 @@ interface FieldRegistryOptions {
   onBlur?: (path: string) => Awaitable<void>
   onFocus?: (path: string) => Awaitable<void>
   onChange?: <T>(path: string, value: T) => Awaitable<void>
+  onRegistered?: <T>(path: string, value: T) => Awaitable<void>
 }
 
 const optionDefaults = {
@@ -164,6 +165,8 @@ export function useFieldRegistry<T extends FormDataDefault, TOut = T>(
     onScopeDispose(() => {
       untrack(path)
     })
+
+    registryOptions.onRegistered?.(path, field)
 
     return field
   }

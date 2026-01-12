@@ -11,12 +11,14 @@ export const defaults: ValidationOptions<FormDataDefault> = {
     validateOnFormOpen: false,
     validateOnSubmit: true,
     validateOnDataChange: false,
+    validateOnFieldRegister: false,
   },
   validationAfterSubmit: {
     validateOnBlur: false,
     validateOnFormOpen: false,
     validateOnSubmit: true,
     validateOnDataChange: true,
+    validateOnFieldRegister: true,
   },
 }
 
@@ -25,6 +27,7 @@ export interface ValidationFlags {
   validateOnFormOpen?: MaybeRefOrGetter<boolean>
   validateOnSubmit?: MaybeRefOrGetter<boolean>
   validateOnDataChange?: MaybeRefOrGetter<boolean>
+  validateOnFieldRegister?: MaybeRefOrGetter<boolean>
 }
 
 export interface ValidatorOptions<T, TOut = T> {

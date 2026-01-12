@@ -84,6 +84,9 @@ export function useForm<T extends FormDataDefault, TOut = T>(
     onChange: async (path: string) => {
       validationState.validateStrategy('validateOnDataChange', path)
     },
+    onRegistered: async (path: string) => {
+      validationState.validateStrategy('validateOnFieldRegister', path)
+    },
   })
   const formState = useFormState(fieldRegistry)
 
