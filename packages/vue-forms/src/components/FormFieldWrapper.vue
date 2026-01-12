@@ -1,12 +1,14 @@
 <template>
   <Field
-    v-slot="{ errors, data, setData }"
+    v-slot="{ errors, data, setData, onBlur, onFocus }"
     :form="form"
     :path="path"
   >
     <component
       :is="component"
       v-bind="{...componentProps, ...$attrs}"
+      :on-blur="onBlur"
+      :on-focus="onFocus"
       :model-value="data"
       :errors="errors"
       :name="path"
