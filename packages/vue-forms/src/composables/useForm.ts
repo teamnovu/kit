@@ -22,6 +22,7 @@ import {
   type ValidationOptions,
 } from './useValidation'
 import { merge, omit } from 'lodash-es'
+import type { Merge } from '../types/util'
 
 export const defaults: Omit<
   UseFormOptions<FormDataDefault>,
@@ -44,7 +45,7 @@ export function useForm<T extends FormDataDefault, TOut = T>(
   options: UseFormOptions<T, TOut> & {
     schema: MaybeRef<z.ZodType<TOut, unknown>>
   },
-): Form<T, TOut>
+): Form<T, Merge<T, TOut>>
 
 // Overload: without schema - infer types from initialData
 export function useForm<T extends FormDataDefault>(

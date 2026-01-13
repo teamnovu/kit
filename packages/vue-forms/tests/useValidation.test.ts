@@ -525,4 +525,37 @@ describe('useValidation', () => {
     expect(form.errors.value.propertyErrors.name).toHaveLength(0)
     expect(form.errors.value.propertyErrors.foo).toHaveLength(1)
   })
+
+  it('should validate field after its added', async () => {
+    const schema = z.object({
+      name: z.string().min(2),
+      foo: z.string().min(2),
+    })
+
+    const initialData = {
+      name: 'b',
+    }
+    const form = useForm({
+      initialData,
+      schema,
+      validationAfterSubmit: {
+        validateOnFieldRegister: true,
+      },
+    })
+
+    const nameField = form.getField('name')
+
+    await form.validateForm()
+
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(1)
+
+    nameField.data.value = 'abc'
+
+    await form.validateForm()
+
+    expect(form.isValid.value).toBe(false)
+    expect(form.errors.value.propertyErrors.name).toHaveLength(0)
+    expect(form.errors.value.propertyErrors.foo).toHaveLength(1)
+  })
 })

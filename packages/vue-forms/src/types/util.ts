@@ -1,12 +1,11 @@
+import type { Prop } from 'vue'
 import type { FormDataDefault } from './form'
 
 /**
  * Takes a dot-connected path and returns a tuple of its parts.
  */
 export type SplitPath<TPath extends string> =
-  TPath extends `${infer T1}.${infer T2}`
-    ? [T1, ...SplitPath<T2>]
-    : [TPath]
+  TPath extends `${infer T1}.${infer T2}` ? [T1, ...SplitPath<T2>] : [TPath]
 
 /**
  * Picks the exact type of the Entity at the nested PropertyKeys path.
@@ -21,8 +20,8 @@ export type PickProps<Entity, PropertyKeys extends string> =
               ? PickProps<RequiredEntity[TRoot], TRest>
               : never
             : never
-        // We might have an array at hand but the key is a string with a number in it
-          : TRoot extends `${number}`
+          : // We might have an array at hand but the key is a string with a number in it
+          TRoot extends `${number}`
             ? RequiredEntity extends unknown[]
               ? TRest extends string
                 ? RequiredEntity[number] extends object
@@ -31,8 +30,8 @@ export type PickProps<Entity, PropertyKeys extends string> =
                 : never
               : never
             : never
-      // We might have an array at hand but the key is a string with a number in it
-        : PropertyKeys extends keyof Required<RequiredEntity>
+        : // We might have an array at hand but the key is a string with a number in it
+        PropertyKeys extends keyof Required<RequiredEntity>
           ? RequiredEntity[PropertyKeys]
           : PropertyKeys extends `${number}`
             ? RequiredEntity extends unknown[]
@@ -48,28 +47,32 @@ export type PickProps<Entity, PropertyKeys extends string> =
 
 type AntiCollapse = '__anticollapse__'
 type CleanupAntiCollapse<T extends string> =
-  T extends `${infer Left}${AntiCollapse}${infer Right}` ? `${Left}${CleanupAntiCollapse<Right>}` : T
+  T extends `${infer Left}${AntiCollapse}${infer Right}`
+    ? `${Left}${CleanupAntiCollapse<Right>}`
+    : T
 
-type RecursePaths<T, Seen = never> =
-  T extends Seen ? never :
-    T extends Array<infer ArrayType> ? `${number}` | `${number}.${RecursePaths<ArrayType, Seen | T>}` :
-      T extends object
-        ? {
-            [K in keyof T]-?: `${AntiCollapse}${Exclude<K, symbol>}${'' | `.${RecursePaths<T[K], Seen | T>}`}`
-          }[keyof T]
-        : never
+type RecursePaths<T, Seen = never> = T extends Seen
+  ? never
+  : T extends Array<infer ArrayType>
+    ? `${number}` | `${number}.${RecursePaths<ArrayType, Seen | T>}`
+    : T extends object
+      ? {
+          [K in keyof T]-?: `${AntiCollapse}${Exclude<K, symbol>}${'' | `.${RecursePaths<T[K], Seen | T>}`}`;
+        }[keyof T]
+      : never
 
-export type Paths<T, Seen = never> = CleanupAntiCollapse<RecursePaths<T, Seen>> | ''
+export type Paths<T, Seen = never> =
+  | CleanupAntiCollapse<RecursePaths<T, Seen>>
+  | ''
 
 /**
  * Removes the last part of a dot-connected path.
  */
-export type ButLast<T extends string> =
-  T extends `${infer Rest}.${infer Last}`
-    ? ButLast<Last> extends ''
-      ? Rest
-      : `${Rest}.${ButLast<Last>}`
-    : never
+export type ButLast<T extends string> = T extends `${infer Rest}.${infer Last}`
+  ? ButLast<Last> extends ''
+    ? Rest
+    : `${Rest}.${ButLast<Last>}`
+  : never
 
 /**
  * Combines Paths<T> with ButLast<Paths<T>> to include all paths except the last part.
@@ -77,15 +80,55 @@ export type ButLast<T extends string> =
  */
 export type EntityPaths<T> = ButLast<Paths<T>> & Paths<T>
 
-export type PickEntity<Entity, PropertyKeys extends string> =
-  PropertyKeys extends unknown ? PickProps<Entity, EntityPaths<Entity> & PropertyKeys> & FormDataDefault : never
+export type PickEntity<
+  Entity,
+  PropertyKeys extends string,
+> = PropertyKeys extends unknown
+  ? PickProps<Entity, EntityPaths<Entity> & PropertyKeys> & FormDataDefault
+  : never
 
-export type RestPath<T extends string, P extends string> =
-  P extends `${T}.${infer Rest}` ? Rest : never
+export type RestPath<
+  T extends string,
+  P extends string,
+> = P extends `${T}.${infer Rest}` ? Rest : never
 
-export type RootPath<P extends string> =
-  P extends `${infer TRoot}.${string}` ? TRoot : P
+export type RootPath<P extends string> = P extends `${infer TRoot}.${string}`
+  ? TRoot
+  : P
 
 export type ObjectOf<TPath extends string, T> = {
-  [K in RootPath<TPath>]: RestPath<K, TPath> extends never ? T : ObjectOf<RestPath<K, TPath>, T>
+  [K in RootPath<TPath>]: RestPath<K, TPath> extends never
+    ? T
+    : ObjectOf<RestPath<K, TPath>, T>;
 }
+
+type BothExtendKeys<T, U, K, Ext> = K extends keyof T & keyof U
+  ? T[K] extends infer TProp
+    ? TProp extends Ext
+      ? U[K] extends infer UProp
+        ? UProp extends Ext
+          ? K
+          : never
+        : never
+      : never
+    : never
+  : never
+
+export type Merge<T, U> = T extends Record<PropertyKey, unknown>
+  ? U extends Record<PropertyKey, unknown>
+    ? {
+        [K in keyof T | keyof U]:
+        K extends BothExtendKeys<T, U, K, Record<PropertyKey, unknown> | Array<unknown>>
+          ? Merge<T[K], U[K]>
+          : K extends keyof U
+            ? U[K]
+            : K extends keyof T
+              ? T[K]
+              : never;
+      }
+    : U
+  : T extends Array<unknown>
+    ? U extends Array<unknown>
+      ? Merge<T[number], U[number]>[]
+      : U
+    : U
