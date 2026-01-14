@@ -142,8 +142,7 @@ export const paymentKeys = {
   lists: () => [...paymentKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [
-      ...paymentKeys.all(),
-      'list',
+      ...paymentKeys.lists(),
       {
         body,
       },
