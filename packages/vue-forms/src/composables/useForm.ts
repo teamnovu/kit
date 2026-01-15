@@ -28,7 +28,7 @@ export const defaults: Omit<
   UseFormOptions<FormDataDefault>,
   'initialData' | 'errors' | 'schema' | 'validateFn'
 > = {
-  keepValuesOnUnmount: false,
+  keepValuesOnUnmount: true,
   ...useValidationDefaults,
 }
 
