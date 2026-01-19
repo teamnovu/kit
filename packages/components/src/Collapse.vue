@@ -39,6 +39,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   open: undefined,
+  initiallyClosed: true,
 })
 const emit = defineEmits(['update:open'])
 
