@@ -37,7 +37,9 @@ interface Props {
 
 // #region Definitions
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  open: undefined,
+})
 const emit = defineEmits(['update:open'])
 
 const collapseRef = ref<HTMLElement>()
