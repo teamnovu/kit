@@ -20,7 +20,7 @@ We can create a form like this:
 
 ```vue
 <template>
-  <form @submit.prevent="submit">
+  <form @submit="form.submitHandler(sendToBackend)">
     <!-- Simple form inputs -->
     <!-- the "label" prop is passed through the FormTextField to the underlying TextField -->
     <FormTextField
@@ -56,13 +56,15 @@ We can create a form like this:
       <FormAddressField :form="subform" />
     </FormPart>
 
-    <div v-for="(_, index) in unref(form.data).person.hobbies" :key="index" class="ml-4">
-      <!-- Note the path format of an array item. You just use the index number in the dot-path -->
+    <!-- Using getFieldArray for dynamic lists with add/remove functionality -->
+    <div v-for="field in hobbies.items.value" :key="field.id" class="ml-4">
       <FormTextField
           :form="form"
-          :path="`person.hobbies.${index}`"
+          :path="field.path"
       />
+      <button type="button" @click="hobbies.remove(field.id)">Remove</button>
     </div>
+    <button type="button" @click="hobbies.push('')">Add Hobby</button>
 
     <button type="button" @click="toggleComment">
       Toggle Comment
@@ -151,20 +153,12 @@ const form = useForm<{ // this type might be inferred automatically from the ini
   }),
 });
 
+// getFieldArray for managing the hobbies list
+const hobbies = form.getFieldArray('person.hobbies');
+
 const sendToBackend = async (data) => {
-  // send data object to backend
-};
-
-const submit = async () => {
-  // validate the form
-  // if the zod schema is not satisfied, isValid will be false and the errors will be set on the corresponding fields
-  // if your TextInput component handles errors correctly, it should be directly visible
-  const { isValid } = await form.validateForm();
-
-  // only submit if the form is valid
-  if (isValid) {
-    await sendToBackend(unref(form.data));
-  }
+  // send validated data object to backend
+  // note: data is the validated/transformed output type (TOut)
 };
 
 // To programmatically change form values, use form.getField to get a ref and a setter function

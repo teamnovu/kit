@@ -2,35 +2,53 @@
 ## Composable `useForm`
 This is the main composable which creates the form. It has the following signature:
 ```typescript
-function useForm<T extends object>(options: {
+function useForm<T extends object, TOut = T>(options: {
   // the initial data of the form
   // reactive changes to this object will propagate to the form data
   initialData: MaybeRefOrGetter<T>
   // an ErrorBag object or ref of an ErrorBag object with external errors
   // this is used e.g. for server side validation errors
-  // these errors will be merged with the internal errors of the form based on validationFn below and/or the zod schema
+  // these errors will be merged with the internal errors of the form based on validateFn below and/or the zod schema
   errors?: MaybeRef<ErrorBag | undefined>
   // a zod schema of the form data
-  // this is validated based on the validationStrategy or by manually triggering validateForm on the form object 
-  schema?: MaybeRef<z.ZodType>
+  // this is validated based on the validation flags or by manually triggering validateForm on the form object
+  // TOut is inferred from the schema's output type if provided
+  schema?: MaybeRef<z.ZodType<TOut>>
   // a custom validation function which is called with the current form data
   // this is additional to the schema for custom validations
-  validateFn?: MaybeRef<ValidationFunction<T>>
+  validateFn?: MaybeRef<ValidationFunction<T, TOut>>
   // if the form data of a property should be reset or kept if all fields corresponding to this property are unmounted
+  // defaults to true
   keepValuesOnUnmount?: MaybeRef<boolean>
-  // when validation should be done (on touch, pre submit, etc.)
-  validationStrategy?: MaybeRef<ValidationStrategy>
-}): Form<T>
+  // validation flags before first submit (defaults: validateOnSubmit: true, all others: false)
+  validationBeforeSubmit?: ValidationFlags
+  // validation flags after first submit (defaults: validateOnSubmit: true, validateOnDataChange: true, validateOnFieldRegister: true)
+  validationAfterSubmit?: ValidationFlags
+}): Form<T, TOut>
 ```
-This composable returns a `Form<T>` object.
+This composable returns a `Form<T, TOut>` object.
 
-## Type `Form<T>`
+## Type `ValidationFlags`
+Controls when validation is triggered:
+```typescript
+interface ValidationFlags {
+  validateOnBlur?: MaybeRefOrGetter<boolean>
+  validateOnFormOpen?: MaybeRefOrGetter<boolean>
+  validateOnSubmit?: MaybeRefOrGetter<boolean>
+  validateOnDataChange?: MaybeRefOrGetter<boolean>
+  validateOnFieldRegister?: MaybeRefOrGetter<boolean>
+}
+```
+
+## Type `Form<T, TOut>`
 Here, `T` is the type of the form data, which is inferred from the `initialData` property of the options object passed to `useForm`.
+`TOut` is the output type after validation/transformation. When a zod schema is provided, `TOut` is a merge of `T` with the schema's output type,
+where the schema type takes precedence for properties it defines, and `T` provides types for properties unknown to the schema.
 You can also explicitly provide a type argument to `useForm<T>` if needed (useful if the initial data is an empty object `{}`).
 
 This object has the following properties and methods:
 ```typescript
-interface Form<T extends object> {
+interface Form<T extends object, TOut = T> {
   // the current working data of the form
   // this might differ from initialData if the user has changed some values
   data: Ref<T>
@@ -66,21 +84,35 @@ interface Form<T extends object> {
   // defines a custom validator for the form
   // with this, a subcomponent might add a validator function and/or schema to the form
   // without needing access to the initial useForm call
-  defineValidator: <TData extends T>(options: ValidatorOptions<TData> | Ref<Validator<TData>>) => Ref<Validator<TData> | undefined>
+  defineValidator: <TData extends T, TDataOut extends TOut>(
+    options: ValidatorOptions<TData, TDataOut> | Ref<Validator<TData, TDataOut>>
+  ) => Ref<Validator<TData, TDataOut> | undefined>
 
   // resets the form data and errors, as well as the dirty, touched etc. state of all fields
   reset: () => void
   // manually triggers validation of the form data based on schema and/or validateFn
-  validateForm: () => Promise<ValidationResult>
+  // returns the validation result with errors and parsed data (if valid)
+  validateForm: () => Promise<ValidationResult<TOut>>
+
+  // creates a submit handler that validates the form before calling onSubmit
+  // onSubmit receives the validated/transformed data (TOut)
+  submitHandler: (onSubmit: (data: TOut) => Awaitable<void>) => (event: SubmitEvent) => Promise<void>
 
   // creates a subform for a nested object or array property of the form data
-  // the subform is again a Form<T> object, where T is the type of the nested property
+  // the subform is again a Form object, where T is the type of the nested property
   // it will contain all errors that have paths starting with the path of the subform
   // changes to the subform data will propagate to the main form data and vice versa
   getSubForm: <P extends EntityPaths<T>>(
       path: P,
       options?: SubformOptions<PickEntity<T, P>>,
   ) => Form<PickEntity<T, P>>
+
+  // creates a field array for managing dynamic lists
+  // see the Field Arrays section below for details
+  getFieldArray: <K extends Paths<T>>(
+    path: PickProps<T, K> extends unknown[] ? K : never,
+    options?: FieldArrayOptions<PickProps<T, K> extends (infer U)[] ? U : never>,
+  ) => FieldArray<PickProps<T, K> extends (infer U)[] ? U : never, K>
 }
 ```
 
@@ -96,6 +128,33 @@ interface ErrorBag {
   // for subforms the errors will be all errors that start with the path of the subform
   propertyErrors: Record<string, ValidationErrorMessage[] | undefined>
 }
+```
+
+## Field Arrays
+For managing dynamic lists (add, remove, reorder items), use `getFieldArray`. It provides stable IDs for each item,
+which is important for efficient Vue rendering with `v-for`.
+
+```typescript
+const hobbies = form.getFieldArray('person.hobbies')
+
+// add item
+hobbies.push('new hobby')
+
+// remove by id
+hobbies.remove(hobbies.items.value[0].id)
+```
+```vue
+<div v-for="field in hobbies.items.value" :key="field.id">
+  <FormTextField :form="form" :path="field.path" />
+  <button @click="hobbies.remove(field.id)">Remove</button>
+</div>
+```
+
+For objects where identity should be based on a property (e.g. `id`) rather than reference equality, provide a `hashFn`:
+```typescript
+const products = form.getFieldArray('products', {
+  hashFn: (item) => item.id
+})
 ```
 
 ## Component `FormPart`
