@@ -79,7 +79,7 @@ export function useFieldRegistry<T extends FormDataDefault>(
 ) {
   const fieldReferenceCounter = new Map<Paths<T>, Rc>()
   const fields = shallowReactive(new Map()) as FieldRegistryCache<T>
-  const registryOptions = {
+  const registryOptions: FieldRegistryOptions = {
     ...optionDefaults,
     ...fieldRegistryOptions,
   }
@@ -92,7 +92,7 @@ export function useFieldRegistry<T extends FormDataDefault>(
   }
 
   const deregisterField = (path: Paths<T>) => {
-    if (!registryOptions?.keepValuesOnUnmount) {
+    if (!unref(registryOptions?.keepValuesOnUnmount ?? true)) {
       fields.get(path)?.reset()
     }
     fields.delete(path)
