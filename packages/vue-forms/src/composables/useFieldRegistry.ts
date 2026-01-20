@@ -95,7 +95,7 @@ export function useFieldRegistry<T extends FormDataDefault, TOut = T>(
   }
 
   const deregisterField = (path: Paths<T>) => {
-    if (!registryOptions?.keepValuesOnUnmount) {
+    if (!unref(registryOptions?.keepValuesOnUnmount)) {
       fields.get(path)?.reset()
     }
     fields.delete(path)
