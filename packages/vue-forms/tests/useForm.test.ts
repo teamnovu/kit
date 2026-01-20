@@ -397,7 +397,9 @@ describe('useForm', () => {
       },
     })
 
-    effectScope().run(() => {
+    const scope = effectScope()
+
+    scope.run(() => {
       const nameField = form.defineField({ path: 'name' })
 
       expect(form.fields.value.length).toBe(1)
@@ -405,6 +407,8 @@ describe('useForm', () => {
 
       nameField.setData('Modified')
     })
+
+    scope.stop()
 
     expect(form.data.value.name).toBe('Modified')
   })
