@@ -7,7 +7,28 @@ if (!SLACK_WEBHOOK_URL) {
   process.exit(0)
 }
 
-const changedFiles = execSync('git diff --name-only HEAD~1 HEAD -- "packages/**/CHANGELOG.md"', { encoding: 'utf-8' })
+// Find the previous release tag to compare against
+function getPreviousReleaseTag() {
+  try {
+    // Get all release tags sorted by date, skip the one we just created (most recent)
+    const tags = execSync('git tag --list "release-*" --sort=-creatordate', { encoding: 'utf-8' })
+      .trim()
+      .split('\n')
+      .filter(Boolean)
+
+    // Return second tag (previous release) or null if none
+    return tags[1] ?? undefined
+  } catch {
+    return undefined
+  }
+}
+
+const previousTag = getPreviousReleaseTag()
+const compareRef = previousTag ?? 'HEAD~1'
+
+console.log(`Comparing against: ${compareRef}`)
+
+const changedFiles = execSync(`git diff --name-only ${compareRef} HEAD -- "packages/**/CHANGELOG.md"`, { encoding: 'utf-8' })
   .trim()
   .split('\n')
   .filter(Boolean)
@@ -22,7 +43,7 @@ const changes = []
 for (const file of changedFiles) {
   const packageName = file.split('/')[1] // packages/[name]/CHANGELOG.md
 
-  const diff = execSync(`git diff HEAD~1 HEAD -- "${file}"`, { encoding: 'utf-8' })
+  const diff = execSync(`git diff ${compareRef} HEAD -- "${file}"`, { encoding: 'utf-8' })
   const lines = diff
     .split('\n')
     .filter(line => line.startsWith('+') && !line.startsWith('+++'))

@@ -9,7 +9,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -59,6 +59,29 @@ jobs:
       - name: Publish to npm
         shell: bash
         run: pnpm -r publish --access public --no-git-checks
+
+      - name: Check if versions changed
+        id: check-release
+        run: |
+          # Check if any package.json version field changed
+          if git diff HEAD~1 HEAD -- 'packages/*/package.json' | grep -q '"version"'; then
+            echo "released=true" >> $GITHUB_OUTPUT
+          else
+            echo "released=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create release tag
+        if: steps.check-release.outputs.released == 'true'
+        run: |
+          RELEASE_TAG="release-$(date +%Y%m%d-%H%M%S)"
+          git tag "$RELEASE_TAG"
+          git push origin "$RELEASE_TAG"
+
+      - name: Send changelog notification
+        if: steps.check-release.outputs.released == 'true'
+        run: node scripts/notify-changelog.js
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Upload docs artifact
         uses: actions/upload-pages-artifact@v3
