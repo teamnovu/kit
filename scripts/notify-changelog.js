@@ -48,7 +48,7 @@ if (changes.length === 0) {
 }
 
 const message = changes
-  .map(({ packageName, addedLines }) => `*${packageName}*\n\`\`\`\n${addedLines}\n\`\`\``)
+  .map(({ packageName, addedLines }) => `📦 \`@teamnovu/kit-${packageName}\`\n\`\`\`\n${addedLines}\n\`\`\``)
   .join('\n\n')
 
 const payload = {
