@@ -1,0 +1,27 @@
+name: Changelog Slack Notification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/**/CHANGELOG.md'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    name: Notify Slack
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Send notification
+        run: node scripts/notify-changelog.js
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
