@@ -116,6 +116,53 @@ interface Form<T extends object, TOut = T> {
 }
 ```
 
+## Method `setInitialData`
+The `setInitialData` method is available on `FormField` objects (returned by `getField` or `defineField`). It updates what is considered the "initial" value of a field. If the field is not dirty, it also updates the current data.
+
+This is useful when loading data asynchronously after the form is initialized:
+
+```typescript
+const { setInitialData } = form.getField('person.firstName')
+
+// After fetching data from an API
+const fetchedData = await fetchUserData()
+setInitialData(fetchedData.firstName)
+// If the field wasn't dirty, the current data is also updated
+```
+
+## Method `defineValidator`
+The `defineValidator` method allows subcomponents to add validation rules to a form without needing access to the initial `useForm` call. The validator is automatically removed when the component unmounts.
+
+This is particularly useful on subforms, where a reusable component can define its own validation:
+
+```vue
+<!-- AddressFields.vue - a reusable address component -->
+<script setup lang="ts">
+import type { Form } from '@teamnovu/kit-vue-forms'
+import { z } from 'zod'
+
+const props = defineProps<{
+  form: Form<{ street: string; city: string; zip: string }>
+}>()
+
+// This validation only applies while AddressFields is mounted
+props.form.defineValidator({
+  schema: z.object({
+    street: z.string().min(1, 'Street is required'),
+    city: z.string().min(1, 'City is required'),
+    zip: z.string().regex(/^\d{4}$/, 'Invalid zip code'),
+  }),
+})
+</script>
+```
+
+```vue
+<!-- Parent component using FormPart -->
+<FormPart :form="form" path="person.address" #="{ subform }">
+  <AddressFields :form="subform" />
+</FormPart>
+```
+
 ## Type `ErrorBag`
 The errors in the form are structured in an `ErrorBag` object. Most errors are tied to properties in the form. However,
 there might be cases where there are errors, that cannot be tied to one property. To account for that the `ErrorBag` satisfies the following interface:
