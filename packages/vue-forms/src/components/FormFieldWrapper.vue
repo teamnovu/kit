@@ -60,4 +60,6 @@ defineOptions({
 })
 
 defineProps<FormFieldWrapperProps<TData, TPath, TComponent, TDataOut>>()
+
+defineSlots<Record<string, (props: any) => any>>()
 </script>
