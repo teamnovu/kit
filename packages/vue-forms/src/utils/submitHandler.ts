@@ -5,7 +5,7 @@ import { isValidResult } from './validation'
 
 export function makeSubmitHandler<T extends FormDataDefault, TOut = T>(
   form: Form<T, TOut>,
-  validationState: ValidationState<T, TOut>,
+  validationState: Pick<ValidationState<T, TOut>, 'canValidate'>,
 ) {
   return (onSubmit: (data: TOut) => Awaitable<void>) => {
     return async (event?: SubmitEvent) => {

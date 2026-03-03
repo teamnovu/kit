@@ -113,7 +113,7 @@ export function useForm<T extends FormDataDefault, TOut = T>(
     validateForm: validationState.validateForm as Form<T, TOut>['validateForm'],
     submitHandler: onSubmit => makeSubmitHandler(form, validationState)(onSubmit),
     getSubForm: (path, subformOptions) => {
-      return createSubformInterface(form, path, options, subformOptions)
+      return createSubformInterface(form, path, validationState, subformOptions)
     },
     getFieldArray: (path, fieldArrayOptions) => {
       return useFieldArray(form, path, fieldArrayOptions)

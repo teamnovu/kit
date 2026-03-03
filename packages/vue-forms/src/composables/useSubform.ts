@@ -16,10 +16,10 @@ import {
 import { makeSubmitHandler } from '../utils/submitHandler'
 import { useFieldArray } from './useFieldArray'
 import type { DefineFieldOptions } from './useFieldRegistry'
-import type { UseFormOptions } from './useForm'
 import {
   createValidator,
   SuccessValidationResult,
+  type ValidationState,
   type ValidatorOptions,
 } from './useValidation'
 
@@ -65,7 +65,7 @@ export function createSubformInterface<
 >(
   mainForm: Form<T, TOut>,
   path: K,
-  formOptions?: UseFormOptions<T, TOut>,
+  validationState: ValidationState<T, TOut>,
   _options?: SubformOptions<PickEntity<T, K>>,
 ): Form<PickEntity<T, K>, PickEntity<TOut, K>> {
   type ST = PickEntity<T, K>
@@ -206,7 +206,8 @@ export function createSubformInterface<
     reset,
     validateForm,
     getSubForm,
-    submitHandler: onSubmit => makeSubmitHandler(subForm, formOptions ?? {})(onSubmit),
+    submitHandler: onSubmit =>
+      makeSubmitHandler(subForm, validationState)(onSubmit),
     getFieldArray: (fieldArrayPath, fieldArrayOptions) => {
       return useFieldArray(subForm, fieldArrayPath, fieldArrayOptions)
     },
