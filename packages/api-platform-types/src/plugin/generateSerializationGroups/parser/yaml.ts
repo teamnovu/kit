@@ -40,6 +40,7 @@ interface SerializationFileContent {
 interface MappingFileContent {
   resources?: {
     [fullResourcePath: string]: {
+      shortName?: string
       normalizationContext?: {
         groups?: string[]
       }
@@ -156,6 +157,7 @@ export async function loadOperationSerializationGroups(inputDir: string): Promis
         if (operationGroupDefinitions.length) {
           output.push({
             resourceClass: fullResourceName,
+            type: resourceData.shortName ?? fullResourceName.split('\\').slice(-1)[0],
             operations: operationGroupDefinitions,
           })
         }

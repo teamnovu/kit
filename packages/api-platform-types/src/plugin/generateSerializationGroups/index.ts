@@ -169,6 +169,12 @@ export default function generateSerializationGroups(options: GenerateSerializati
           ),
           ts.factory.createPropertySignature(
             undefined,
+            'type',
+            undefined,
+            ts.factory.createLiteralTypeNode(ts.factory.createStringLiteral(mappingSerializationGroup.type, true)),
+          ),
+          ts.factory.createPropertySignature(
+            undefined,
             'operations',
             undefined,
             ts.factory.createTypeLiteralNode(propertyDeclarations),
