@@ -1,7 +1,26 @@
-import { computed, getCurrentScope, isRef, onBeforeUnmount, reactive, ref, toRefs, toValue, unref, watch, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
-import z from 'zod'
+import {
+  computed,
+  getCurrentScope,
+  isRef,
+  onBeforeUnmount,
+  reactive,
+  ref,
+  toRefs,
+  toValue,
+  unref,
+  watch,
+  type MaybeRef,
+  type MaybeRefOrGetter,
+  type Ref,
+} from 'vue'
+import type z from 'zod'
 import type { FormDataDefault } from '../types/form'
-import type { ErrorBag, ValidationFunction, ValidationResult, Validator } from '../types/validation'
+import type {
+  ErrorBag,
+  ValidationFunction,
+  ValidationResult,
+  Validator,
+} from '../types/validation'
 import { hasErrors, isValidResult, mergeErrors } from '../utils/validation'
 import { flattenError } from '../utils/zod'
 
@@ -35,7 +54,8 @@ export interface ValidatorOptions<T, TOut = T> {
   validateFn?: MaybeRef<ValidationFunction<T, TOut> | undefined>
 }
 
-export interface ValidationOptions<T, TOut = T> extends ValidatorOptions<T, TOut> {
+export interface ValidationOptions<T, TOut = T>
+  extends ValidatorOptions<T, TOut> {
   errors?: MaybeRef<ErrorBag | undefined>
   validationBeforeSubmit?: ValidationFlags
   validationAfterSubmit?: ValidationFlags
@@ -48,7 +68,8 @@ export const SuccessValidationResult: ValidationResult<never> = {
   },
 }
 
-class ZodSchemaValidator<T extends FormDataDefault, TOut = T> implements Validator<T, TOut> {
+class ZodSchemaValidator<T extends FormDataDefault, TOut = T>
+implements Validator<T, TOut> {
   constructor(private schema?: z.ZodType<TOut, T>) {}
 
   async validate(data: T): Promise<ValidationResult<TOut>> {
@@ -74,7 +95,8 @@ class ZodSchemaValidator<T extends FormDataDefault, TOut = T> implements Validat
   }
 }
 
-class FunctionValidator<T extends FormDataDefault, TOut = T> implements Validator<T, TOut> {
+class FunctionValidator<T extends FormDataDefault, TOut = T>
+implements Validator<T, TOut> {
   constructor(private validateFn?: ValidationFunction<T, TOut>) {}
 
   async validate(data: T): Promise<ValidationResult<TOut>> {
@@ -101,7 +123,8 @@ class FunctionValidator<T extends FormDataDefault, TOut = T> implements Validato
   }
 }
 
-class CombinedValidator<T extends FormDataDefault, TOut = T> implements Validator<T, TOut> {
+class CombinedValidator<T extends FormDataDefault, TOut = T>
+implements Validator<T, TOut> {
   private schemaValidator: ZodSchemaValidator<T, TOut>
   private functionValidator: FunctionValidator<T, TOut>
 
@@ -129,10 +152,13 @@ class CombinedValidator<T extends FormDataDefault, TOut = T> implements Validato
 export function createValidator<T extends FormDataDefault, TOut = T>(
   options: ValidatorOptions<T, TOut>,
 ): Ref<Validator<T, TOut> | undefined> {
-  return computed(() => new CombinedValidator(
-    unref(options.schema) as z.ZodType<TOut, T>,
-    unref(options.validateFn) as ValidationFunction<T, TOut>,
-  ))
+  return computed(
+    () =>
+      new CombinedValidator(
+        unref(options.schema) as z.ZodType<TOut, T>,
+        unref(options.validateFn) as ValidationFunction<T, TOut>,
+      ),
+  )
 }
 
 export function useValidation<T extends FormDataDefault, TOut = T>(
@@ -145,20 +171,29 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
     errors: unref(options.errors) ?? SuccessValidationResult.errors,
   })
 
-  const updateErrors = (newErrors: ErrorBag = SuccessValidationResult.errors) => {
-    validationState.errors = mergeErrors(unref(options.errors) ?? SuccessValidationResult.errors, newErrors)
+  const updateErrors = (
+    newErrors: ErrorBag = SuccessValidationResult.errors,
+  ) => {
+    validationState.errors = mergeErrors(
+      unref(options.errors) ?? SuccessValidationResult.errors,
+      newErrors,
+    )
   }
 
   // Watch for changes in the error bag and update validation state
-  watch(() => unref(options.errors), async () => {
-    if (validationState.isValidated) {
-      const validationResults = await getValidationResults()
+  watch(
+    () => unref(options.errors),
+    async () => {
+      if (validationState.isValidated) {
+        const validationResults = await getValidationResults()
 
-      updateErrors(validationResults.errors)
-    } else {
-      updateErrors()
-    }
-  }, { immediate: true })
+        updateErrors(validationResults.errors)
+      } else {
+        updateErrors()
+      }
+    },
+    { immediate: true },
+  )
 
   // Watch for changes in validation function or schema
   // to trigger validation. Only run if validation is already validated.
@@ -187,11 +222,15 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
   })
 
   const defineValidator = <TData extends T, TDataOut extends TOut>(
-    options: ValidatorOptions<TData, TDataOut> | Ref<Validator<TData, TDataOut>>,
+    options:
+      | ValidatorOptions<TData, TDataOut>
+      | Ref<Validator<TData, TDataOut>>,
   ) => {
     const validator = isRef(options) ? options : createValidator(options)
 
-    validationState.validators.push(validator as Ref<Validator<T, TOut> | undefined>)
+    validationState.validators.push(
+      validator as Ref<Validator<T, TOut> | undefined>,
+    )
 
     if (getCurrentScope()) {
       onBeforeUnmount(() => {
@@ -240,7 +279,9 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
     }
   }
 
-  const validateField = async (path: string): Promise<ValidationResult<TOut>> => {
+  const validateField = async (
+    path: string,
+  ): Promise<ValidationResult<TOut>> => {
     const validationResults = await getValidationResults()
 
     updateErrors({
@@ -272,7 +313,10 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
     return toValue(flags?.[flag] ?? false)
   }
 
-  const validateStrategy = <K extends keyof ValidationFlags>(flag: K, path: string) => {
+  const validateStrategy = <K extends keyof ValidationFlags>(
+    flag: K,
+    path: string,
+  ) => {
     if (!canValidate(flag)) {
       return
     }
@@ -292,4 +336,6 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
   }
 }
 
-export type ValidationState<T extends FormDataDefault, TOut = T> = ReturnType<typeof useValidation<T, TOut>>
+export type ValidationState<T extends FormDataDefault, TOut = T> = ReturnType<
+  typeof useValidation<T, TOut>
+>

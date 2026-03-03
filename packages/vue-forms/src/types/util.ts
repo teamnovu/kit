@@ -1,4 +1,3 @@
-import type { Prop } from 'vue'
 import type { FormDataDefault } from './form'
 
 /**

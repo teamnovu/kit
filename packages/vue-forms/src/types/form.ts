@@ -5,11 +5,11 @@ import type { SubformOptions } from '../composables/useSubform'
 import type { ValidatorOptions } from '../composables/useValidation'
 import type { EntityPaths, Paths, PickEntity, PickProps } from './util'
 import type {
-    ErrorBag,
-    ValidationErrorMessage,
-    ValidationErrors,
-    ValidationResult,
-    Validator,
+  ErrorBag,
+  ValidationErrorMessage,
+  ValidationErrors,
+  ValidationResult,
+  Validator,
 } from './validation'
 
 export type FormDataDefault = object
