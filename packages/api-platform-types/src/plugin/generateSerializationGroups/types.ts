@@ -31,5 +31,6 @@ export interface ParsedOperationSerializationGroupsPropertyDefinition {
 
 export interface ParsedOperationSerializationGroups {
   resourceClass: string
+  type: string
   operations: ParsedOperationSerializationGroupsPropertyDefinition[]
 }
