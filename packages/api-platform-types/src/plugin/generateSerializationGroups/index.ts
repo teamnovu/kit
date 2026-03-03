@@ -183,9 +183,19 @@ export default function generateSerializationGroups(options: GenerateSerializati
       )
     })
 
+    // union type of all interfaces
+    const unionType = ts.factory.createTypeAliasDeclaration(
+      [ts.factory.createToken(ts.SyntaxKind.ExportKeyword)],
+      'OperationsUnionType',
+      [],
+      ts.factory.createUnionTypeNode(
+        interfaceDeclarations.map(interfaceDeclaration => ts.factory.createTypeReferenceNode(interfaceDeclaration.name.text)),
+      ),
+    )
+
     // Ensure parent directories exist
     await fs.mkdir(options.outputDirectory, { recursive: true })
-    await writeToFile(interfaceDeclarations, 'operations.ts')
+    await writeToFile([...interfaceDeclarations, unionType], 'operations.ts')
 
     // eslint-disable-next-line no-console
     console.log('✅ ApiPlatform operation serialization group interfaces generated successfully.')
