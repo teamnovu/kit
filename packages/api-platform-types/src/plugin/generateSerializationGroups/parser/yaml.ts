@@ -57,7 +57,7 @@ interface MappingFileContent {
             groups?: string[]
           }
           class?: string
-        }
+        } | null
       }
     }
   }
@@ -135,11 +135,11 @@ export async function loadOperationSerializationGroups(inputDir: string): Promis
         const operationGroupDefinitions: ParsedOperationSerializationGroupsPropertyDefinition[] = []
 
         for (const [operationKey, operationData] of operations) {
-          const operationClass = operationData.class ?? operationKey
+          const operationClass = operationData?.class ?? operationKey
           const hasInput = ['ApiPlatform\\Metadata\\Patch', 'ApiPlatform\\Metadata\\Post', 'ApiPlatform\\Metadata\\Put'].includes(operationClass)
 
-          const inputGroups = hasInput ? operationData.denormalizationContext?.groups ?? globalInputGroups : null
-          const outputGroups = operationData.normalizationContext?.groups ?? globalOutputGroups
+          const inputGroups = hasInput ? operationData?.denormalizationContext?.groups ?? globalInputGroups : null
+          const outputGroups = operationData?.normalizationContext?.groups ?? globalOutputGroups
 
           // if there is a name set, use this instead of the key
           const improvedOperationName = operationData?.name ?? operationKey.replaceAll('\\', '').replace('ApiPlatformMetadata', '')
