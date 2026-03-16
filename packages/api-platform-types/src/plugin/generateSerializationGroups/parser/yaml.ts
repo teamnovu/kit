@@ -57,7 +57,7 @@ interface MappingFileContent {
             groups?: string[]
           }
           class?: string
-        }
+        } | null
       }
     }
   }
