@@ -1,9 +1,17 @@
-import { useMutation, type UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import {
+  useMutation,
+  type UseMutationOptions,
+  useQueryClient,
+} from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
-import { cartKeys, paymentKeys } from '../../keys'
-import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
+import { cartKeys, paymentKeys, shippingKeys } from '../../keys'
+import type {
+  OperationBody,
+  OperationKey,
+  OperationResponse,
+} from '../types/query'
 
 const removeCartItemOperation = 'removeLineItem post /checkout/cart/line-item/delete' satisfies OperationKey
 
@@ -26,9 +34,16 @@ export function useRemoveLineItemMutation(
     },
     onSuccess: async (newCart, variables, context) => {
       queryClient.setQueryData(cartKeys.get(), newCart)
-      await queryClient.invalidateQueries({ queryKey: paymentKeys.lists() })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: paymentKeys.lists() }),
+        queryClient.invalidateQueries({ queryKey: shippingKeys.lists() }),
+      ])
       // queryClient.invalidateQueries({ queryKey: cartKeys.get() })
-      await unref(unref(mutationOptions)?.onSuccess)?.(newCart, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(
+        newCart,
+        variables,
+        context,
+      )
     },
   })
 }
