@@ -46,8 +46,17 @@ export interface FormField<T, P extends string> {
    * Sets the initial data for the field. If the field is not dirty, it also updates the current data.
    * @param newData - The new initial data to set.
    * @param options - Optional. Pass `{ replace: true }` to replace the subtree entirely instead of deep-merging.
+   *   Pass `{ scope: 'subtree' }` to anchor the baseline only for this field and its descendants — ancestors
+   *   continue to read from the external initialData and stay dirty if the override changed the tree shape.
+   *   Defaults to `{ scope: 'tree' }`, which makes the override visible to ancestors as well.
    */
-  setInitialData: (newData: T, options?: { replace?: boolean }) => void
+  setInitialData: (
+    newData: T,
+    options?: {
+      replace?: boolean
+      scope?: 'tree' | 'subtree'
+    },
+  ) => void
   onBlur: () => void
   onFocus: () => void
   reset: () => void

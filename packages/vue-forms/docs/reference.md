@@ -153,6 +153,28 @@ form.getField('user').setInitialData({ name: 'B' }, { replace: true })
 form.getField('user.email').initialValue.value // undefined
 ```
 
+### Scoping the override: `tree` (default) vs `subtree`
+`setInitialData` accepts a `scope` option that controls who sees the new baseline:
+
+- **`scope: 'tree'` (default)** — the override becomes part of the global baseline. Both the targeted path *and its ancestors* read it, so the form goes back to non-dirty if `data` matches. Use this when an async load gives you a value that should be treated as if it had been the original initial all along.
+- **`scope: 'subtree'`** — the override anchors the baseline only for the targeted path and its descendants. Strict ancestors keep reading the external `initialData`, so they stay dirty when the change altered the tree shape (e.g. a new array item). Use this when something was added that the user should still be warned about losing on navigation, but whose internal fields shouldn't be marked dirty from the get-go.
+
+```typescript
+const form = useForm({
+  initialData: { rows: [{ name: 'A' }] as { name: string }[] },
+})
+
+// Push a new row (array structure changes → form is dirty)
+form.data.value.rows.push({ name: 'new' })
+
+// Anchor the new row's subtree as its own baseline.
+form.getField('rows.1').setInitialData({ name: 'new' }, { scope: 'subtree' })
+
+form.getField('rows.1.name').dirty.value // false (reads the anchor)
+form.getField('rows').dirty.value         // true  (array baseline unchanged)
+form.isDirty.value                        // true
+```
+
 ### Interaction with external `initialData` and other overrides
 - **External reassignment wipes overrides.** When the `initialData` ref passed to `useForm` is reassigned, all overrides applied via `setInitialData` are dropped — the form's baseline goes back to the external source.
 - **Cascade on ancestor write.** Calling `setInitialData` on a path drops any existing override on that path *or below* before applying the new one (e.g. setting an override on `user` clears a prior override on `user.name`).

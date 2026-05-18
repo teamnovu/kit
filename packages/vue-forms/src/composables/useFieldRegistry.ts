@@ -13,10 +13,13 @@ import {
 import type { FieldsTuple, FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
 import { cloneRefValue } from '../utils/general'
-import { existsPath, getLens, getNestedValue } from '../utils/path'
+import { existsPath, getLens } from '../utils/path'
 import { Rc } from '../utils/rc'
 import { useField, type UseFieldOptions } from './useField'
-import type { InitialDataOverride } from './useInitialDataOverride'
+import type {
+  InitialDataOverride,
+  InitialDataOverrideSetOptions,
+} from './useInitialDataOverride'
 import type { ValidationState } from './useValidation'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,18 +61,18 @@ const optionDefaults = {
 
 // A computed that always reflects the latest value from the getter
 // This computed forces updates even if the value is the same (to trigger watchers)
-function initialDataSync<T extends FormDataDefault>(
+function initialDataSync<T extends FormDataDefault, K extends Paths<T>>(
   initialDataOverride: InitialDataOverride<T>,
-  path: Paths<T>,
+  path: K,
 ) {
-  const getNewValue = () =>
-    getNestedValue(initialDataOverride.effectiveInitialData.value, path)
-  const initialValueRef = shallowRef(getNewValue())
+  type FieldValue = PickProps<T, K>
+  const getNewValue = () => initialDataOverride.resolveAt(path) as FieldValue
+  const initialValueRef = shallowRef<FieldValue>(getNewValue())
 
   watch(
-    initialDataOverride.effectiveInitialData,
-    () => {
-      initialValueRef.value = getNewValue()
+    () => initialDataOverride.resolveAt(path),
+    (newValue) => {
+      initialValueRef.value = newValue as FieldValue
       triggerRef(initialValueRef)
     },
     { flush: 'sync' },
@@ -163,7 +166,7 @@ export function useFieldRegistry<T extends FormDataDefault, TOut = T>(
       // tree.
       field.setInitialData = (
         newData: PickProps<T, K>,
-        setOptions?: { replace?: boolean },
+        setOptions?: InitialDataOverrideSetOptions,
       ) => {
         // Capture dirty state before the override write, since writing to the
         // override layer synchronously updates this field's initialValue.
