@@ -45,8 +45,9 @@ export interface FormField<T, P extends string> {
   /**
    * Sets the initial data for the field. If the field is not dirty, it also updates the current data.
    * @param newData - The new initial data to set.
+   * @param options - Optional. Pass `{ replace: true }` to replace the subtree entirely instead of deep-merging.
    */
-  setInitialData: (newData: T) => void
+  setInitialData: (newData: T, options?: { replace?: boolean }) => void
   onBlur: () => void
   onFocus: () => void
   reset: () => void

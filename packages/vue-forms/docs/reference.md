@@ -130,6 +130,34 @@ setInitialData(fetchedData.firstName)
 // If the field wasn't dirty, the current data is also updated
 ```
 
+### Calling `setInitialData` on a parent path
+Overrides set on a parent path propagate down to its subfields. The default behavior is a **deep merge** with the underlying `initialData`, so subfields that are not mentioned in the override fall through to the external value:
+
+```typescript
+const form = useForm({
+  initialData: { user: { name: 'A', email: 'x@x' } },
+})
+
+form.getField('user').setInitialData({ name: 'B' })
+
+form.getField('user.name').initialValue.value  // 'B'      (from override)
+form.getField('user.email').initialValue.value // 'x@x'    (from external)
+form.getField('user.name').dirty.value         // false
+```
+
+Pass `{ replace: true }` as the second argument to replace the subtree wholesale instead of merging — keys missing from the override resolve to `undefined`:
+
+```typescript
+form.getField('user').setInitialData({ name: 'B' }, { replace: true })
+
+form.getField('user.email').initialValue.value // undefined
+```
+
+### Interaction with external `initialData` and other overrides
+- **External reassignment wipes overrides.** When the `initialData` ref passed to `useForm` is reassigned, all overrides applied via `setInitialData` are dropped — the form's baseline goes back to the external source.
+- **Cascade on ancestor write.** Calling `setInitialData` on a path drops any existing override on that path *or below* before applying the new one (e.g. setting an override on `user` clears a prior override on `user.name`).
+- **`form.reset()` keeps overrides.** Reset rebuilds `data` from the merged tree (external `initialData` + active overrides), so a `setInitialData` call is treated as the new programmatic baseline.
+
 ## Method `defineValidator`
 The `defineValidator` method allows subcomponents to add validation rules to a form without needing access to the initial `useForm` call. The validator is automatically removed when the component unmounts.
 
