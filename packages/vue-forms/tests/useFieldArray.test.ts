@@ -350,4 +350,116 @@ describe('useFieldArray', () => {
       expect(fieldArray.items.value[2].item.name).toBe('Third')
     })
   })
+
+  describe('pushPristine', () => {
+    it('adds an item, keeps the array dirty, and marks the new item subfields clean', () => {
+      type Row = {
+        name: string
+        email: string
+      }
+      const form = useForm<{ rows: Row[] }>({
+        initialData: {
+          rows: [
+            {
+              name: 'A',
+              email: 'a@a',
+            },
+          ],
+        },
+      })
+      const fieldArray = useFieldArray(form, 'rows')
+
+      const newItem: Row = {
+        name: 'new',
+        email: 'new@x',
+      }
+      const added = fieldArray.pushPristine(newItem)
+
+      expect(form.data.value.rows).toEqual([
+        {
+          name: 'A',
+          email: 'a@a',
+        },
+        {
+          name: 'new',
+          email: 'new@x',
+        },
+      ])
+      expect(added.path).toBe('rows.1')
+
+      // Subfields of the new index are clean against the subtree anchor.
+      const newName = form.getField('rows.1.name')
+      const newEmail = form.getField('rows.1.email')
+      expect(newName.initialValue.value).toBe('new')
+      expect(newEmail.initialValue.value).toBe('new@x')
+      expect(newName.dirty.value).toBe(false)
+      expect(newEmail.dirty.value).toBe(false)
+
+      // The array field itself stays dirty — the array baseline does not see
+      // the subtree anchor.
+      expect(fieldArray.field.dirty.value).toBe(true)
+      expect(form.isDirty.value).toBe(true)
+    })
+
+    it('subfields registered before pushPristine become clean once the anchor is set', () => {
+      type Row = { name: string }
+      const form = useForm<{ rows: Row[] }>({
+        initialData: { rows: [{ name: 'A' }] },
+      })
+      const fieldArray = useFieldArray(form, 'rows')
+
+      // Pre-register the would-be path before the item exists.
+      const newName = form.getField('rows.1.name')
+
+      fieldArray.pushPristine({ name: 'new' })
+
+      expect(newName.data.value).toBe('new')
+      expect(newName.initialValue.value).toBe('new')
+      expect(newName.dirty.value).toBe(false)
+    })
+
+    it('multiple pushPristine calls anchor each new index independently', () => {
+      type Row = { name: string }
+      const form = useForm<{ rows: Row[] }>({
+        initialData: { rows: [] },
+      })
+      const fieldArray = useFieldArray(form, 'rows')
+
+      fieldArray.pushPristine({ name: 'one' })
+      fieldArray.pushPristine({ name: 'two' })
+
+      expect(form.data.value.rows).toEqual([{ name: 'one' }, { name: 'two' }])
+      expect(form.getField('rows.0.name').dirty.value).toBe(false)
+      expect(form.getField('rows.1.name').dirty.value).toBe(false)
+      expect(fieldArray.field.dirty.value).toBe(true)
+    })
+
+    it('editing a pushPristine item after the fact marks that subfield dirty', () => {
+      type Row = { name: string }
+      const form = useForm<{ rows: Row[] }>({
+        initialData: { rows: [] },
+      })
+      const fieldArray = useFieldArray(form, 'rows')
+
+      fieldArray.pushPristine({ name: 'initial' })
+      const nameField = form.getField('rows.0.name')
+      expect(nameField.dirty.value).toBe(false)
+
+      nameField.setData('edited')
+      expect(nameField.dirty.value).toBe(true)
+    })
+
+    it('regular push leaves the item subfields dirty (contrast)', () => {
+      type Row = { name: string }
+      const form = useForm<{ rows: Row[] }>({
+        initialData: { rows: [] },
+      })
+      const fieldArray = useFieldArray(form, 'rows')
+
+      fieldArray.push({ name: 'plain' })
+      // Without the subtree anchor, the new index's baseline is external
+      // (undefined at rows.0.name) → field is dirty.
+      expect(form.getField('rows.0.name').dirty.value).toBe(true)
+    })
+  })
 })

@@ -247,6 +247,21 @@ hobbies.remove(hobbies.items.value[0].id)
 </div>
 ```
 
+### `pushPristine` — add a new item without dirtying its subfields
+`pushPristine(item)` works like `push`, but additionally anchors the new index's subtree as its own baseline (a `setInitialData(item, { scope: 'subtree' })` on the new index path). The new item's subfields start non-dirty, while the array field itself stays dirty — its baseline still reflects the external `initialData`, so navigation guards / dirty checks still warn that something was added.
+
+```typescript
+const rows = form.getFieldArray('rows')
+
+rows.pushPristine({ name: '', email: '' })
+
+form.getField('rows.1.name').dirty.value // false (reads the subtree anchor)
+rows.field.dirty.value                   // true  (a new row exists)
+form.isDirty.value                       // true
+```
+
+Use `push` when the new item is a user edit you want flagged everywhere; use `pushPristine` when it's a blank/placeholder row whose internal fields shouldn't light up dirty/validation noise until the user actually touches them.
+
 For objects where identity should be based on a property (e.g. `id`) rather than reference equality, provide a `hashFn`:
 ```typescript
 const products = form.getFieldArray('products', {

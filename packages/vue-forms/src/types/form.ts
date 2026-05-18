@@ -29,6 +29,13 @@ export interface FieldItem<Item, Path extends string> {
 export interface FieldArray<Item, Path extends string> {
   items: ShallowRef<FieldItem<Item, Path>[]>
   push: (item: Item) => FieldItem<Item, Path>
+  /**
+   * Pushes a new item and anchors its subtree as the baseline for that index
+   * (subtree-scoped `setInitialData`). The new item's subfields are clean from
+   * the moment they're registered, while the array field itself stays dirty
+   * because its baseline still reflects the external `initialData`.
+   */
+  pushPristine: (item: Item) => FieldItem<Item, Path>
   remove: (id: string) => void
   insert: (item: Item, index: number) => FieldItem<Item, Path>
   field: FormField<Item[], Path>
