@@ -37,7 +37,7 @@ export function useField<T, K extends string>(fieldOptions: UseFieldOptions<T, K
   }, { deep: true })
 
   const dirty = computed(() => {
-    return JSON.stringify(state.value) !== JSON.stringify(state.initialValue)
+    return JSON.stringify(state.value) !== JSON.stringify(cloneRefValue(state.initialValue as T))
   })
 
   const setData = (newData: T): void => {
