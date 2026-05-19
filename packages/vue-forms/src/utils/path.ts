@@ -108,7 +108,7 @@ export function dropOverridesAtAndBelow(
   path: string,
 ): void {
   for (const key of [...overrides.keys()]) {
-    if (key === path || key.startsWith(path + '.')) {
+    if (key === path || path === '' || key.startsWith(path + '.')) {
       overrides.delete(key)
     }
   }

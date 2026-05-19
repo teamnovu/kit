@@ -43,8 +43,14 @@ interface OverrideEntry {
   scope: InitialDataOverrideScope
 }
 
-const isPlainObject = (v: unknown): v is Record<string, unknown> =>
-  v !== null && typeof v === 'object' && !Array.isArray(v)
+const isPlainObject = (v: unknown): v is Record<string, unknown> => {
+  if (v === null || typeof v !== 'object') return false
+  const proto = Object.getPrototypeOf(v)
+  // Only treat literal `{}` / `Object.create(null)` as mergeable. Class
+  // instances, Date, Map, Set, RegExp, etc. have no enumerable own props for
+  // lodash.merge to copy and would silently collapse to `{}`.
+  return proto === Object.prototype || proto === null
+}
 
 const isStrictDescendant = (candidate: string, ancestor: string): boolean => {
   if (ancestor === '') return candidate !== ''

@@ -429,6 +429,26 @@ describe('initialData overrides — subfield propagation', () => {
     expect(nameField.initialValue.value).toBe('B')
   })
 
+  it('overriding a Date replaces it wholesale instead of merging to {}', () => {
+    const initial = new Date('2020-01-01T00:00:00Z')
+    const next = new Date('2026-05-19T00:00:00Z')
+
+    const form = useForm({
+      initialData: { createdAt: initial },
+    })
+
+    const field = form.getField('createdAt')
+    field.setInitialData(next)
+
+    // Without the plain-object guard, merge({}, initial, next) would yield {}
+    // because Date has no enumerable own properties. With the guard, the
+    // override replaces wholesale.
+    expect(field.initialValue.value).toBeInstanceOf(Date)
+    expect((field.initialValue.value as Date).toISOString()).toBe(
+      next.toISOString(),
+    )
+  })
+
   it('form.reset() rebuilds data from the merged tree (overrides survive)', () => {
     const form = useForm({
       initialData: {
