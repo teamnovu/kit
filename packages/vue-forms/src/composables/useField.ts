@@ -64,6 +64,8 @@ export function useField<T, K extends string>(fieldOptions: UseFieldOptions<T, K
     state.errors = []
   }
 
+  // This method is replaced by the registry and should never be called directly.
+  // This only acts as a stub.
   const setInitialData = (newData: T, _options?: { replace?: boolean }): void => {
     if (!dirty.value) {
       setData(cloneRefValue(newData))
