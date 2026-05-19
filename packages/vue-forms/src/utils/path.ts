@@ -103,6 +103,17 @@ export function joinPath<Base extends string, Sub extends string>(
   return `${basePath}.${subPath}` as JoinPath<Base, Sub>
 }
 
+export function dropOverridesAtAndBelow(
+  overrides: Map<string, unknown>,
+  path: string,
+): void {
+  for (const key of [...overrides.keys()]) {
+    if (key === path || path === '' || key.startsWith(path + '.')) {
+      overrides.delete(key)
+    }
+  }
+}
+
 export function filterErrorsForPath(errors: ErrorBag, path: string): ErrorBag {
   // Handle empty path - return all errors
   if (!path) {

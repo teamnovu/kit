@@ -29,6 +29,13 @@ export interface FieldItem<Item, Path extends string> {
 export interface FieldArray<Item, Path extends string> {
   items: ShallowRef<FieldItem<Item, Path>[]>
   push: (item: Item) => FieldItem<Item, Path>
+  /**
+   * Pushes a new item and anchors its subtree as the baseline for that index
+   * (subtree-scoped `setInitialData`). The new item's subfields are clean from
+   * the moment they're registered, while the array field itself stays dirty
+   * because its baseline still reflects the external `initialData`.
+   */
+  pushPristine: (item: Item) => FieldItem<Item, Path>
   remove: (id: string) => void
   insert: (item: Item, index: number) => FieldItem<Item, Path>
   field: FormField<Item[], Path>
@@ -45,8 +52,18 @@ export interface FormField<T, P extends string> {
   /**
    * Sets the initial data for the field. If the field is not dirty, it also updates the current data.
    * @param newData - The new initial data to set.
+   * @param options - Optional. Pass `{ replace: true }` to replace the subtree entirely instead of deep-merging.
+   *   Pass `{ scope: 'subtree' }` to anchor the baseline only for this field and its descendants — ancestors
+   *   continue to read from the external initialData and stay dirty if the override changed the tree shape.
+   *   Defaults to `{ scope: 'tree' }`, which makes the override visible to ancestors as well.
    */
-  setInitialData: (newData: T) => void
+  setInitialData: (
+    newData: T,
+    options?: {
+      replace?: boolean
+      scope?: 'tree' | 'subtree'
+    },
+  ) => void
   onBlur: () => void
   onFocus: () => void
   reset: () => void

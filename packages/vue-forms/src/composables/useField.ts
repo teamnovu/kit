@@ -1,5 +1,5 @@
 import type { Awaitable } from '@vueuse/core'
-import { computed, reactive, shallowRef, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
+import { computed, reactive, toRefs, unref, watch, type MaybeRef, type MaybeRefOrGetter, type Ref } from 'vue'
 import type { FormField } from '../types/form'
 import type { ValidationErrorMessage, ValidationErrors } from '../types/validation'
 import { cloneRefValue } from '../utils/general'
@@ -24,33 +24,20 @@ export function useField<T, K extends string>(fieldOptions: UseFieldOptions<T, K
     ...defaultOptions,
     ...fieldOptions,
   }
-  const initialValue = shallowRef(Object.freeze(cloneRefValue(options.initialValue))) as Ref<Readonly<T | undefined>>
-
   const state = reactive({
     value: options.value,
     path: options.path,
-    initialValue,
+    initialValue: options.initialValue,
     errors: options.errors,
     touched: false,
   })
-
-  watch(
-    shallowRef(options.initialValue),
-    () => {
-      initialValue.value = Object.freeze(cloneRefValue(options.initialValue))
-      if (state.value !== unref(options.initialValue)) {
-        state.value = cloneRefValue(options.initialValue)
-      }
-    },
-    { flush: 'sync' },
-  )
 
   watch(() => state.value, (newData) => {
     fieldOptions.onChange?.(newData as T)
   }, { deep: true })
 
   const dirty = computed(() => {
-    return JSON.stringify(state.value) !== JSON.stringify(state.initialValue)
+    return JSON.stringify(state.value) !== JSON.stringify(cloneRefValue(state.initialValue as T))
   })
 
   const setData = (newData: T): void => {
@@ -71,17 +58,21 @@ export function useField<T, K extends string>(fieldOptions: UseFieldOptions<T, K
   const reset = (): void => {
     const lastPathPart = state.path.split('.').at(-1) || ''
     if (unref(options.existsInForm) && !/^\d+$/.test(lastPathPart)) {
-      state.value = cloneRefValue(state.initialValue)
+      state.value = cloneRefValue(state.initialValue as T)
     }
     state.touched = false
     state.errors = []
   }
 
-  const setInitialData = (newData: T): void => {
+  // This method is replaced by the registry and should never be called directly.
+  // This only acts as a stub.
+  const setInitialData = (newData: T, _options?: { replace?: boolean }): void => {
     if (!dirty.value) {
       setData(cloneRefValue(newData))
     }
-    state.initialValue = newData
+    // Standalone-mode fallback: when no registry has replaced this method, keep
+    // the previous behavior of updating the local baseline directly.
+    state.initialValue = newData as typeof state.initialValue
   }
 
   const setErrors = (newErrors: ValidationErrorMessage[]): void => {

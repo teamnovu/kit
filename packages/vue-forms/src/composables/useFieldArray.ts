@@ -132,6 +132,21 @@ export function useFieldArray<T extends FormDataDefault, K extends Paths<T>, TOu
     return items.value.at(-1)!
   }
 
+  const pushPristine = (item: Item) => {
+    const current = (arrayField.data.value ?? []) as Item[]
+    const newIndex = current.length
+    arrayField.setData([...current, item] as Items)
+
+    // Anchor the new item's subtree as its own baseline. Subtree scope keeps
+    // the array field (and any further ancestors) dirty against the external
+    // initialData, while the new index and its descendants read the anchor.
+    const newItemPath = `${path}.${newIndex}` as Paths<T>
+    const newItemField = form.getField(newItemPath) as unknown as FormField<Item, string>
+    newItemField.setInitialData(item, { scope: 'subtree' })
+
+    return items.value.at(-1)!
+  }
+
   const remove = (id: Id) => {
     const currentData = (arrayField.data.value ?? []) as Item[]
     const currentItem = items.value.findIndex(
@@ -165,6 +180,7 @@ export function useFieldArray<T extends FormDataDefault, K extends Paths<T>, TOu
   return {
     items,
     push,
+    pushPristine,
     remove,
     insert,
     field: arrayField,

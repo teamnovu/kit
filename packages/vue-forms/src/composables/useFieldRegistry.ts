@@ -12,9 +12,14 @@ import {
 } from 'vue'
 import type { FieldsTuple, FormDataDefault, FormField } from '../types/form'
 import type { Paths, PickProps } from '../types/util'
-import { existsPath, getLens, getNestedValue } from '../utils/path'
+import { cloneRefValue } from '../utils/general'
+import { existsPath, getLens } from '../utils/path'
 import { Rc } from '../utils/rc'
 import { useField, type UseFieldOptions } from './useField'
+import type {
+  InitialDataOverride,
+  InitialDataOverrideSetOptions,
+} from './useInitialDataOverride'
 import type { ValidationState } from './useValidation'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,17 +61,18 @@ const optionDefaults = {
 
 // A computed that always reflects the latest value from the getter
 // This computed forces updates even if the value is the same (to trigger watchers)
-function initialDataSync<T extends FormDataDefault>(
-  formState: FormState<T>,
-  path: Paths<T>,
+function initialDataSync<T extends FormDataDefault, K extends Paths<T>>(
+  initialDataOverride: InitialDataOverride<T>,
+  path: K,
 ) {
-  const getNewValue = () => getNestedValue(formState.initialData, path)
-  const initialValueRef = shallowRef(getNewValue())
+  type FieldValue = PickProps<T, K>
+  const getNewValue = () => initialDataOverride.resolveAt(path) as FieldValue
+  const initialValueRef = shallowRef<FieldValue>(getNewValue())
 
   watch(
-    () => formState.initialData,
-    () => {
-      initialValueRef.value = getNewValue()
+    () => initialDataOverride.resolveAt(path),
+    (newValue) => {
+      initialValueRef.value = newValue as FieldValue
       triggerRef(initialValueRef)
     },
     { flush: 'sync' },
@@ -78,6 +84,7 @@ function initialDataSync<T extends FormDataDefault>(
 export function useFieldRegistry<T extends FormDataDefault, TOut = T>(
   formState: FormState<T>,
   validationState: ValidationState<T, TOut>,
+  initialDataOverride: InitialDataOverride<T>,
   fieldRegistryOptions?: FieldRegistryOptions,
 ) {
   const fieldReferenceCounter = new Map<Paths<T>, Rc>()
@@ -124,7 +131,7 @@ export function useFieldRegistry<T extends FormDataDefault, TOut = T>(
       const field = useField({
         path,
         value: getLens(toRef(formState, 'data'), path),
-        initialValue: initialDataSync(formState, path),
+        initialValue: initialDataSync(initialDataOverride, path),
         existsInForm: computed(() => existsPath(formState.data, unref(path))),
         errors: computed({
           get() {
@@ -153,6 +160,22 @@ export function useFieldRegistry<T extends FormDataDefault, TOut = T>(
           ])
         },
       })
+
+      // Replace setInitialData with a registry-provided version that writes to
+      // the override layer so subfields resolve their baseline from the merged
+      // tree.
+      field.setInitialData = (
+        newData: PickProps<T, K>,
+        setOptions?: InitialDataOverrideSetOptions,
+      ) => {
+        // Capture dirty state before the override write, since writing to the
+        // override layer synchronously updates this field's initialValue.
+        const wasDirty = field.dirty.value
+        initialDataOverride.set(path, newData, setOptions)
+        if (!wasDirty) {
+          field.setData(cloneRefValue(newData))
+        }
+      }
 
       registerField(field)
     }

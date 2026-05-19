@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { reactive } from 'vue'
+import { reactive, toRef } from 'vue'
 import { useFieldRegistry } from '../src/composables/useFieldRegistry'
 import { useFormState } from '../src/composables/useFormState'
 import { useForm } from '../src'
+import { useInitialDataOverride } from '../src/composables/useInitialDataOverride'
 import { useValidation } from '../src/composables/useValidation'
 
 describe('useFormState', () => {
@@ -51,7 +52,8 @@ describe('useFormState', () => {
       initialData,
     })
     const validationState = useValidation(state, {})
-    const fields = useFieldRegistry(state, validationState)
+    const initialDataOverride = useInitialDataOverride(toRef(state, 'initialData'))
+    const fields = useFieldRegistry(state, validationState, initialDataOverride)
 
     const nameField = fields.defineField({ path: 'name' })
     fields.defineField({ path: 'email' })
@@ -74,7 +76,8 @@ describe('useFormState', () => {
       initialData,
     })
     const validationState = useValidation(state, {})
-    const fields = useFieldRegistry(state, validationState)
+    const initialDataOverride = useInitialDataOverride(toRef(state, 'initialData'))
+    const fields = useFieldRegistry(state, validationState, initialDataOverride)
 
     const formState = useFormState(fields)
 

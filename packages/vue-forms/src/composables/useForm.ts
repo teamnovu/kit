@@ -15,6 +15,7 @@ import { makeSubmitHandler } from '../utils/submitHandler'
 import { useFieldArray } from './useFieldArray'
 import { useFieldRegistry } from './useFieldRegistry'
 import { useFormState } from './useFormState'
+import { useInitialDataOverride } from './useInitialDataOverride'
 import { createSubformInterface } from './useSubform'
 import {
   useValidation,
@@ -60,6 +61,7 @@ export function useForm<T extends FormDataDefault, TOut = T>(
 
   /* eslint-enable no-redeclare */
   const initialData = computed(() => cloneRefValue(options.initialData))
+  const initialDataOverride = useInitialDataOverride(initialData)
 
   const data = ref<T>(cloneRefValue(initialData)) as Ref<T>
 
@@ -77,7 +79,7 @@ export function useForm<T extends FormDataDefault, TOut = T>(
   )
 
   const validationState = useValidation(state, options)
-  const fieldRegistry = useFieldRegistry(state, validationState, {
+  const fieldRegistry = useFieldRegistry(state, validationState, initialDataOverride, {
     keepValuesOnUnmount: options.keepValuesOnUnmount,
     onBlur: async (path: string) => {
       validationState.validateStrategy('validateOnBlur', path)
@@ -92,7 +94,7 @@ export function useForm<T extends FormDataDefault, TOut = T>(
   const formState = useFormState(fieldRegistry)
 
   const reset = () => {
-    data.value = cloneRefValue(initialData)
+    data.value = cloneRefValue(initialDataOverride.effectiveInitialData)
     validationState.reset()
     for (const field of fieldRegistry.fields.value) {
       field.reset()
