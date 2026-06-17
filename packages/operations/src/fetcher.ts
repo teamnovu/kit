@@ -38,12 +38,29 @@ export interface OperationsTransport {
 
 export const transportKey: InjectionKey<OperationsTransport> = Symbol('operations:transport')
 
+/**
+ * Module-level fallback for the transport. Used when no `inject` context is
+ * available — e.g. endpoints invoked imperatively outside `setup()` (router
+ * guards, async handlers, bootstrap prefetch). Safe for client-only SPAs; for
+ * SSR prefer `app.provide(transportKey, …)` so the transport stays request-scoped.
+ */
+let moduleTransport: OperationsTransport | null = null
+
+/** Registers the module-level fallback transport. */
+export function setTransport(transport: OperationsTransport): void {
+  moduleTransport = transport
+}
+
+/**
+ * Resolves the transport at endpoint-invocation time. Prefers an injected
+ * transport (request-scoped), falling back to the module-level one. Throws if neither is set.
+ */
 export function useTransport(): OperationsTransport {
-  const transport = inject(transportKey, null)
+  const transport = inject(transportKey, null) ?? moduleTransport
   if (!transport) {
     throw new Error(
-      '[operations] No transport provided. Call app.provide(transportKey, { query, mutation }) '
-      + '(or use the Nuxt plugin) before invoking endpoints.',
+      '[operations] No transport provided. Call setTransport({ query, mutation }) or '
+      + 'app.provide(transportKey, { query, mutation }) before invoking endpoints.',
     )
   }
   return transport
