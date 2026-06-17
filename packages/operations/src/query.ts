@@ -25,6 +25,7 @@ import {
   serializeResource,
 } from './resourceRegistry'
 import { deepUnwrapParams } from './unwrapParams'
+import { makeQueryFn } from './fetcher'
 
 type EndpointDefinition<
   QueryFnOutput,

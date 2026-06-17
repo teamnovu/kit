@@ -1,12 +1,12 @@
-type IriInput = string | undefined | null;
+type IriInput = string | undefined | null
 
 export function getIdFromIRI(iri: string | undefined | null): string | undefined {
-  const match = iri?.match(/\/api\/[^/]+\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
+  const match = iri?.match(/\/api\/[^/]+\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i)
   if (!match) {
-    return undefined;
+    return undefined
   }
-  const [_, id] = match;
-  return id;
+  const [_, id] = match
+  return id
 }
 
 /**
@@ -27,7 +27,7 @@ export function getIdFromIRI(iri: string | undefined | null): string | undefined
 export function mapArrayOfIdFromIRI(list: IriInput[] | undefined): string[] {
   return (list ?? [])
     .map(item => getIdFromIRI(item))
-    .filter((id: string | undefined): id is string => id !== undefined);
+    .filter((id: string | undefined): id is string => id !== undefined)
 }
 
 /**
@@ -42,5 +42,5 @@ export function mapIdFromIRIByKey<T>(
 ): string[] {
   return (list ?? [])
     .map(item => getIdFromIRI(item[key] as IriInput))
-    .filter((id: string | undefined): id is string => id !== undefined);
+    .filter((id: string | undefined): id is string => id !== undefined)
 }

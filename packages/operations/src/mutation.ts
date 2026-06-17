@@ -11,6 +11,7 @@ import type {
   UrlParams,
 } from './types'
 import { deepUnwrapParams } from './unwrapParams'
+import { useMutationFn } from './fetcher'
 
 type EndpointDefinition<
   Data,
