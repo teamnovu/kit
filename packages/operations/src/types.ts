@@ -8,12 +8,17 @@ import { type MaybeRef } from 'vue'
 
 type ParamsBase = Record<string, unknown>
 
-// For module augmentation
-export interface OperationsOverrides {
-  OperationsUnionType: { type: string }
-}
+// For module augmentation. Intentionally empty: consumers *add* the
+// `OperationsUnionType` property via `declare module`. Interface merging can only
+// add properties, not re-type an existing one, so a pre-declared property here
+// would make every override fail with "subsequent property declarations must have
+// the same type". `AtType` resolves the augmented type, falling back to `string`.
+// oxlint-disable-next-line typescript/no-empty-object-type
+export interface OperationsOverrides {}
 
-export type AtType = OperationsOverrides['OperationsUnionType']['type']
+export type AtType = OperationsOverrides extends { OperationsUnionType: infer U }
+  ? U extends { type: string } ? U['type'] : string
+  : string
 export type Id = string
 export type Resource = AtType | readonly [AtType, Id | undefined]
 
