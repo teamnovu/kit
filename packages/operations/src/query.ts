@@ -141,16 +141,27 @@ function buildEndpoint<
       return data
     }
 
+    // Gate the query on all path params being present (a missing path param
+    // would produce a broken URL). ANDed with any user-provided `enabled` so
+    // custom logic from the factory is preserved rather than clobbered.
+    const paramsPresent = computed(() => {
+      const unrefedParams = twoStepUnrefParams('params')
+      if (!unrefedParams) return true
+
+      return Object.values(unrefedParams).every(v => v !== undefined && v !== null)
+    })
+
+    const userEnabled = definition.enabled
+
     return {
       ...definition,
       $invalidateKey,
       queryKey,
       queryFn: url ? concreteQueryFn : ('queryFn' in definition ? definition.queryFn : undefined),
       enabled: computed(() => {
-        const unrefedParams = twoStepUnrefParams('params')
-        if (!unrefedParams) return true
-
-        return Object.values(unrefedParams).every(v => v !== undefined && v !== null)
+        if (!paramsPresent.value) return false
+        // `enabled` is documented for this builder as boolean | Ref | computed.
+        return userEnabled === undefined ? true : !!unref(userEnabled)
       }),
     }
   }) as ((...rest: unknown[]) => unknown) & { $brand?: string }

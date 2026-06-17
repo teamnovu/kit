@@ -1,7 +1,12 @@
 type IriInput = string | undefined | null
 
 export function getIdFromIRI(iri: string | undefined | null): string | undefined {
-  const match = iri?.match(/\/api\/[^/]+\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i)
+  // Guard against non-string values reaching `.match()` (callers may cast through
+  // `IriInput`, e.g. `mapIdFromIRIByKey`), which would throw a runtime TypeError.
+  if (typeof iri !== 'string') {
+    return undefined
+  }
+  const match = iri.match(/\/api\/[^/]+\/([^/?#]+)/)
   if (!match) {
     return undefined
   }
