@@ -38,6 +38,27 @@ type EndpointDefinition<
 }
 
 /**
+ * Explicit return type for the `query` builder's `tail`. Named (rather than an
+ * inferred anonymous object) so the recursive `resources`/`params` edges have
+ * something to reference in the emitted `.d.ts` instead of collapsing to
+ * `/*elided*\/ any`.
+ */
+interface QueryBuilder<Url extends UrlOptions<string, never>, QueryFnOutput, Error = DefaultError> {
+  resources: (...tags: Resource[]) => QueryBuilder<Url, QueryFnOutput, Error>
+  params: (
+    paramsFn?: QueryParamsFn<ApiParams<UrlParams<Url>>>,
+  ) => QueryBuilder<Url, QueryFnOutput, Error>
+  build: <
+    Params extends ApiParams<UrlParams<Url>> = ApiParams<UrlParams<Url>>,
+    Key extends QueryKey = QueryKeyFromParams<Params>,
+    Options extends RequestInit = RequestInit,
+    Output = QueryFnOutput,
+  >(
+    factory?: (params: Params) => EndpointDefinition<QueryFnOutput, Error, Options, Key, Output>,
+  ) => NoInfer<QueryEndpoint<QueryFnOutput, Params, Error, QueryKeyFromParams<Params>, Output>>
+}
+
+/**
  * Unwraps all reactive refs in an endpoint's query options, producing plain values
  * suitable for `queryClient.fetchQuery`. Strips `initialData` since it's not applicable
  * to imperative fetches.
@@ -219,7 +240,7 @@ function buildEndpoint<
 export const query = <QueryFnOutput, Error = DefaultError>() => {
   const tail = <
     Url extends UrlOptions<string, never>,
-  >(url?: Url, resources?: Resource[], paramsFn?: QueryParamsFn<ApiParams<UrlParams<Url>>>) => ({
+  >(url?: Url, resources?: Resource[], paramsFn?: QueryParamsFn<ApiParams<UrlParams<Url>>>): QueryBuilder<Url, QueryFnOutput, Error> => ({
     resources: (...tags: Resource[]) => tail(url, tags, paramsFn),
     params: (
       paramsFn?: QueryParamsFn<ApiParams<UrlParams<Url>>>,

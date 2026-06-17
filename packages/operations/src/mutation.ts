@@ -25,6 +25,23 @@ type EndpointDefinition<
 /** Transforms the mutation input bag (`{ body } & path/query params`) before it's sent. */
 type MutationParamsFn<Variables> = (params: Variables) => Variables
 
+/**
+ * Explicit return type for the `mutation` builder's `tail`. Named (rather than an
+ * inferred anonymous object) so the recursive `params` edge has something to
+ * reference in the emitted `.d.ts` instead of collapsing to `/*elided*\/ any`.
+ */
+interface MutationBuilder<Url extends UrlOptions<string, never>, Data, InputData, Error = DefaultError> {
+  params: (
+    paramsFn?: MutationParamsFn<MutateInput<InputData, ApiParams<UrlParams<Url>>>>,
+  ) => MutationBuilder<Url, Data, InputData, Error>
+  build: <
+    Params extends ApiParams<UrlParams<Url>> = ApiParams<UrlParams<Url>>,
+    Options extends RequestInit = RequestInit,
+  >(
+    factory?: () => EndpointDefinition<Data, MutateInput<InputData, Params>, Error, Options>,
+  ) => NoInfer<MutationEndpoint<Data, MutateInput<InputData, Params>, Error>>
+}
+
 function buildEndpoint<
   Data,
   InputData,
@@ -116,7 +133,7 @@ export const mutation = <Data = unknown, InputData = unknown, Error = DefaultErr
   >(
     url?: Url,
     paramsFn?: MutationParamsFn<MutateInput<InputData, ApiParams<UrlParams<Url>>>>,
-  ) => ({
+  ): MutationBuilder<Url, Data, InputData, Error> => ({
     params: (
       paramsFn?: MutationParamsFn<MutateInput<InputData, ApiParams<UrlParams<Url>>>>,
     ) => tail(url, paramsFn),
