@@ -19,7 +19,7 @@ export interface OperationsOverrides {}
 export type AtType = OperationsOverrides extends { OperationsUnionType: infer U }
   ? U extends { type: string } ? U['type'] : string
   : string
-export type Id = string
+export type Id = string | number
 export type Resource = AtType | readonly [AtType, Id | undefined]
 
 export type MaybeParams<Params extends ApiParams, T> = [Params] extends [never]
