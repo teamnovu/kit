@@ -33,6 +33,20 @@ export function registerQueryResources(resources: Set<Resource>, queryKey: Query
 }
 
 /**
+ * Like `queryClient.setQueryData`, but also registers the resources contained in `data`
+ * in the resource index. Bare `setQueryData` bypasses the fetch path, leaving the seeded
+ * entry invisible to `invalidateResources`.
+ */
+export function setQueryDataWithResources<T>(
+  queryClient: QueryClient,
+  queryKey: QueryKey,
+  data: T,
+): void {
+  queryClient.setQueryData(queryKey, data);
+  registerQueryResources(extractResourceTypes(data), queryKey);
+}
+
+/**
  * Recursively walks a JSON-LD response and collects all `@type` values.
  * Handles single resources, hydra collections, and nested objects.
  */
