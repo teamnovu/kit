@@ -21,6 +21,9 @@ export type QueryFnParams = [
   url: MaybeRef<string>,
   queryParams?: MaybeRef<Record<string, unknown> | undefined>,
   options?: MaybeRef<Omit<RequestInit, 'signal'>>,
+  // Raw, unserialized request body, forwarded as-is. Method/headers/serialization
+  // are intentionally left to the consumer's transport (format-specific concern).
+  body?: MaybeRef<unknown>,
 ]
 
 /**

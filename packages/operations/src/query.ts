@@ -142,6 +142,9 @@ function buildEndpoint<
       concreteUrl,
       computed(() => twoStepUnrefParams('queryParams') ?? undefined),
       queryFnOptions,
+      // Raw body forwarded to the transport; serialization/method/headers are the
+      // transport's concern (format-specific, e.g. API Platform).
+      computed(() => unref(params?.body)),
     )
 
     const concreteQueryFn = async (ctx: QueryFunctionContext) => {
