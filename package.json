@@ -7,7 +7,7 @@
   },
   "author": "@teamnovu",
   "type": "module",
-  "packageManager": "pnpm@9.11.0",
+  "packageManager": "pnpm@11.7.0+sha512.19cc852c120c7125760f2443ee6be0ca5b40f9f50598de1a09a1f177503e010e57c23c77646e01e761de59bf874fb22a3398c33ab9691fc13eb946b6f0f4d620",
   "scripts": {
     "lint": "eslint . --fix",
     "build": "pnpm -r build",
@@ -24,7 +24,8 @@
     "packages/cookieconsent",
     "packages/shopware-api-client",
     "packages/shopware-composables",
-    "packages/api-platform-types"
+    "packages/api-platform-types",
+    "packages/operations"
   ],
   "devDependencies": {
     "@eslint/compat": "^1.2.9",
@@ -64,6 +65,7 @@
     "@teamnovu/kit-shopware-api-client": "workspace:^",
     "@teamnovu/kit-shopware-composables": "workspace:^",
     "@teamnovu/kit-api-platform-types": "workspace:^",
+    "@teamnovu/kit-operations": "workspace:^",
     "@types/node": "^22.14.1"
   }
 }
