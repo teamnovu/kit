@@ -3,7 +3,7 @@ import { useMutation, type UseMutationOptions, useQueryClient } from '@tanstack/
 import { unref } from 'vue'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 import { useShopwareQueryClient } from '../../inject'
-import { cartKeys, contextKeys, customerKeys } from '../../keys'
+import { addressKeys, cartKeys, contextKeys, customerKeys, orderKeys, paymentKeys, shippingKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 
 const logoutOperation = 'logoutCustomer post /account/logout' satisfies OperationKey
@@ -28,6 +28,10 @@ export function useLogoutCustomerMutation(
         queryClient.resetQueries({ queryKey: contextKeys.all() }),
         queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
         queryClient.invalidateQueries({ queryKey: customerKeys.all() }),
+        queryClient.invalidateQueries({ queryKey: addressKeys.all() }),
+        queryClient.invalidateQueries({ queryKey: shippingKeys.all() }),
+        queryClient.invalidateQueries({ queryKey: paymentKeys.all() }),
+        queryClient.invalidateQueries({ queryKey: orderKeys.all() }),
       ])
 
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
