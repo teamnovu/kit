@@ -2,7 +2,7 @@ import { useMutation, type UseMutationOptions, useQueryClient } from '@tanstack/
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
-import { addressKeys } from '../../keys'
+import { addressKeys, contextKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
@@ -29,6 +29,7 @@ export function useUpdateCustomerAddressMutation(
 
       // Invalidate address list queries to refetch data
       await Promise.all([
+        queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
         queryClient.invalidateQueries({ queryKey: addressKeys.lists() }),
         queryClient.invalidateQueries({
           queryKey: addressKeys.detail(unrefOptions(variables).params.addressId),
