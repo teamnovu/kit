@@ -6,13 +6,13 @@
   >
     <component
       :is="component"
-      v-bind="{...componentProps, ...$attrs}"
       :on-blur="onBlur"
       :on-focus="onFocus"
       :model-value="data"
       :errors="errors"
       :name="path"
       @update:model-value="setData"
+      v-bind="{...componentProps, ...$attrs}"
     >
       <slot />
 
