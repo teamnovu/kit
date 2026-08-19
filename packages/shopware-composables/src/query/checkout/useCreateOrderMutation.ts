@@ -2,7 +2,7 @@ import { useMutation, useQueryClient, type UseMutationOptions } from '@tanstack/
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
-import { cartKeys, orderKeys } from '../../keys'
+import { cartKeys, contextKeys, orderKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
@@ -30,6 +30,9 @@ export function useCreateOrderMutation(
 
         // Invalidate order list to refetch data
         queryClient.invalidateQueries({ queryKey: orderKeys.lists() }),
+
+        // Invalidate context
+        queryClient.invalidateQueries({ queryKey: contextKeys.all() })
       ])
 
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
