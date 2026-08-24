@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { addressKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -25,5 +25,5 @@ export function useListAddressQueryOptions(
 export function useListAddressQuery(
   options?: OperationOptions<typeof listAddressOperation>,
 ) {
-  return useQuery(useListAddressQueryOptions(options))
+  return useQuery(useListAddressQueryOptions(options), useShopwareVueQueryClient())
 }

@@ -1,7 +1,7 @@
-import { useMutation, type UseMutationOptions, useQueryClient } from '@tanstack/vue-query'
+import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { cartKeys, contextKeys, paymentKeys, shippingKeys } from '../../keys'
 import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 
@@ -15,7 +15,7 @@ export function useUpdateContextMutation(
   >,
 ) {
   const client = useShopwareQueryClient()
-  const queryClient = useQueryClient()
+  const queryClient = useShopwareVueQueryClient()
 
   return useMutation({
     ...mutationOptions,
@@ -38,5 +38,5 @@ export function useUpdateContextMutation(
 
       await unref(unref(mutationOptions)?.onSuccess)?.(newContext, variables, context)
     },
-  })
+  }, queryClient)
 }

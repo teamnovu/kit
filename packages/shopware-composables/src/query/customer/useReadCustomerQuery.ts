@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { customerKeys } from '../../keys'
 import { unrefOptions } from '../../util'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -24,5 +24,5 @@ export function useReadCustomerQueryOptions(
 export function useReadCustomerQuery(
   options?: OperationOptions<typeof readCustomer>,
 ) {
-  return useQuery(useReadCustomerQueryOptions(options))
+  return useQuery(useReadCustomerQueryOptions(options), useShopwareVueQueryClient())
 }

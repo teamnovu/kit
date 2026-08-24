@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient, type UseMutationOptions } from '@tanstack/vue-query'
+import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { cartKeys, contextKeys, orderKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
@@ -16,7 +16,7 @@ export function useCreateOrderMutation(
   >,
 ) {
   const client = useShopwareQueryClient()
-  const queryClient = useQueryClient()
+  const queryClient = useShopwareVueQueryClient()
 
   return useMutation({
     ...mutationOptions,
@@ -37,5 +37,5 @@ export function useCreateOrderMutation(
 
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
-  })
+  }, queryClient)
 }

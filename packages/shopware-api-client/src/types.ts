@@ -59,4 +59,11 @@ export interface ShopwareClientOptions {
    */
   contextToken?: string
 
+  /**
+   * The vue-query queryClientKey of the QueryClient that holds all queries
+   * made through this client. If not set, the default QueryClient is used.
+   * @default undefined
+   */
+  queryClientId?: string
+
 }

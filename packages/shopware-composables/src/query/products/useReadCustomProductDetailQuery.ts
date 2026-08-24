@@ -1,7 +1,7 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
 import type { MaybeRef } from 'vue'
 import { unref } from 'vue'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { productKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import { relativizeSeoUrl } from '../../util/url'
@@ -37,5 +37,5 @@ export function useReadCustomProductDetailQuery(
   seoUrl: MaybeRef<string>,
   body?: OperationOptions<typeof readCustomProductDetailOperation, 'params'>,
 ) {
-  return useQuery(useReadCustomProductDetailOptions(seoUrl, body))
+  return useQuery(useReadCustomProductDetailOptions(seoUrl, body), useShopwareVueQueryClient())
 }

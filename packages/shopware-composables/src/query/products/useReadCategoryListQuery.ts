@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { categoryKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -24,5 +24,5 @@ export const useReadCategoryListQueryOptions = function useReadCategoryListQuery
 }
 
 export function useReadCategoryListQuery(options?: OperationOptions<typeof readCategoryListOperation>) {
-  return useQuery(useReadCategoryListQueryOptions(options))
+  return useQuery(useReadCategoryListQueryOptions(options), useShopwareVueQueryClient())
 }

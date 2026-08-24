@@ -1,5 +1,5 @@
 import type { MutationOptions, QueryKey, UseMutationOptions } from '@tanstack/vue-query'
-import { useQueryClient } from '@tanstack/vue-query'
+import { useShopwareVueQueryClient } from '../inject'
 import { unref } from 'vue'
 
 // https://tanstack.com/query/latest/docs/framework/vue/guides/optimistic-updates#via-the-cache
@@ -8,7 +8,7 @@ export function useOptimistic<CacheValue, UpdateValue>(
   updateFn: (newValue: UpdateValue, oldValue: CacheValue) => CacheValue,
   options?: UseMutationOptions<unknown, unknown, UpdateValue, unknown>,
 ) {
-  const queryClient = useQueryClient()
+  const queryClient = useShopwareVueQueryClient()
 
   return {
     onMutate: async (newValue: UpdateValue) => {

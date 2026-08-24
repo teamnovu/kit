@@ -41,6 +41,7 @@ export class ShopwareClient<Operations> extends EventEmitter {
     this.includeSeoUrls = options.includeSeoUrls ?? this.options.includeSeoUrls
     this.reflectContextToken = options.reflectContextToken ?? this.options.reflectContextToken
     this.headers = options.headers ?? this.options.headers
+    this.queryClientId = options.queryClientId ?? this.options.queryClientId
   }
 
   set requestInitDefaults(defaults: RequestInit | undefined) {
@@ -122,6 +123,18 @@ export class ShopwareClient<Operations> extends EventEmitter {
 
   get headers() {
     return this.options.headers
+  }
+
+  set queryClientId(queryClientId: string | undefined) {
+    if (queryClientId && typeof queryClientId !== 'string') {
+      throw new Error('Invalid queryClientId: If provided, it must be a string.')
+    }
+
+    this.options.queryClientId = queryClientId
+  }
+
+  get queryClientId() {
+    return this.options.queryClientId
   }
 
   private parseOperation(operation: keyof Operations & string): {

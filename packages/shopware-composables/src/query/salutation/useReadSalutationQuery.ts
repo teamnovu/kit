@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { salutationKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -26,6 +26,6 @@ export const useReadSalutationQueryOptions = function useReadSalutationQueryOpti
 }
 
 export function useReadSalutationQuery(options?: OperationOptions<typeof readSalutationOperation>) {
-  return useQuery(useReadSalutationQueryOptions(options))
+  return useQuery(useReadSalutationQueryOptions(options), useShopwareVueQueryClient())
 }
 

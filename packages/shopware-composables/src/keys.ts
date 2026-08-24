@@ -1,15 +1,19 @@
 import type { MaybeRef } from 'vue'
 
+export const shopwareKeys = {
+  all: () => ['shopware'] as const,
+}
+
 export const contextKeys = {
-  all: () => ['context'] as const,
+  all: () => [...shopwareKeys.all(), 'context'] as const,
 }
 
 export const languageKey = {
-  all: () => ['language'] as const,
+  all: () => [...shopwareKeys.all(), 'language'] as const,
 }
 
 export const categoryKeys = {
-  all: () => ['category'] as const,
+  all: () => [...shopwareKeys.all(), 'category'] as const,
   lists: () => [...categoryKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [
@@ -21,7 +25,7 @@ export const categoryKeys = {
     ] as const,
 }
 export const navigationKeys = {
-  all: () => ['navigation'] as const,
+  all: () => [...shopwareKeys.all(), 'navigation'] as const,
   lists: () => [...navigationKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [
@@ -45,7 +49,7 @@ export const navigationKeys = {
 }
 
 export const productKeys = {
-  all: () => ['product'] as const,
+  all: () => [...shopwareKeys.all(), 'product'] as const,
   lists: () => [...productKeys.all(), 'list'] as const,
   list: (url: MaybeRef<string>, body: MaybeRef<unknown>) =>
     [
@@ -100,17 +104,17 @@ export const productKeys = {
 }
 
 export const cartKeys = {
-  get: () => ['cart'] as const,
+  get: () => [...shopwareKeys.all(), 'cart'] as const,
 }
 
 export const customerKeys = {
-  all: () => ['customer'] as const,
-  detail: (body: MaybeRef<unknown>) => ['customer', { body }] as const,
-  imitateLogin: (body: MaybeRef<unknown>) => ['customer', 'imitateLogin', { body }] as const,
+  all: () => [...shopwareKeys.all(), 'customer'] as const,
+  detail: (body: MaybeRef<unknown>) => [...customerKeys.all(), { body }] as const,
+  imitateLogin: (body: MaybeRef<unknown>) => [...customerKeys.all(), 'imitateLogin', { body }] as const,
 }
 
 export const addressKeys = {
-  all: () => ['address'] as const,
+  all: () => [...shopwareKeys.all(), 'address'] as const,
   lists: () => [...addressKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [
@@ -125,7 +129,7 @@ export const addressKeys = {
 }
 
 export const shippingKeys = {
-  all: () => ['shippingMethod'] as const,
+  all: () => [...shopwareKeys.all(), 'shippingMethod'] as const,
   lists: () => [...shippingKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [
@@ -138,7 +142,7 @@ export const shippingKeys = {
 }
 
 export const paymentKeys = {
-  all: () => ['paymentMethod'] as const,
+  all: () => [...shopwareKeys.all(), 'paymentMethod'] as const,
   lists: () => [...paymentKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [
@@ -150,7 +154,7 @@ export const paymentKeys = {
 }
 
 export const orderKeys = {
-  all: () => ['order'] as const,
+  all: () => [...shopwareKeys.all(), 'order'] as const,
   lists: () => [...orderKeys.all(), 'list'] as const,
   details: () => [...orderKeys.all(), 'detail'] as const,
   detail: (body: MaybeRef<unknown>) =>
@@ -164,7 +168,7 @@ export const orderKeys = {
 }
 
 export const seoUrlKeys = {
-  all: () => ['seoUrl'] as const,
+  all: () => [...shopwareKeys.all(), 'seoUrl'] as const,
   lists: () => [...seoUrlKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [
@@ -177,7 +181,7 @@ export const seoUrlKeys = {
 }
 
 export const salutationKeys = {
-  all: () => ['salutation'] as const,
+  all: () => [...shopwareKeys.all(), 'salutation'] as const,
   lists: () => [...salutationKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [
@@ -190,7 +194,7 @@ export const salutationKeys = {
 }
 
 export const countryKeys = {
-  all: () => ['country'] as const,
+  all: () => [...shopwareKeys.all(), 'country'] as const,
   lists: () => [...countryKeys.all(), 'list'] as const,
   list: (body: MaybeRef<unknown>) =>
     [

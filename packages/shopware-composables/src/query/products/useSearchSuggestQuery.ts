@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { productKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -27,5 +27,5 @@ export function useSearchSuggestQueryOptions(
 export function useSearchSuggestQuery(
   body?: OperationOptions<typeof searchSuggestOperation, 'params'>,
 ) {
-  return useQuery(useSearchSuggestQueryOptions(body))
+  return useQuery(useSearchSuggestQueryOptions(body), useShopwareVueQueryClient())
 }

@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { shippingKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -25,5 +25,5 @@ export function useReadShippingMethodQueryOptions(
 export function useReadShippingMethodQuery(
   options?: OperationOptions<typeof readShippingMethodOperation>,
 ) {
-  return useQuery(useReadShippingMethodQueryOptions(options))
+  return useQuery(useReadShippingMethodQueryOptions(options), useShopwareVueQueryClient())
 }

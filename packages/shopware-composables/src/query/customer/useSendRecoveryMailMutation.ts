@@ -1,7 +1,7 @@
 import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
@@ -24,5 +24,5 @@ export function useSendRecoveryMailMutation(
     onSuccess: async (data, variables, context) => {
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
-  })
+  }, useShopwareVueQueryClient())
 }

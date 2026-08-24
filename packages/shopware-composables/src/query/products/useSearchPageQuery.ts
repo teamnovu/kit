@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { productKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -27,5 +27,5 @@ export function useSearchPageQueryOptions(
 export function useSearchPageQuery(
   body?: OperationOptions<typeof searchPageOperation, 'params'>,
 ) {
-  return useQuery(useSearchPageQueryOptions(body))
+  return useQuery(useSearchPageQueryOptions(body), useShopwareVueQueryClient())
 }

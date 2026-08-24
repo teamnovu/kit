@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query'
-import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { productKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -34,5 +34,5 @@ export function useReadProductDetailQuery(
   productId: MaybeRef<string>,
   body?: OperationOptions<typeof readProductDetailOperation, 'params'>,
 ) {
-  return useQuery(useReadProductDetailQueryOptions(productId, body))
+  return useQuery(useReadProductDetailQueryOptions(productId, body), useShopwareVueQueryClient())
 }
