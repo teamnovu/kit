@@ -23,8 +23,7 @@ jobs:
 
   # Build packages and docs
   build:
-    runs-on:
-      labels: fast-boi
+    runs-on: ubuntu-latest
     name: Build
     steps:
       - name: Checkout
