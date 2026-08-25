@@ -83,6 +83,58 @@ import { VueQueryPlugin } from '@tanstack/vue-query'
 app.use(VueQueryPlugin)
 ```
 
+### 3. Dedicated Shopware QueryClient (optional)
+
+To keep shopware queries out of your app's default QueryClient (e.g. because that one
+is dehydrated/hydrated separately), provide a second QueryClient under a
+`queryClientId` and set the same id on the `ShopwareClient`:
+
+```typescript
+import { QueryClient, VUE_QUERY_CLIENT } from '@tanstack/vue-query'
+
+const shopwareQueryClient = new QueryClient()
+
+const client = new ShopwareClient({
+  // ...
+  queryClientId: 'shopware',
+})
+
+app.provide(`${VUE_QUERY_CLIENT}:shopware`, shopwareQueryClient)
+```
+
+All composables in this package resolve the right client automatically via
+`useShopwareVueQueryClient()`. For app code, use the shopware-bound variants of
+the tanstack composables instead of passing the client by hand:
+
+```typescript
+const { data } = useShopwareQuery(useReadCartQueryOptions())
+```
+
+Available: `useShopwareQuery`, `useShopwareInfiniteQuery`, `useShopwareQueries`,
+`useShopwareMutation`, `useShopwareIsFetching`, `useShopwareIsMutating`,
+`useShopwareMutationState`. The imperative QueryClient API (`fetchQuery`,
+`ensureQueryData`, `invalidateQueries`, `setQueryData`, ...) needs no wrappers —
+those are methods on the client returned by `useShopwareVueQueryClient()`, so
+they are always bound to the right client.
+
+Calling plain `useQuery(shopwareOptions)` without a client silently lands the
+query on the default client. To
+turn that mistake into an immediate error, install `NonShopwareQueryCache` on the
+default client — it rejects every query key rooted in the `shopware` namespace:
+
+```typescript
+import { NonShopwareQueryCache } from '@teamnovu/kit-shopware-composables'
+
+const defaultQueryClient = new QueryClient({
+  queryCache: new NonShopwareQueryCache(),
+})
+
+// or, to log instead of throw (e.g. in production):
+new NonShopwareQueryCache({
+  onShopwareKey: queryKey => console.error('Shopware query on default client', queryKey),
+})
+```
+
 ## Query Composables
 
 ### Product Queries

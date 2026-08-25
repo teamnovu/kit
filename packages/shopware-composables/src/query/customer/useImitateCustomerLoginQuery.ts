@@ -1,5 +1,6 @@
-import { queryOptions, useQuery } from '@tanstack/vue-query'
-import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
+import { queryOptions } from '@tanstack/vue-query'
+import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { customerKeys } from '../../keys'
 import { unrefOptions } from '../../util'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -24,5 +25,5 @@ export function useImitateCustomerLoginQueryOptions(
 export function useImitateCustomerLoginQuery(
   options?: OperationOptions<typeof imitateCustomerLoginKey>,
 ) {
-  return useQuery(useImitateCustomerLoginQueryOptions(options), useShopwareVueQueryClient())
+  return useShopwareQuery(useImitateCustomerLoginQueryOptions(options))
 }

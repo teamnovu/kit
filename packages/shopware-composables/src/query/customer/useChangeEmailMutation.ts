@@ -1,9 +1,10 @@
-import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { contextKeys, customerKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
+import { useShopwareMutation } from '../../util/useShopwareQuery'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
 const changeEmailOperation = 'changeEmail post /account/change-email' satisfies OperationKey
@@ -18,7 +19,7 @@ export function useChangeEmailMutation(
   const client = useShopwareQueryClient()
   const queryClient = useShopwareVueQueryClient()
 
-  return useMutation({
+  return useShopwareMutation({
     ...mutationOptions,
     mutationFn: async (options: OperationOptions<typeof changeEmailOperation>) => {
       return client.query(changeEmailOperation, unrefOptions(options))
@@ -29,5 +30,5 @@ export function useChangeEmailMutation(
 
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
-  }, queryClient)
+  })
 }

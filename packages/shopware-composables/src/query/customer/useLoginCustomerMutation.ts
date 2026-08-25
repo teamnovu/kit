@@ -1,8 +1,9 @@
-import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { cartKeys, contextKeys, customerKeys } from '../../keys'
+import { useShopwareMutation } from '../../util/useShopwareQuery'
 import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 
 const loginCustomerOperation = 'loginCustomer post /account/login' satisfies OperationKey
@@ -17,7 +18,7 @@ export function useLoginCustomerMutation(
   const client = useShopwareQueryClient()
   const queryClient = useShopwareVueQueryClient()
 
-  return useMutation({
+  return useShopwareMutation({
     ...mutationOptions,
     mutationFn: async (body: OperationBody<typeof loginCustomerOperation>) => {
       const response = await client.queryRaw(loginCustomerOperation, {
@@ -41,5 +42,5 @@ export function useLoginCustomerMutation(
 
       await unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, context)
     },
-  }, queryClient)
+  })
 }

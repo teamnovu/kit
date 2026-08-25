@@ -1,7 +1,8 @@
-import { queryOptions, useQuery } from '@tanstack/vue-query'
+import { queryOptions } from '@tanstack/vue-query'
 import type { MaybeRef } from 'vue'
 import { unref } from 'vue'
-import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
+import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { productKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import { relativizeSeoUrl } from '../../util/url'
@@ -37,5 +38,5 @@ export function useReadCompactProductListingQuery(
   seoUrl: MaybeRef<string>,
   options?: OperationOptions<typeof readListingOperation, 'params'>,
 ) {
-  return useQuery(useReadCompactProductListingQueryOptions(seoUrl, options), useShopwareVueQueryClient())
+  return useShopwareQuery(useReadCompactProductListingQueryOptions(seoUrl, options))
 }

@@ -1,8 +1,9 @@
-import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
+import { useShopwareQueryClient } from '../../inject'
 import { unrefOptions } from '../../util/unrefOptions'
+import { useShopwareMutation } from '../../util/useShopwareQuery'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
 const sendRecoveryMailOperation = 'sendRecoveryMail post /account/recovery-password' satisfies OperationKey
@@ -16,7 +17,7 @@ export function useSendRecoveryMailMutation(
 ) {
   const client = useShopwareQueryClient()
 
-  return useMutation({
+  return useShopwareMutation({
     ...mutationOptions,
     mutationFn: async (options: OperationOptions<typeof sendRecoveryMailOperation>) => {
       return client.query(sendRecoveryMailOperation, unrefOptions(options))
@@ -24,5 +25,5 @@ export function useSendRecoveryMailMutation(
     onSuccess: async (data, variables, context) => {
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
-  }, useShopwareVueQueryClient())
+  })
 }

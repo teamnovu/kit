@@ -1,6 +1,7 @@
-import { queryOptions, useQuery } from '@tanstack/vue-query'
+import { queryOptions } from '@tanstack/vue-query'
 import { computed } from 'vue'
-import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
+import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { paymentKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -26,5 +27,5 @@ export function useReadPaymentMethodQueryOptions(
 export function useReadPaymentMethodQuery(
   options?: OperationOptions<typeof readPaymentMethodOperation>,
 ) {
-  return useQuery(useReadPaymentMethodQueryOptions(options), useShopwareVueQueryClient())
+  return useShopwareQuery(useReadPaymentMethodQueryOptions(options))
 }

@@ -1,8 +1,9 @@
-import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { cartKeys, paymentKeys, shippingKeys } from '../../keys'
+import { useShopwareMutation } from '../../util/useShopwareQuery'
 import type {
   OperationBody,
   OperationKey,
@@ -30,7 +31,7 @@ export function useAddLineItemMutation(
   const client = useShopwareQueryClient()
   const queryClient = useShopwareVueQueryClient()
 
-  return useMutation({
+  return useShopwareMutation({
     ...mutationOptions,
     mutationFn: async (body: Body) => {
       return client.query(addCartItemOperation, {
@@ -50,5 +51,5 @@ export function useAddLineItemMutation(
         context,
       )
     },
-  }, queryClient)
+  })
 }

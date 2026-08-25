@@ -1,8 +1,9 @@
-import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { cartKeys, contextKeys, paymentKeys, shippingKeys } from '../../keys'
+import { useShopwareMutation } from '../../util/useShopwareQuery'
 import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 
 const updateContextOperation = 'updateContext patch /context' satisfies OperationKey
@@ -17,7 +18,7 @@ export function useUpdateContextMutation(
   const client = useShopwareQueryClient()
   const queryClient = useShopwareVueQueryClient()
 
-  return useMutation({
+  return useShopwareMutation({
     ...mutationOptions,
     mutationFn: async (body: OperationBody<typeof updateContextOperation>) => {
       // Prevent race condition by cancelling the query before the mutation is executed
@@ -38,5 +39,5 @@ export function useUpdateContextMutation(
 
       await unref(unref(mutationOptions)?.onSuccess)?.(newContext, variables, context)
     },
-  }, queryClient)
+  })
 }

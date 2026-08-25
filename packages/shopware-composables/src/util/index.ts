@@ -1,3 +1,5 @@
+export * from './nonShopwareQueryCache'
 export * from './unrefOptions'
 export * from './url'
 export * from './useOptimistic'
+export * from './useShopwareQuery'

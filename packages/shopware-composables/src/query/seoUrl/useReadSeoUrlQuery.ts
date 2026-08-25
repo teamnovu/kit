@@ -1,5 +1,6 @@
-import { queryOptions, useQuery } from '@tanstack/vue-query'
-import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
+import { queryOptions } from '@tanstack/vue-query'
+import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { seoUrlKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -26,6 +27,6 @@ export const useReadSeoUrlQueryOptions = function useReadSeoUrlQueryOptions(
 }
 
 export function useReadSeoUrlQuery(options?: OperationOptions<typeof readSeoUrlOperation>) {
-  return useQuery(useReadSeoUrlQueryOptions(options), useShopwareVueQueryClient())
+  return useShopwareQuery(useReadSeoUrlQueryOptions(options))
 }
 

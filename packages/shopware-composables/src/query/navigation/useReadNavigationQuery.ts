@@ -1,6 +1,7 @@
-import { queryOptions, useQuery } from '@tanstack/vue-query'
+import { queryOptions } from '@tanstack/vue-query'
 import { unref, type MaybeRef } from 'vue'
-import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
+import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { navigationKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -39,5 +40,5 @@ export function useReadNavigationQuery(
   rootId: MaybeRef<string>,
   options?: OperationOptions<typeof readNavigationOperation>,
 ) {
-  return useQuery(useReadNavigationQueryOptions(activeId, rootId, options), useShopwareVueQueryClient())
+  return useShopwareQuery(useReadNavigationQueryOptions(activeId, rootId, options))
 }

@@ -1,8 +1,9 @@
-import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { cartKeys, paymentKeys, shippingKeys } from '../../keys'
+import { useShopwareMutation } from '../../util/useShopwareQuery'
 import type {
   OperationBody,
   OperationKey,
@@ -21,7 +22,7 @@ export function useRemoveLineItemMutation(
   const client = useShopwareQueryClient()
   const queryClient = useShopwareVueQueryClient()
 
-  return useMutation({
+  return useShopwareMutation({
     ...mutationOptions,
     mutationFn: async (body: OperationBody<typeof removeCartItemOperation>) => {
       return client.query(removeCartItemOperation, {
@@ -41,5 +42,5 @@ export function useRemoveLineItemMutation(
         context,
       )
     },
-  }, queryClient)
+  })
 }

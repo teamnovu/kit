@@ -1,7 +1,8 @@
-import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
-import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
+import { useShopwareQueryClient } from '../../inject'
+import { useShopwareMutation } from '../../util/useShopwareQuery'
 import type { OperationBody, OperationKey, OperationResponse } from '../types/query'
 
 const registerConfirmOperation = 'registerConfirm post /account/register-confirm' satisfies OperationKey
@@ -15,7 +16,7 @@ export function useRegisterConfirmMutation(
 ) {
   const client = useShopwareQueryClient()
 
-  return useMutation({
+  return useShopwareMutation({
     ...mutationOptions,
     mutationFn: async (body: OperationBody<typeof registerConfirmOperation>) => {
       const response = await client.queryRaw(registerConfirmOperation, {
@@ -33,5 +34,5 @@ export function useRegisterConfirmMutation(
     onSuccess: async (newCustomer, variables, context) => {
       await unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, context)
     },
-  }, useShopwareVueQueryClient())
+  })
 }

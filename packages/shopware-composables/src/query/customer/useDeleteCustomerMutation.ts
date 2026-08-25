@@ -1,9 +1,10 @@
-import { useMutation, type UseMutationOptions } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import { unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { cartKeys, contextKeys, customerKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
+import { useShopwareMutation } from '../../util/useShopwareQuery'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 
 const deleteCustomerOperation = 'deleteCustomer delete /account/customer' satisfies OperationKey
@@ -18,7 +19,7 @@ export function useDeleteCustomerMutation(
   const client = useShopwareQueryClient()
   const queryClient = useShopwareVueQueryClient()
 
-  return useMutation({
+  return useShopwareMutation({
     ...mutationOptions,
     mutationFn: async (options?: OperationOptions<typeof deleteCustomerOperation>) => {
       return client.query(deleteCustomerOperation, unrefOptions(options))
@@ -32,5 +33,5 @@ export function useDeleteCustomerMutation(
 
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
     },
-  }, queryClient)
+  })
 }

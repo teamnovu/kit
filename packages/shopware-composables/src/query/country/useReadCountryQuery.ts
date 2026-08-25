@@ -1,5 +1,6 @@
-import { queryOptions, useQuery } from '@tanstack/vue-query'
-import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
+import { queryOptions } from '@tanstack/vue-query'
+import { useShopwareQueryClient } from '../../inject'
+import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { countryKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
 import type { OperationKey, OperationOptions } from '../types/query'
@@ -26,6 +27,6 @@ export const useReadCountryQueryOptions = function useReadCountryQueryOptions(
 }
 
 export function useReadCountryQuery(options?: OperationOptions<typeof readCountryOperation>) {
-  return useQuery(useReadCountryQueryOptions(options), useShopwareVueQueryClient())
+  return useShopwareQuery(useReadCountryQueryOptions(options))
 }
 
