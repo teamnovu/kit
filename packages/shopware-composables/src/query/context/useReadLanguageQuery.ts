@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/vue-query'
+import { shopwareQueryOptions } from '../../util/shopwareQueryOptions'
 import { useShopwareQueryClient } from '../../inject'
 import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { languageKey } from '../../keys'
@@ -12,7 +12,7 @@ export function useReadLanguageQueryOptions(
 ) {
   const client = useShopwareQueryClient()
 
-  return queryOptions({
+  return shopwareQueryOptions({
     queryKey: languageKey.all(),
     queryFn: ({ signal }) =>
       client.query(readLanguageOperation, {

@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/vue-query'
+import { shopwareQueryOptions } from '../../util/shopwareQueryOptions'
 import { useShopwareQueryClient } from '../../inject'
 import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { categoryKeys } from '../../keys'
@@ -13,7 +13,7 @@ export const useReadCategoryListQueryOptions = function useReadCategoryListQuery
   const client = useShopwareQueryClient()
   const queryKey = categoryKeys.list(options)
 
-  return queryOptions({
+  return shopwareQueryOptions({
     queryKey,
     queryFn: async ({ signal }) => {
       return client.query(readCategoryListOperation, {

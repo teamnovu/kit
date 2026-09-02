@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/vue-query'
+import { shopwareQueryOptions } from '../../util/shopwareQueryOptions'
 import { useShopwareQueryClient } from '../../inject'
 import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { cartKeys } from '../../keys'
@@ -13,7 +13,7 @@ export function useReadCartQueryOptions(
   const client = useShopwareQueryClient()
   const queryKey = cartKeys.get()
 
-  return queryOptions({
+  return shopwareQueryOptions({
     queryKey,
     queryFn: async ({ signal }) => {
       return client.query(readCartOperation, {

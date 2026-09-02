@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/vue-query'
+import { shopwareQueryOptions } from '../../util/shopwareQueryOptions'
 import { useShopwareQueryClient } from '../../inject'
 import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { orderKeys } from '../../keys'
@@ -13,7 +13,7 @@ export function useReadOrderQueryOptions(
   const client = useShopwareQueryClient()
   const queryKey = orderKeys.detail(options)
 
-  return queryOptions({
+  return shopwareQueryOptions({
     queryKey,
     queryFn: async ({ signal }) => {
       const opts = unrefOptions(options)

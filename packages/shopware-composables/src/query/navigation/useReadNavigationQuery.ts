@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/vue-query'
+import { shopwareQueryOptions } from '../../util/shopwareQueryOptions'
 import { unref, type MaybeRef } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
 import { useShopwareQuery } from '../../util/useShopwareQuery'
@@ -16,7 +16,7 @@ export const useReadNavigationQueryOptions = function useReadNavigationQueryOpti
   const client = useShopwareQueryClient()
   const queryKey = navigationKeys.detail(activeId, rootId, options)
 
-  return queryOptions({
+  return shopwareQueryOptions({
     queryKey,
     queryFn: async ({ signal }) => {
       const unrefdActiveId = unref(activeId)

@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/vue-query'
+import { shopwareQueryOptions } from '../../util/shopwareQueryOptions'
 import type { MaybeRef } from 'vue'
 import { unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
@@ -18,7 +18,7 @@ export function useReadCompactProductListingQueryOptions(
   const client = useShopwareQueryClient()
   const queryKey = productKeys.list(seoUrl, options)
 
-  return queryOptions({
+  return shopwareQueryOptions({
     queryKey,
     queryFn: async ({ signal }) => {
       const opts = unrefOptions(options)

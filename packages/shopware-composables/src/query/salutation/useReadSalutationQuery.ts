@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/vue-query'
+import { shopwareQueryOptions } from '../../util/shopwareQueryOptions'
 import { useShopwareQueryClient } from '../../inject'
 import { useShopwareQuery } from '../../util/useShopwareQuery'
 import { salutationKeys } from '../../keys'
@@ -13,7 +13,7 @@ export const useReadSalutationQueryOptions = function useReadSalutationQueryOpti
   const client = useShopwareQueryClient()
   const queryKey = salutationKeys.list(options)
 
-  return queryOptions({
+  return shopwareQueryOptions({
     queryKey,
     queryFn: async ({ signal }) => {
       const unrefedOptions = unrefOptions(options)

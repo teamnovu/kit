@@ -1,4 +1,6 @@
 import type {
+  AnyDataTag,
+  DataTag,
   DefaultError,
   DefinedInitialDataInfiniteOptions,
   DefinedInitialQueryOptions,
@@ -38,6 +40,20 @@ import { useShopwareVueQueryClient } from '../inject'
  * methods on `useShopwareVueQueryClient()` directly.
  */
 
+// Fast path for options built via shopwareQueryOptions: the result type comes
+// straight from the DataTag on the queryKey, so TS skips inferring the four
+// query generics from the full options shape. That inference walks every
+// option property through recursive types like MaybeRefDeep and blows up in
+// TS2589 against large generated Operations types — also when the options are
+// spread to override e.g. `enabled`.
+export function useShopwareQuery<
+  TOptions extends { queryKey: AnyDataTag },
+>(
+  options: TOptions,
+): UseQueryReturnType<
+  TOptions['queryKey'] extends DataTag<unknown, infer TData, any> ? TData : never,
+  TOptions['queryKey'] extends DataTag<unknown, any, infer TError> ? TError : DefaultError
+>
 export function useShopwareQuery<
   TQueryFnData = unknown,
   TError = DefaultError,

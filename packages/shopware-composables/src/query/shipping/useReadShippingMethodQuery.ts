@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/vue-query'
+import { shopwareQueryOptions } from '../../util/shopwareQueryOptions'
 import { computed } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
 import { useShopwareQuery } from '../../util/useShopwareQuery'
@@ -14,7 +14,7 @@ export function useReadShippingMethodQueryOptions(
   const client = useShopwareQueryClient()
   const queryKey = shippingKeys.list(computed(() => unrefOptions(options)?.body))
 
-  return queryOptions({
+  return shopwareQueryOptions({
     queryKey,
     queryFn: ({ signal }) => client.query(readShippingMethodOperation, {
       ...unrefOptions(options),
