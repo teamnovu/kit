@@ -165,8 +165,8 @@ export const mutationFn = async <T>(url: string, init?: CustomFetchInit): Promis
 Note the order in both files: the caller's `headers` are spread last, so a per-endpoint or
 per-call header wins over the transport's defaults. Spread them first and every override in the
 app silently disappears. The spread also assumes plain-object headers, which is what endpoint
-`options` carry; compose with `new Headers()` instead if your app passes `Headers` instances
-around, since spreading one of those yields nothing.
+`options` carry. If your app passes `Headers` instances around, compose with `new Headers()`
+instead: spreading one of those yields nothing.
 
 ## Register the transport
 
@@ -196,7 +196,7 @@ app.mount('#app')
 ```
 
 Module level rather than `app.provide` is the deliberate choice for a client-only SPA: endpoints
-called outside `setup()` — router guards, bootstrap prefetching, async handlers — have no injection
+called outside `setup()` (router guards, bootstrap prefetching, async handlers) have no injection
 context and would otherwise find no transport. Under SSR the tradeoff flips, and the transport has
 to stay request scoped; [Transport](./index.md#transport) shows the `app.provide(transportKey, …)`
 variant.
@@ -281,8 +281,8 @@ const publicProjects = query<ProjectCollection>()
 
 Overriding a value is all a spread can do, though. Leaving the header out of the request entirely
 is a transport concern: an object spread only ever sets a key, and a header set to `undefined`
-reaches `fetch` as the literal string `undefined`. So agree on a sentinel and honour it where the
-headers are assembled — an empty value reads well as "do not send this one":
+reaches `fetch` as the literal string `undefined`. So pick a sentinel and honour it where the
+headers are assembled. An empty value says "do not send this one" clearly enough:
 
 ```ts
 // src/utils/fetch/queryFn.ts
@@ -348,7 +348,7 @@ export default defineConfig(() => ({
 
 The plugin regenerates on dev server start and on every change to those config directories. Its
 output is generated code: add the `outputDirectory` to `.gitignore`, and make sure it is covered by
-your tsconfig `include`, or the union resolves to `string` again with nothing to explain why.
+your tsconfig `include`, or the union quietly resolves to `string` again.
 
 ## File layout
 

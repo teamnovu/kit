@@ -4,8 +4,8 @@ Define each endpoint of your API once, together with its URL, its request and re
 query key and its invalidation rules. Then spread the result into TanStack Query's `useQuery` and
 `useMutation`.
 
-Install with `pnpm add @teamnovu/kit-operations`. Wiring it into an existing app — query client,
-transport, endpoints module — is a walkthrough of its own: [Setup](./setup.md).
+Install with `pnpm add @teamnovu/kit-operations`. Wiring it into an existing app is a walkthrough
+of its own: [Setup](./setup.md).
 
 `vue` and `@tanstack/vue-query` are peer dependencies. Resource tracking assumes an API Platform
 backend (JSON-LD), but the HTTP layer stays yours, see [Transport](#transport).
@@ -96,9 +96,8 @@ app.provide(transportKey, { query: makeQueryFn, mutation: mutationFn })
 
 A provided transport reaches only the call sites where Vue has an injection context: component
 `setup()`, and whatever you wrap in that request's `app.runWithContext()`. The call sites the module
-transport exists for — router guards, bootstrap prefetching, async handlers — have neither, so under
-SSR they need the wrapper, or they fall through to the module transport and throw
-`[operations] No transport provided.`:
+transport exists for have neither, so under SSR they need the wrapper. Without it they fall through
+to the module transport and throw `[operations] No transport provided.`:
 
 ```ts
 const projects = app.runWithContext(() => endpoints.project.list())
@@ -140,8 +139,8 @@ export function makeQueryFn<T>(
 }
 ```
 
-`appendQueryParams` comes from the package. The package hands the query params to the transport as
-a plain object, and the helper turns them into the query string API Platform filters expect:
+`appendQueryParams` comes from the package. Query params reach the transport as a plain object, and
+the helper turns them into the query string API Platform filters expect:
 
 ```ts
 appendQueryParams('/api/projects', {
@@ -155,8 +154,8 @@ appendQueryParams('/api/projects', {
 
 Arrays become `key[]`, nested objects become `key[nested]`, and `null` or `undefined` values are
 left out entirely. A url that already carries a query string is extended with `&` instead of `?`.
-Serializing differently stays possible: the helper is a plain function, so a transport that talks to
-another backend can ignore it and build the query string itself.
+The helper is a plain function, so a transport that talks to another backend can ignore it and build
+the query string itself.
 
 ### `mutation`
 
@@ -189,12 +188,12 @@ export const mutationFn = async <T>(url: string, init?: CustomFetchInit): Promis
 }
 ```
 
-Both halves spread the caller's `headers` last, so a per-endpoint or per-call header wins over the
-transport's defaults. Both also assume those headers are a plain object, which is what endpoint
-`options` carry in practice. `RequestInit` allows more than that: a `Headers` instance keeps its
-entries internally rather than as own properties, so spreading one contributes nothing and the
-defaults are all that is left, and an entry list spreads to numeric keys. Compose with
-`new Headers()` in the transport if your app passes either of those around.
+In both halves the caller's `headers` land after the defaults, so an endpoint or a call site can
+override one. Both also assume those headers are a plain object, which is what endpoint `options`
+carry in practice. `RequestInit` permits two other shapes, and neither survives a spread.
+A `Headers` instance keeps its entries internally rather than as own properties, so spreading one
+contributes nothing and the defaults are all that is left. An entry list spreads to numeric keys.
+Compose with `new Headers()` in the transport if your app passes either around.
 
 An endpoint invoked before a transport is registered throws an error that says exactly that.
 
@@ -221,11 +220,11 @@ const enums = query<EnumCollection>()
   }))
 ```
 
-Three options are not free for the taking. `queryKey` is owned by the builder, which derives it
-from the parameters and the `createEndpoints` nesting, so the factory cannot return one at all. A
-`queryFn` is only used by endpoints without a `.url()`, since a URL-bearing endpoint fetches through
-the transport. `enabled` is kept, but combined with the builder's own check that every path param is
-present, see [Parameters](#parameters).
+`queryKey` belongs to the builder, which derives it from the parameters and the `createEndpoints`
+nesting, so the factory cannot return one at all. A `queryFn` only runs on endpoints without a
+`.url()`, since a URL-bearing endpoint fetches through the transport. `enabled` is kept, but
+combined with the builder's own check that every path param is present, see
+[Parameters](#parameters).
 
 That factory receives the parameters from the call site, which is what you want for `select` or a
 custom `enabled`. A section and its properties can each be a ref, so unwrap twice before reading:
@@ -282,6 +281,11 @@ An endpoint takes a single parameter bag with up to three sections:
 | `queryParams` | the query string | each property may be a ref |
 | `body` | the request body | reactive as a whole |
 
+Those are a query's rules. A mutation reads its bag once, at `mutate()` time. `params` may still
+hold refs, but `body` has to be a plain value: the input type requires one, and the mutation half
+hands the body to the transport as it comes. A ref that slips past the types is serialized as the
+ref object instead of the payload.
+
 ```ts
 const { data } = useQuery(endpoints.project.list({
   queryParams: computed(() => ({
@@ -336,7 +340,8 @@ useMutation(endpoints.project.update({ headers: { 'X-Custom-QR-Auth': authToken 
 ## Calling mutations
 
 A mutation only takes `params` and `body`, with `params` resolved into the URL and `{ method, body, ...options }`
-passed to the transport. `body` is typed as the endpoint's input type:
+passed to the transport. `body` is typed as the endpoint's input type and is never unwrapped, so
+build the payload from your refs instead of handing one over:
 
 ```ts
 const { mutateAsync: createSubproject } = useMutation(endpoints.subproject.create())
@@ -380,7 +385,6 @@ already resolved: `queryKey` keeps your refs, because `useQuery` needs it reacti
 Resources are the other half, and usually the more practical one in `onSuccess`, where you rarely
 know which query keys are holding a copy of the project you just changed. Every response is scanned
 for JSON-LD `@type` and `@id` pairs, and the query key is registered for each resource it contains.
-Do note that URL-less endpoints that supply a custom `queryFn` are not scanned for `@type`/`@id` resources.
 `invalidateResources` then invalidates every cached query that has seen that resource:
 
 ```ts
@@ -400,6 +404,9 @@ const updateProject = mutation<Project, ProjectInput>()
 ```
 
 Invalidating a plain type also catches every instance-specific entry of that type.
+
+An endpoint without a `.url()` runs its own `queryFn` and is never scanned, so nothing it returns
+registers.
 
 A collection that comes back empty carries no resources to register, so declare the type up front
 with `.resources()`. The endpoint is then invalidated even if it has only ever returned an empty
@@ -468,7 +475,7 @@ one and everything silently falls back to `string`, with no error and nothing to
 
 Two requirements the snippet cannot show: the file has to sit inside your tsconfig `include`, and
 it has to be a module rather than an ambient script, which is what the `import` and the trailing
-`export {}` are for. Nothing of this exists at runtime, it is types only.
+`export {}` are for. None of it exists at runtime. It is types only.
 
 ## Outside of components
 
