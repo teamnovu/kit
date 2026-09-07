@@ -4,7 +4,7 @@ type QueryParamEntry = [key: string, value: string]
  * Expands a single query parameter into the bracket notation API Platform filters expect:
  * arrays become `key[]`, nested objects become `key[nested]`, and `null`/`undefined` drop out.
  */
-function toQueryParamEntries(key: string, value: unknown): QueryParamEntry[] {
+function toQueryParamEntries(key: string, value: unknown, parents: Array<string> = []): QueryParamEntry[] {
   if (value === undefined || value === null) {
     return []
   }
@@ -15,7 +15,8 @@ function toQueryParamEntries(key: string, value: unknown): QueryParamEntry[] {
 
   if (typeof value === 'object') {
     return Object.entries(value)
-      .flatMap(([nestedKey, nestedValue]) => toQueryParamEntries(`${key}[${nestedKey}]`, nestedValue))
+      .filter(([nestedKey, _nestedValue]) => !parents.includes(nestedKey))
+      .flatMap(([nestedKey, nestedValue]) => toQueryParamEntries(`${key}[${nestedKey}]`, nestedValue, [...parents, nestedKey]))
   }
 
   return [[key, String(value)]]

@@ -55,4 +55,12 @@ describe('appendQueryParams', () => {
 
     expect(url).toBe('/api/projects?page=2&name=kit')
   })
+
+  it('prevent indefinite loops', () => {
+    const filter = { name: 'test' } as Record<string, unknown>
+    filter.self = filter
+
+    const url = appendQueryParams('/api/projects', { filter })
+    expect(decodeURIComponent(url)).toBe('/api/projects?filter[name]=test&filter[self][name]=test')
+  })
 })
