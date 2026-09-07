@@ -56,11 +56,40 @@ describe('appendQueryParams', () => {
     expect(url).toBe('/api/projects?page=2&name=kit')
   })
 
-  it('prevent indefinite loops', () => {
+  it('keeps a repeated key name that is not a cycle', () => {
+    const url = appendQueryParams('/api/projects', { filter: { user: { user: 5 } } })
+
+    expect(decodeURIComponent(url)).toBe('/api/projects?filter[user][user]=5')
+  })
+
+  it('drops a value that refers back to itself', () => {
     const filter = { name: 'test' } as Record<string, unknown>
     filter.self = filter
 
     const url = appendQueryParams('/api/projects', { filter })
-    expect(decodeURIComponent(url)).toBe('/api/projects?filter[name]=test&filter[self][name]=test')
+
+    expect(decodeURIComponent(url)).toBe('/api/projects?filter[name]=test')
+  })
+
+  it('drops a cycle that closes through an array', () => {
+    const filter = { name: 'test' } as Record<string, unknown>
+    filter.group = [filter]
+
+    const url = appendQueryParams('/api/projects', { filter })
+
+    expect(decodeURIComponent(url)).toBe('/api/projects?filter[name]=test')
+  })
+
+  it('drops a cycle between two values', () => {
+    const owner = { name: 'ada' } as Record<string, unknown>
+    const project = {
+      name: 'kit',
+      owner,
+    }
+    owner.project = project
+
+    const url = appendQueryParams('/api/projects', { filter: project })
+
+    expect(decodeURIComponent(url)).toBe('/api/projects?filter[name]=kit&filter[owner][name]=ada')
   })
 })

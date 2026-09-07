@@ -3,23 +3,32 @@ type QueryParamEntry = [key: string, value: string]
 /**
  * Expands a single query parameter into the bracket notation API Platform filters expect:
  * arrays become `key[]`, nested objects become `key[nested]`, and `null`/`undefined` drop out.
+ *
+ * `ancestors` holds the objects and arrays on the path to `value`, so a params bag that refers
+ * back to itself drops the repeated reference instead of recursing until the stack overflows.
+ * Identity rather than key names, because two siblings may legitimately carry the same key.
  */
-function toQueryParamEntries(key: string, value: unknown, parents: Array<string> = []): QueryParamEntry[] {
+function toQueryParamEntries(key: string, value: unknown, ancestors: object[] = []): QueryParamEntry[] {
   if (value === undefined || value === null) {
     return []
   }
 
+  if (typeof value !== 'object') {
+    return [[key, String(value)]]
+  }
+
+  if (ancestors.includes(value)) {
+    return []
+  }
+
+  const path = [...ancestors, value]
+
   if (Array.isArray(value)) {
-    return value.flatMap(item => toQueryParamEntries(`${key}[]`, item))
+    return value.flatMap(item => toQueryParamEntries(`${key}[]`, item, path))
   }
 
-  if (typeof value === 'object') {
-    return Object.entries(value)
-      .filter(([nestedKey, _nestedValue]) => !parents.includes(nestedKey))
-      .flatMap(([nestedKey, nestedValue]) => toQueryParamEntries(`${key}[${nestedKey}]`, nestedValue, [...parents, nestedKey]))
-  }
-
-  return [[key, String(value)]]
+  return Object.entries(value)
+    .flatMap(([nestedKey, nestedValue]) => toQueryParamEntries(`${key}[${nestedKey}]`, nestedValue, path))
 }
 
 /**
