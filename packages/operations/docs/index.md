@@ -266,7 +266,7 @@ const { data } = useQuery(endpoints.project.list({
 Refs are unwrapped when the request goes out, and they are part of the query key, so changing a
 parameter refetches.
 
-A query stays disabled as long as one of its path params is still empty, since a missing `:id`
+A query stays disabled as long as one of its path params is still `null`, since a missing `:id`
 would produce a broken URL. Your own `enabled` is combined with that check, so both have to be
 true:
 
@@ -350,6 +350,7 @@ already resolved: `queryKey` keeps your refs, because `useQuery` needs it reacti
 Resources are the other half, and usually the more practical one in `onSuccess`, where you rarely
 know which query keys are holding a copy of the project you just changed. Every response is scanned
 for JSON-LD `@type` and `@id` pairs, and the query key is registered for each resource it contains.
+Do note that URL-less endpoints that supply a custom `queryFn` are not scanned for `@type`/`@id` resources.
 `invalidateResources` then invalidates every cached query that has seen that resource:
 
 ```ts
