@@ -34,6 +34,9 @@ export function appendQueryParams(url: string, queryParams?: Record<string, unkn
     return url
   }
 
-  const separator = url.includes('?') ? '&' : '?'
-  return `${url}${separator}${search}`
+  const fragmentIndex = url.indexOf('#')
+  const baseUrl = fragmentIndex === -1 ? url : url.slice(0, fragmentIndex)
+  const fragment = fragmentIndex === -1 ? '' : url.slice(fragmentIndex)
+  const separator = baseUrl.includes('?') ? '&' : '?'
+  return `${baseUrl}${separator}${search}${fragment}`
 }
