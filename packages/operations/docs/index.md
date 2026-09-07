@@ -174,6 +174,13 @@ export const mutationFn = async <T>(url: string, init?: CustomFetchInit): Promis
 }
 ```
 
+Both halves spread the caller's `headers` last, so a per-endpoint or per-call header wins over the
+transport's defaults. Both also assume those headers are a plain object, which is what endpoint
+`options` carry in practice. `RequestInit` allows more than that: a `Headers` instance keeps its
+entries internally rather than as own properties, so spreading one contributes nothing and the
+defaults are all that is left, and an entry list spreads to numeric keys. Compose with
+`new Headers()` in the transport if your app passes either of those around.
+
 An endpoint invoked before a transport is registered throws an error that says exactly that.
 
 ## Defining endpoints
