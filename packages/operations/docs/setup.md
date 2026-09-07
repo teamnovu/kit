@@ -269,13 +269,48 @@ for cookie auth — belong in the transport. They are written once there and no 
 has to know about them.
 
 The exception is an endpoint that must opt *out* of one. Because the transport spreads the caller's
-headers last, `options` on a single endpoint is enough to override a global default:
+headers last, `options` on a single endpoint is enough to override a global default's value:
+
+```ts
+const publicProjects = query<ProjectCollection>()
+  .url('/api/projects')
+  .build(() => ({
+    options: { headers: { 'X-Tenant': 'public' } },
+  }))
+```
+
+Overriding a value is all a spread can do, though. Leaving the header out of the request entirely
+is a transport concern: an object spread only ever sets a key, and a header set to `undefined`
+reaches `fetch` as the literal string `undefined`. So agree on a sentinel and honour it where the
+headers are assembled — an empty value reads well as "do not send this one":
+
+```ts
+// src/utils/fetch/queryFn.ts
+const withoutOptedOutHeaders = (headers: Record<string, string>) => (
+  Object.fromEntries(Object.entries(headers).filter(([, value]) => value !== ''))
+)
+
+const response = await fetch(appendQueryParams(unref(url), unref(queryParams)), {
+  ...requestOptions,
+  signal: context.signal,
+  headers: withoutOptedOutHeaders({
+    'Accept': 'application/ld+json',
+    'Authorization': `Bearer ${unref(authToken)}`,
+    'X-Tenant': unref(tenant),
+    ...requestOptions?.headers as Record<string, string>,
+  }),
+  body: JSON.stringify(unref(body)),
+})
+```
+
+The mutation half needs the same treatment, since the two compose their headers separately. With
+the rule in place, an endpoint drops the header by setting it to `''`:
 
 ```ts
 const anyIri = query()
   .url(':iri')
   .build(() => ({
-    options: { headers: { 'X-Tenant': 'null' } },
+    options: { headers: { 'X-Tenant': '' } },
   }))
 ```
 

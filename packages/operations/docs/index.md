@@ -189,7 +189,7 @@ const projectDetail = query<Project>()
   .build()
 ```
 
-Pass a factory to `.build()` to add any TanStack query option:
+Pass a factory to `.build()` to add TanStack query options:
 
 ```ts
 const enums = query<EnumCollection>()
@@ -198,6 +198,12 @@ const enums = query<EnumCollection>()
     staleTime: Infinity,
   }))
 ```
+
+Three options are not free for the taking. `queryKey` is owned by the builder, which derives it
+from the parameters and the `createEndpoints` nesting, so the factory cannot return one at all. A
+`queryFn` is only used by endpoints without a `.url()`, since a URL-bearing endpoint fetches through
+the transport. `enabled` is kept, but combined with the builder's own check that every path param is
+present, see [Parameters](#parameters).
 
 That factory receives the parameters from the call site, which is what you want for `select` or a
 custom `enabled`. A section and its properties can each be a ref, so unwrap twice before reading:
@@ -211,7 +217,7 @@ const postalCode = query<PostalCodeResponse>()
   }))
 ```
 
-`.url()` is optional. Without it, bring your own `queryFn`:
+`.url()` is optional. Without it, the factory's `queryFn` is what runs:
 
 ```ts
 const localData = query<Settings>()
@@ -222,7 +228,8 @@ const localData = query<Settings>()
 
 ### Mutations
 
-`mutation<Output, Input>()` works the same way. Mutations default to `POST`, so other verbs go into
+`mutation<Output, Input>()` works the same way, except that `mutationFn` is always the builder's:
+there is no URL-less variant to bring your own. Mutations default to `POST`, so other verbs go into
 `options`:
 
 ```ts
