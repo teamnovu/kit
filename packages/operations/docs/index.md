@@ -91,6 +91,8 @@ The query half is a factory. It receives the resolved request parts and returns 
 `QueryFunction`, so the fetch can read the abort signal when it actually runs:
 
 ```ts
+import { appendQueryParams } from '@teamnovu/kit-operations'
+
 export function makeQueryFn<T>(
   url: MaybeRef<string>,
   queryParams?: MaybeRef<Record<string, unknown> | undefined>,
@@ -114,44 +116,23 @@ export function makeQueryFn<T>(
 }
 ```
 
-`appendQueryParams` is your own helper, not something the package provides. The package hands the
-query params to the transport as a plain object and leaves the serialization to you, because the
-bracket notation API Platform filters expect is a backend-specific concern:
+`appendQueryParams` comes from the package. The package hands the query params to the transport as
+a plain object, and the helper turns them into the query string API Platform filters expect:
 
 ```ts
-function appendQueryParams(url: string, queryParams?: Record<string, unknown>): string {
-  const search = new URLSearchParams()
-
-  const append = (key: string, value: unknown) => {
-    if (value === undefined || value === null) {
-      return
-    }
-
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        append(`${key}[]`, item)
-      }
-      return
-    }
-
-    if (typeof value === 'object') {
-      for (const [nestedKey, nestedValue] of Object.entries(value)) {
-        append(`${key}[${nestedKey}]`, nestedValue)
-      }
-      return
-    }
-
-    search.append(key, String(value))
-  }
-
-  for (const [key, value] of Object.entries(queryParams ?? {})) {
-    append(key, value)
-  }
-
-  const query = search.toString()
-  return query ? `${url}?${query}` : url
-}
+appendQueryParams('/api/projects', {
+  name: 'kit',
+  status: ['open', 'closed'],
+  order: { createdAt: 'desc' },
+})
+// '/api/projects?name=kit&status[]=open&status[]=closed&order[createdAt]=desc'
+// (shown decoded, the brackets are percent-encoded in the actual url)
 ```
+
+Arrays become `key[]`, nested objects become `key[nested]`, and `null` or `undefined` values are
+left out entirely. A url that already carries a query string is extended with `&` instead of `?`.
+Serializing differently stays possible: the helper is a plain function, so a transport that talks to
+another backend can ignore it and build the query string itself.
 
 ### `mutation`
 
@@ -502,4 +483,5 @@ type Project = EndpointOutput<typeof endpoints.project.detail>
 | `invalidateResources()` | invalidates all queries that contain a resource |
 | `setQueryDataWithResources()` | seeds the cache and registers its resources |
 | `toFetchOptions()` / `toLossyQueryOptions()` | adapters for `fetchQuery` and `useQueries` |
+| `appendQueryParams()` | serializes a query params bag onto a url |
 | `getIdFromIRI()`, `mapArrayOfIdFromIRI()`, `mapIdFromIRIByKey()` | IRI helpers |
