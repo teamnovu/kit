@@ -4,7 +4,8 @@ Define each endpoint of your API once, together with its URL, its request and re
 query key and its invalidation rules. Then spread the result into TanStack Query's `useQuery` and
 `useMutation`.
 
-Install with `pnpm add @teamnovu/kit-operations`.
+Install with `pnpm add @teamnovu/kit-operations`. Wiring it into an existing app — query client,
+transport, endpoints module — is a walkthrough of its own: [Setup](./setup.md).
 
 `vue` and `@tanstack/vue-query` are peer dependencies. Resource tracking assumes an API Platform
 backend (JSON-LD), but the HTTP layer stays yours, see [Transport](#transport).
@@ -13,7 +14,7 @@ backend (JSON-LD), but the HTTP layer stays yours, see [Transport](#transport).
 
 ```ts
 // operations/endpoints.ts
-import { createEndpoints, mutation, query } from '@teamnovu/kit-operations'
+import { createEndpoints, invalidateResources, mutation, query } from '@teamnovu/kit-operations'
 
 export const endpoints = createEndpoints({
   project: {
@@ -28,10 +29,17 @@ export const endpoints = createEndpoints({
       .url('/api/projects/:id')
       .build(() => ({
         options: { method: 'PATCH' },
+        onSuccess: (_data, _variables, _onMutateResult, context) => (
+          invalidateResources(context.client, 'Project')
+        ),
       })),
   },
 })
 ```
+
+The endpoint carries its own invalidation, so nothing at the call site has to remember it: every
+cached query holding a `Project` refetches once the mutation succeeds. See
+[Cache invalidation](#cache-invalidation) for narrowing that down to a single instance.
 
 ```vue
 <script setup lang="ts">
@@ -74,6 +82,7 @@ setTransport({
 ```
 
 This is the only wiring the package needs. Everything after it is endpoint definitions.
+[Setup](./setup.md) shows both halves as complete files, next to the error type they throw.
 
 `setTransport` registers the transport at module level, which also covers endpoints called outside
 of `setup()`: router guards, bootstrap prefetching, async handlers. Under SSR, provide it per
@@ -231,11 +240,8 @@ const deleteProject = mutation<never, undefined>()
 `endpoints.project.detail({ params: { id } })` ends up with the query key
 `['project', 'detail', { id }]`.
 
-Every node of the tree also carries an `$invalidateKey`, which is how you invalidate a whole branch:
-
-```ts
-await queryClient.invalidateQueries({ queryKey: endpoints.project.$invalidateKey })
-```
+Every node of the tree also carries an `$invalidateKey`, which is what you invalidate a whole
+branch with, see [Cache invalidation](#cache-invalidation).
 
 ## Parameters
 
@@ -313,11 +319,38 @@ const subproject = await createSubproject({
 
 ## Cache invalidation
 
-Query keys are one way to invalidate. Resources are the other, and usually the more practical one
-in `onSuccess`, where you rarely know which query keys are holding a copy of the project you just
-changed. Every response is scanned for JSON-LD `@type` and `@id` pairs, and the query key is
-registered for each resource it contains. `invalidateResources` then invalidates every cached query
-that has seen that resource:
+There are two mechanisms, one for each way of asking what has gone stale. Query keys invalidate
+structurally, by position in the endpoint tree. Resources invalidate semantically, by what the data
+is about, no matter which query is holding it. Every variant of both:
+
+```ts
+import { invalidateResources } from '@teamnovu/kit-operations'
+
+// Structural. `$invalidateKey` sits on every level of the tree, and keys match by prefix:
+endpoints.$invalidateKey                                    // [] — the whole cache
+endpoints.project.$invalidateKey                            // ['project'] — one branch
+endpoints.project.detail.$invalidateKey                     // ['project', 'detail'] — one endpoint
+endpoints.project.detail({ params: { id } }).$invalidateKey // ['project', 'detail', { id: '12' }]
+
+await queryClient.invalidateQueries({ queryKey: endpoints.project.$invalidateKey })
+
+// Semantic. What the data is about, wherever it happens to be cached:
+await invalidateResources(queryClient, 'Project')             // any query holding a Project
+await invalidateResources(queryClient, ['Project', '12'])     // only queries holding that one
+await invalidateResources(queryClient, 'Project', 'Employee') // several resources at once
+```
+
+Because keys match by prefix, a shorter one covers everything below it: the branch key invalidates
+every endpoint in `project`, the endpoint key every cached call of `project.detail` whatever its
+parameters, and the call key that single entry. The first three are static and need no arguments,
+so they work from anywhere. The fourth comes off a call, and is the query key with every ref
+already resolved: `queryKey` keeps your refs, because `useQuery` needs it reactive, while
+`$invalidateKey` is the plain snapshot taken at call time.
+
+Resources are the other half, and usually the more practical one in `onSuccess`, where you rarely
+know which query keys are holding a copy of the project you just changed. Every response is scanned
+for JSON-LD `@type` and `@id` pairs, and the query key is registered for each resource it contains.
+`invalidateResources` then invalidates every cached query that has seen that resource:
 
 ```ts
 import { getIdFromIRI, invalidateResources } from '@teamnovu/kit-operations'
@@ -430,8 +463,18 @@ const project = await queryClient.fetchQuery(toFetchOptions(
 ))
 ```
 
-For `useQueries`, run each entry through `toLossyQueryOptions`. It does nothing at runtime and only
-relaxes the types that `useQueries` rejects:
+## Loosening the option types
+
+Vue Query types several of its options invariantly, because callbacks like `enabled`, `select` and
+`refetchInterval` mention the output type in a position that rules covariance out. The effect is a
+type error on an options object that is perfectly valid at runtime. `toLossyQueryOptions` is the
+escape hatch: it is the identity function at runtime and only widens the options that need
+covariance, leaving `queryKey` and `queryFn` precisely typed.
+
+You rarely need it. Reach for it when a call site produces a type error you cannot explain from the
+values you passed, most often on an `enabled` callback, and leave it out everywhere else.
+
+`useQueries` is the one place that needs it consistently, since its generics are stricter again:
 
 ```ts
 import { toLossyQueryOptions } from '@teamnovu/kit-operations'
@@ -482,6 +525,7 @@ type Project = EndpointOutput<typeof endpoints.project.detail>
 | `setTransport()` / `transportKey` | registers the HTTP layer |
 | `invalidateResources()` | invalidates all queries that contain a resource |
 | `setQueryDataWithResources()` | seeds the cache and registers its resources |
-| `toFetchOptions()` / `toLossyQueryOptions()` | adapters for `fetchQuery` and `useQueries` |
+| `toFetchOptions()` | unwraps refs into the plain options `fetchQuery` expects |
+| `toLossyQueryOptions()` | widens option types where Vue Query's invariance rejects a valid call |
 | `appendQueryParams()` | serializes a query params bag onto a url |
 | `getIdFromIRI()`, `mapArrayOfIdFromIRI()`, `mapIdFromIRIByKey()` | IRI helpers |
