@@ -366,7 +366,8 @@ global.d.ts                        optional: the resource-name union
 ## When it does not work
 
 **`[operations] No transport provided.`** — an endpoint was called before `setTransport` ran, or,
-under SSR, from outside the component tree that received the `provide`.
+under SSR, from outside the component tree that received the `provide`; wrap such a call in
+`app.runWithContext()`, see [Transport](./index.md#transport).
 
 **A query never requests anything and stays pending** — one of its path params is still
 `undefined`. The endpoint keeps itself disabled until every `:placeholder` has a value.

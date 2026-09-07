@@ -85,14 +85,29 @@ This is the only wiring the package needs. Everything after it is endpoint defin
 [Setup](./setup.md) shows both halves as complete files, next to the error type they throw.
 
 `setTransport` registers the transport at module level, which also covers endpoints called outside
-of `setup()`: router guards, bootstrap prefetching, async handlers. Under SSR, provide it per
-request instead so it stays request scoped:
+of `setup()`: router guards, bootstrap prefetching, async handlers. Under SSR that single slot is
+shared by every concurrent request, so provide the transport per request instead:
 
 ```ts
 import { transportKey } from '@teamnovu/kit-operations'
 
 app.provide(transportKey, { query: makeQueryFn, mutation: mutationFn })
 ```
+
+A provided transport reaches only the call sites where Vue has an injection context: component
+`setup()`, and whatever you wrap in that request's `app.runWithContext()`. The call sites the module
+transport exists for — router guards, bootstrap prefetching, async handlers — have neither, so under
+SSR they need the wrapper, or they fall through to the module transport and throw
+`[operations] No transport provided.`:
+
+```ts
+const projects = app.runWithContext(() => endpoints.project.list())
+
+await queryClient.prefetchQuery(projects)
+```
+
+Only the endpoint call belongs inside the wrapper. An endpoint resolves its transport the moment it
+is called, so awaiting the query outside `runWithContext` is fine.
 
 ### `query`
 
@@ -173,6 +188,13 @@ export const mutationFn = async <T>(url: string, init?: CustomFetchInit): Promis
   return response.json()
 }
 ```
+
+Both halves spread the caller's `headers` last, so a per-endpoint or per-call header wins over the
+transport's defaults. Both also assume those headers are a plain object, which is what endpoint
+`options` carry in practice. `RequestInit` allows more than that: a `Headers` instance keeps its
+entries internally rather than as own properties, so spreading one contributes nothing and the
+defaults are all that is left, and an entry list spreads to numeric keys. Compose with
+`new Headers()` in the transport if your app passes either of those around.
 
 An endpoint invoked before a transport is registered throws an error that says exactly that.
 
