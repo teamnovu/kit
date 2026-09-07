@@ -240,8 +240,8 @@ const deleteProject = mutation<never, undefined>()
 `endpoints.project.detail({ params: { id } })` ends up with the query key
 `['project', 'detail', { id }]`.
 
-Every node of the tree also carries an `$invalidateKey`, which is what you invalidate a whole
-branch with, see [Cache invalidation](#cache-invalidation).
+Every query node of the tree also carries an `$invalidateKey`, which is what you invalidate a whole
+branch with, see [Cache invalidation](#cache-invalidation). Mutation endpoints do not expose one.
 
 ## Parameters
 
@@ -306,7 +306,8 @@ useMutation(endpoints.project.update({ headers: { 'X-Custom-QR-Auth': authToken 
 
 ## Calling mutations
 
-A mutation takes the same bag as a query, with `body` typed as the endpoint's input type:
+A mutation only takes `params` and `body`, with `params` resolved into the URL and `{ method, body, ...options }`
+passed to the transport. `body` is typed as the endpoint's input type:
 
 ```ts
 const { mutateAsync: createSubproject } = useMutation(endpoints.subproject.create())
