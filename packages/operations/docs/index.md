@@ -101,7 +101,7 @@ export function makeQueryFn<T>(
     const response = await fetch(appendQueryParams(unref(url), unref(queryParams)), {
       ...unref(options),
       signal: context.signal,
-      headers: { Accept: 'application/ld+json' },
+      headers: { Accept: 'application/ld+json', ...unref(options)?.headers },
       body: JSON.stringify(unref(body)),
     })
 
