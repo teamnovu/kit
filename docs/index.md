@@ -48,5 +48,9 @@ features:
     title: '@teamnovu/kit-vue-forms'
     details: Forms data management and validation library
     link: ./packages/vue-forms/index
+  - icon: ⚙️
+    title: '@teamnovu/kit-operations'
+    details: Typescript utilities for TanStack Query operations
+    link: ./packages/operations/index
 ---
 
