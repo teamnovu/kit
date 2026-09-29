@@ -138,7 +138,7 @@ export function useFieldRegistry<T extends FormDataDefault, TOut = T>(
             return validationState.errors.value.propertyErrors[path] || []
           },
           set(newErrors) {
-            validationState.errors.value.propertyErrors[path] = newErrors
+            validationState.validationErrors.value.propertyErrors[path] = newErrors
           },
         }),
         onBlur: async () => {

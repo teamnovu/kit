@@ -158,10 +158,14 @@ export function createSubformInterface<
   const errors = computed(() =>
     filterErrorsForPath(unref(mainForm.errors), path))
 
-  const validateForm = (() => mainForm.validateForm()) as Form<
-    ST,
-    STOut
-  >['validateForm']
+  const validateForm = (async () => {
+    const result = await mainForm.validateForm()
+
+    return {
+      ...result,
+      data: result.data && getNestedValue(result.data as T, path),
+    }
+  }) as Form<ST, STOut>['validateForm']
 
   // Nested subforms
   const getSubForm = <P extends EntityPaths<ST>>(

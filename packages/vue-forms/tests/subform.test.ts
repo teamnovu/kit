@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
@@ -1381,6 +1381,27 @@ describe('Subform Implementation', () => {
 
       expect(rootField.data.value).toEqual(['item1', 'item2'])
       expect(itemField.data.value).toEqual('item1')
+    })
+  })
+
+  describe('Submit handler', () => {
+    it('should pass only the subform data to the handler', async () => {
+      const form = useForm({
+        initialData: {
+          user: { age: '42' },
+          other: 'x',
+        },
+        schema: z.object({
+          user: z.object({ age: z.string().transform(Number) }),
+        }),
+      })
+
+      const userForm = form.getSubForm('user')
+      const cb = vi.fn()
+
+      await userForm.submitHandler(cb)(new SubmitEvent('submit'))
+
+      expect(cb).toHaveBeenCalledWith({ age: 42 })
     })
   })
 })

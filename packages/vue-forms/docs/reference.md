@@ -7,9 +7,12 @@ function useForm<T extends object, TOut = T>(options: {
   // reactive changes to this object will propagate to the form data
   initialData: MaybeRefOrGetter<T>
   // an ErrorBag object or ref of an ErrorBag object with external errors
-  // this is used e.g. for server side validation errors
   // these errors will be merged with the internal errors of the form based on validateFn below and/or the zod schema
+  // they are part of the validation and therefore block the submission (use serverErrors for server responses)
   errors?: MaybeRef<ErrorBag | undefined>
+  // an ErrorBag object or ref of an ErrorBag object with errors returned by the server, see "Server errors" below
+  // these errors are displayed in `errors`, but are not part of the validation (validateForm, isValid, submitHandler)
+  serverErrors?: MaybeRef<ErrorBag | undefined>
   // a zod schema of the form data
   // this is validated based on the validation flags or by manually triggering validateForm on the form object
   // TOut is inferred from the schema's output type if provided
@@ -72,12 +75,13 @@ interface Form<T extends object, TOut = T> {
   isDirty: Ref<boolean>
   // true if any field of the form has been touched (i.e. onBlur was called on any field)
   isTouched: Ref<boolean>
-  // true if the form data is valid based on the schema and/or the validateFn
+  // true if the form data is valid based on the schema, the validateFn and the external errors
+  // server errors are not taken into account
   isValid: Ref<boolean>
   // true if the form has been validated at least once
   isValidated: Ref<boolean>
   // the ErrorBag object containing all errors of the form
-  // this is a merge of internal errors based on schema/validateFn and external errors passed to useForm
+  // this is a merge of internal errors based on schema/validateFn, external errors and server errors passed to useForm
   // the errors are structured based on the paths of the form fields
   errors: Ref<ErrorBag>
 
@@ -91,11 +95,12 @@ interface Form<T extends object, TOut = T> {
   // resets the form data and errors, as well as the dirty, touched etc. state of all fields
   reset: () => void
   // manually triggers validation of the form data based on schema and/or validateFn
-  // returns the validation result with errors and parsed data (if valid)
+  // returns the validation result with errors (without server errors) and parsed data (if valid)
   validateForm: () => Promise<ValidationResult<TOut>>
 
   // creates a submit handler that validates the form before calling onSubmit
-  // onSubmit receives the validated/transformed data (TOut)
+  // server errors do not block the submission
+  // onSubmit receives the validated/transformed data (TOut), keys unknown to the schema are kept
   submitHandler: (onSubmit: (data: TOut) => Awaitable<void>) => (event: SubmitEvent) => Promise<void>
 
   // creates a subform for a nested object or array property of the form data
@@ -225,6 +230,29 @@ interface ErrorBag {
   // for subforms the errors will be all errors that start with the path of the subform
   propertyErrors: Record<string, ValidationErrorMessage[] | undefined>
 }
+```
+
+## Server errors
+Errors returned by the server belong to the last request and are checked again by the server on the next one.
+Pass them as `serverErrors` instead of `errors`, so that they are displayed without blocking the next submission:
+
+|                                                | schema / validateFn / `errors` | `serverErrors` |
+|------------------------------------------------|:------------------------------:|:--------------:|
+| `form.errors` and field `errors`               |               ✓                |       ✓        |
+| `validateForm()`, `isValid`, `submitHandler`   |               ✓                |       ✗        |
+
+The errors are displayed as long as the source provides them. With TanStack Query, they are derived from the mutation
+and disappear as soon as the next `mutate` resets its error:
+```typescript
+const mutation = useMutation({ mutationFn: api.save })
+
+const form = useForm({
+  initialData,
+  schema,
+  serverErrors: computed(() => toErrorBag(mutation.error.value)),
+})
+
+const onSubmit = form.submitHandler(data => mutation.mutateAsync(data))
 ```
 
 ## Field Arrays

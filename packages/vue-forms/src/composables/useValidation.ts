@@ -23,6 +23,7 @@ import type {
 } from '../types/validation'
 import { hasErrors, isValidResult, mergeErrors } from '../utils/validation'
 import { flattenError } from '../utils/zod'
+import { merge } from 'lodash-es'
 
 export const defaults: ValidationOptions<FormDataDefault> = {
   validationBeforeSubmit: {
@@ -57,6 +58,8 @@ export interface ValidatorOptions<T, TOut = T> {
 export interface ValidationOptions<T, TOut = T>
   extends ValidatorOptions<T, TOut> {
   errors?: MaybeRef<ErrorBag | undefined>
+  // Displayed in `errors`, but excluded from `validateForm`, `isValid` and the submit check
+  serverErrors?: MaybeRef<ErrorBag | undefined>
   validationBeforeSubmit?: ValidationFlags
   validationAfterSubmit?: ValidationFlags
 }
@@ -80,7 +83,10 @@ implements Validator<T, TOut> {
     const result = await this.schema.safeParseAsync(data)
 
     if (result.success) {
-      return SuccessValidationResult
+      return {
+        data: result.data,
+        errors: SuccessValidationResult.errors,
+      }
     }
 
     const zodErrors = flattenError(result.error)
@@ -108,7 +114,10 @@ implements Validator<T, TOut> {
       const result = await this.validateFn(data)
 
       if (isValidResult(result)) {
-        return SuccessValidationResult
+        return {
+          data: result.data,
+          errors: SuccessValidationResult.errors,
+        }
       }
 
       return result
@@ -260,10 +269,15 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
       errors = mergeErrors(...validationErrors)
     }
 
+    const outputs = validationResults
+      .map(result => result.data)
+      .filter(data => data !== undefined)
+
     return {
       errors,
-      // TODO: Implement data disambiguation strategy
-      data: validationResults.findLast(result => !!result.data)?.data,
+      data: outputs.length
+        ? merge({}, formState.data, ...outputs) as TOut
+        : undefined,
     }
   }
 
@@ -275,6 +289,7 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
     validationState.isValidated = true
 
     return {
+      data: validationResults.data,
       errors: validationState.errors,
     }
   }
@@ -300,6 +315,16 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
 
   const isValid = computed(() => !hasErrors(validationState.errors))
 
+  const displayErrors = computed(() => {
+    const serverErrors = unref(options.serverErrors)
+
+    if (!serverErrors) {
+      return validationState.errors
+    }
+
+    return mergeErrors(validationState.errors, serverErrors)
+  })
+
   const reset = () => {
     validationState.isValidated = false
     validationState.errors = unref(options.errors) ?? SuccessValidationResult.errors
@@ -324,8 +349,12 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
     return validateField(path)
   }
 
+  const refs = toRefs(validationState)
+
   return {
-    ...toRefs(validationState),
+    ...refs,
+    errors: displayErrors,
+    validationErrors: refs.errors,
     validateForm,
     validateField,
     validateStrategy,

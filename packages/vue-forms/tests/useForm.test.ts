@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { effectScope, isReactive, nextTick, reactive, ref } from 'vue'
 import { z } from 'zod'
 import { useForm } from '../src/composables/useForm'
+import type { ErrorBag } from '../src/types/validation'
 import { isValidResult } from '../src/utils/validation'
 
 describe('useForm', () => {
@@ -539,5 +540,118 @@ describe('useForm', () => {
         expect(nameField.errors.value?.length).toBe(0)
       },
     )
+
+    it('should submit despite server errors and still display them', async () => {
+      const form = useForm({
+        initialData: { name: 'John' },
+        schema: z.object({ name: z.string().min(1) }),
+        serverErrors: {
+          general: ['Server error'],
+          propertyErrors: { name: ['Name already taken'] },
+        },
+      })
+
+      const nameField = form.getField('name')
+      const cb = vi.fn()
+
+      await form.submitHandler(cb)(new SubmitEvent('submit'))
+
+      expect(cb).toHaveBeenCalled()
+      expect(form.isValid.value).toBe(true)
+      expect(form.errors.value.general).toEqual(['Server error'])
+      expect(nameField.errors.value).toEqual(['Name already taken'])
+    })
+
+    it('should exclude server errors from validateForm', async () => {
+      const form = useForm({
+        initialData: { name: '' },
+        schema: z.object({ name: z.string().min(1, 'Required') }),
+        serverErrors: {
+          general: [],
+          propertyErrors: { name: ['Name already taken'] },
+        },
+      })
+
+      const result = await form.validateForm()
+
+      expect(result.errors.propertyErrors.name).toEqual(['Required'])
+      expect(form.errors.value.propertyErrors.name).toEqual([
+        'Required',
+        'Name already taken',
+      ])
+    })
+
+    it('should update displayed errors when server errors change', async () => {
+      const serverErrors = ref<ErrorBag | undefined>({
+        general: [],
+        propertyErrors: { name: ['Name already taken'] },
+      })
+
+      const form = useForm({
+        initialData: { name: 'John' },
+        serverErrors,
+      })
+
+      const nameField = form.getField('name')
+
+      expect(nameField.errors.value).toEqual(['Name already taken'])
+
+      serverErrors.value = undefined
+
+      expect(nameField.errors.value).toEqual([])
+      expect(form.errors.value.propertyErrors.name).toBeUndefined()
+    })
+
+    it('should not submit when client rules fail alongside server errors', async () => {
+      const form = useForm({
+        initialData: { name: '' },
+        schema: z.object({ name: z.string().min(1) }),
+        serverErrors: {
+          general: ['Server error'],
+          propertyErrors: {},
+        },
+      })
+
+      const cb = vi.fn()
+
+      await form.submitHandler(cb)(new SubmitEvent('submit'))
+
+      expect(cb).not.toHaveBeenCalled()
+    })
+
+    it('should still block submission on external errors', async () => {
+      const form = useForm({
+        initialData: { name: 'John' },
+        errors: {
+          general: ['External error'],
+          propertyErrors: {},
+        },
+      })
+
+      const cb = vi.fn()
+
+      await form.submitHandler(cb)(new SubmitEvent('submit'))
+
+      expect(cb).not.toHaveBeenCalled()
+    })
+
+    it('should pass transformed data and keep keys unknown to the schema', async () => {
+      const form = useForm({
+        initialData: {
+          age: '42',
+          note: 'kept',
+        },
+        schema: z.object({ age: z.string().transform(Number) }),
+      })
+
+      const cb = vi.fn()
+
+      await form.submitHandler(cb)(new SubmitEvent('submit'))
+
+      expect(cb).toHaveBeenCalledWith({
+        age: 42,
+        note: 'kept',
+      })
+    })
   })
 })

@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-09-29
+
+### Added
+
+- `useForm` accepts `serverErrors`: they are displayed in `form.errors` and the field errors, but are not part of the validation (`validateForm`, `isValid`, `submitHandler`), so errors returned by the server no longer prevent the next submission. `errors` keeps blocking the submission as before.
+- `validateForm` now returns the parsed `data`.
+
+### Changed
+
+- **Breaking:** `submitHandler` now receives the parsed schema output (and `data` returned by a valid `validateFn`), deep-merged over the form data so that keys unknown to the schema are kept. Previously it always received the raw form data.
+  - Schemas using `transform`, `coerce`, `default` or `preprocess` now deliver the converted values to the handler. Remove manual conversions in the handler that compensated for this.
+  - The handler receives a copy instead of the reactive form data, so mutating it no longer changes the form.
+  - Arrays are merged by index: if a transform shortens an array, the surplus raw items remain.
+  - Forms without a schema and without a `validateFn` returning `data` are unaffected.
+- **Breaking:** `form.errors` is now read-only. Assigning `form.errors.value` has no effect; use `field.setErrors` instead. In-place mutations of `form.errors.value` are lost while `serverErrors` are present.
+
+### Fixed
+
+- A subform's `submitHandler` receives only its subtree of the parsed data.
+
 ## [0.3.1] - 2026-07-08
 
 ### Changed

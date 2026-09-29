@@ -27,7 +27,7 @@ import type { Merge } from '../types/util'
 
 export const defaults: Omit<
   UseFormOptions<FormDataDefault>,
-  'initialData' | 'errors' | 'schema' | 'validateFn'
+  'initialData' | 'errors' | 'serverErrors' | 'schema' | 'validateFn'
 > = {
   keepValuesOnUnmount: true,
   ...useValidationDefaults,
@@ -108,7 +108,7 @@ export function useForm<T extends FormDataDefault, TOut = T>(
   const form: Form<T, TOut> = {
     ...fieldRegistry,
     ...formState,
-    ...omit(validationState, ['canValidate', 'validateStrategy']),
+    ...omit(validationState, ['canValidate', 'validateStrategy', 'validationErrors']),
     reset,
     initialData: toRef(state, 'initialData') as Form<T>['initialData'],
     data: toRef(state, 'data') as Form<T>['data'],

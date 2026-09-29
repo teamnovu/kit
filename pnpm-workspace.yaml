@@ -5,3 +5,5 @@ allowBuilds:
   esbuild: true
   unrs-resolver: true
   vue-demi: true
+minimumReleaseAgeExclude:
+  - '@teamnovu/eslint-config-vue@9.0.19'
