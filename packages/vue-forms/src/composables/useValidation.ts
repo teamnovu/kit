@@ -58,7 +58,7 @@ export interface ValidatorOptions<T, TOut = T> {
 export interface ValidationOptions<T, TOut = T>
   extends ValidatorOptions<T, TOut> {
   errors?: MaybeRef<ErrorBag | undefined>
-  // Displayed in `errors`, but excluded from `validateForm`, `isValid` and the submit check
+  // Part of `errors` and `isValid`, but excluded from `validateForm` and the submit check
   serverErrors?: MaybeRef<ErrorBag | undefined>
   validationBeforeSubmit?: ValidationFlags
   validationAfterSubmit?: ValidationFlags
@@ -313,8 +313,6 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
     }
   }
 
-  const isValid = computed(() => !hasErrors(validationState.errors))
-
   const displayErrors = computed(() => {
     const serverErrors = unref(options.serverErrors)
 
@@ -324,6 +322,9 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
 
     return mergeErrors(validationState.errors, serverErrors)
   })
+
+  const isValid = computed(() => !hasErrors(displayErrors.value))
+  const canSubmit = computed(() => !hasErrors(validationState.errors))
 
   const reset = () => {
     validationState.isValidated = false
@@ -361,6 +362,7 @@ export function useValidation<T extends FormDataDefault, TOut = T>(
     canValidate,
     defineValidator,
     isValid,
+    canSubmit,
     reset,
   }
 }

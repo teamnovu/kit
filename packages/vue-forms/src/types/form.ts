@@ -98,6 +98,8 @@ export interface Form<T extends FormDataDefault, TOut = T> {
   isDirty: Ref<boolean>
   isTouched: Ref<boolean>
   isValid: Ref<boolean>
+  // Like `isValid`, but ignores server errors
+  canSubmit: Ref<boolean>
   isValidated: Ref<boolean>
   errors: Ref<ErrorBag>
 

@@ -11,7 +11,7 @@ function useForm<T extends object, TOut = T>(options: {
   // they are part of the validation and therefore block the submission (use serverErrors for server responses)
   errors?: MaybeRef<ErrorBag | undefined>
   // an ErrorBag object or ref of an ErrorBag object with errors returned by the server, see "Server errors" below
-  // these errors are displayed in `errors`, but are not part of the validation (validateForm, isValid, submitHandler)
+  // these errors are part of `errors` and `isValid`, but not of the validation (validateForm, submitHandler)
   serverErrors?: MaybeRef<ErrorBag | undefined>
   // a zod schema of the form data
   // this is validated based on the validation flags or by manually triggering validateForm on the form object
@@ -75,9 +75,11 @@ interface Form<T extends object, TOut = T> {
   isDirty: Ref<boolean>
   // true if any field of the form has been touched (i.e. onBlur was called on any field)
   isTouched: Ref<boolean>
-  // true if the form data is valid based on the schema, the validateFn and the external errors
-  // server errors are not taken into account
+  // true if `errors` is empty, i.e. no errors from the schema, the validateFn, external errors or server errors
   isValid: Ref<boolean>
+  // true if submitHandler would let the submission through, i.e. like isValid but ignoring server errors
+  // use this e.g. to disable the submit button
+  canSubmit: Ref<boolean>
   // true if the form has been validated at least once
   isValidated: Ref<boolean>
   // the ErrorBag object containing all errors of the form
@@ -236,10 +238,15 @@ interface ErrorBag {
 Errors returned by the server belong to the last request and are checked again by the server on the next one.
 Pass them as `serverErrors` instead of `errors`, so that they are displayed without blocking the next submission:
 
-|                                                | schema / validateFn / `errors` | `serverErrors` |
-|------------------------------------------------|:------------------------------:|:--------------:|
-| `form.errors` and field `errors`               |               ✓                |       ✓        |
-| `validateForm()`, `isValid`, `submitHandler`   |               ✓                |       ✗        |
+|                                                   | schema / validateFn / `errors` | `serverErrors` |
+|---------------------------------------------------|:------------------------------:|:--------------:|
+| `form.errors`, field `errors` and `isValid`       |               ✓                |       ✓        |
+| `validateForm()`, `canSubmit` and `submitHandler` |               ✓                |       ✗        |
+
+`isValid` is `false` while server errors are present. Use `canSubmit` to disable the submit button instead:
+```vue
+<button :disabled="!form.canSubmit.value">Save</button>
+```
 
 The errors are displayed as long as the source provides them. With TanStack Query, they are derived from the mutation
 and disappear as soon as the next `mutate` resets its error:

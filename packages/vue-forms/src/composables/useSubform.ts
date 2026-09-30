@@ -154,6 +154,7 @@ export function createSubformInterface<
 
   // Validation delegates to main form
   const isValid = computed(() => mainForm.isValid.value)
+  const canSubmit = computed(() => mainForm.canSubmit.value)
   const isValidated = computed(() => mainForm.isValidated.value)
   const errors = computed(() =>
     filterErrorsForPath(unref(mainForm.errors), path))
@@ -204,6 +205,7 @@ export function createSubformInterface<
     isDirty,
     isTouched,
     isValid,
+    canSubmit,
     isValidated,
     errors,
     defineValidator,

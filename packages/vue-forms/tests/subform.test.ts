@@ -1403,5 +1403,26 @@ describe('Subform Implementation', () => {
 
       expect(cb).toHaveBeenCalledWith({ age: 42 })
     })
+
+    it('should delegate canSubmit to the main form', async () => {
+      const form = useForm({
+        initialData: { user: { name: '' } },
+        schema: z.object({
+          user: z.object({ name: z.string().min(1) }),
+        }),
+        serverErrors: {
+          general: ['Server error'],
+          propertyErrors: {},
+        },
+      })
+
+      const userForm = form.getSubForm('user')
+
+      expect(userForm.canSubmit.value).toBe(true)
+
+      await form.validateForm()
+
+      expect(userForm.canSubmit.value).toBe(false)
+    })
   })
 })

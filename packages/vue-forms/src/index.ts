@@ -23,3 +23,4 @@ export type { FormFieldWrapperProps } from './components/FormFieldWrapper.vue'
 
 export { default as FormPart } from './components/FormPart.vue'
 export type { FormPartProps } from './components/FormPart.vue'
+export { isValidResult } from './utils/validation'

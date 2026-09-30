@@ -557,7 +557,8 @@ describe('useForm', () => {
       await form.submitHandler(cb)(new SubmitEvent('submit'))
 
       expect(cb).toHaveBeenCalled()
-      expect(form.isValid.value).toBe(true)
+      expect(form.isValid.value).toBe(false)
+      expect(form.canSubmit.value).toBe(true)
       expect(form.errors.value.general).toEqual(['Server error'])
       expect(nameField.errors.value).toEqual(['Name already taken'])
     })
@@ -596,8 +597,11 @@ describe('useForm', () => {
 
       expect(nameField.errors.value).toEqual(['Name already taken'])
 
+      expect(form.isValid.value).toBe(false)
+
       serverErrors.value = undefined
 
+      expect(form.isValid.value).toBe(true)
       expect(nameField.errors.value).toEqual([])
       expect(form.errors.value.propertyErrors.name).toBeUndefined()
     })
@@ -617,6 +621,7 @@ describe('useForm', () => {
       await form.submitHandler(cb)(new SubmitEvent('submit'))
 
       expect(cb).not.toHaveBeenCalled()
+      expect(form.canSubmit.value).toBe(false)
     })
 
     it('should still block submission on external errors', async () => {
