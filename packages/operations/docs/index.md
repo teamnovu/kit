@@ -14,7 +14,7 @@ backend (JSON-LD), but the HTTP layer stays yours, see [Transport](#transport).
 
 ```ts
 // operations/endpoints.ts
-import { createEndpoints, invalidateResources, mutation, query } from '@teamnovu/kit-operations'
+import { createEndpoints, getIdFromIRI, invalidateResources, mutation, query } from '@teamnovu/kit-operations'
 
 export const endpoints = createEndpoints({
   project: {
@@ -29,17 +29,22 @@ export const endpoints = createEndpoints({
       .url('/api/projects/:id')
       .build(() => ({
         options: { method: 'PATCH' },
-        onSuccess: (_data, _variables, _onMutateResult, context) => (
-          invalidateResources(context.client, 'Project')
+        onSuccess: (data, _variables, _onMutateResult, context) => (
+          invalidateResources(context.client, ['Project', getIdFromIRI(data['@id'])])
         ),
       })),
   },
 })
 ```
 
-The endpoint carries its own invalidation, so nothing at the call site has to remember it: every
-cached query holding a `Project` refetches once the mutation succeeds. See
-[Cache invalidation](#cache-invalidation) for narrowing that down to a single instance.
+The endpoint carries its own invalidation, so call sites don't have to remember it. When the update
+succeeds, every cached query that holds this project refetches. That includes its detail and any list
+it shows up in, because each item in a collection is registered separately. Cached queries for other
+projects are left alone.
+
+A list that doesn't contain the project yet won't refetch, even if the change would put it there (a
+list filtered by name, for example). In that case, invalidate the list as well, or invalidate the
+whole `Project` type. [Cache invalidation](#cache-invalidation) covers both.
 
 ```vue
 <script setup lang="ts">

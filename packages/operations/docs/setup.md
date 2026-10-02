@@ -1,8 +1,8 @@
 # Setup
 
-This page wires the package into an existing Vue app, end to end. The package has no configuration
-of its own. What it needs is a query client, a transport that knows how to reach your API, and one
-module holding your endpoints.
+This page shows how to add the package to an existing Vue app. The package has no configuration of
+its own. It needs a query client, a transport that knows how to reach your API, and a module that
+holds your endpoints.
 
 ## Install
 
@@ -221,7 +221,7 @@ makes collisions easy to miss:
 
 ```ts
 // src/operations/endpoints.ts
-import { createEndpoints, invalidateResources, mutation, query } from '@teamnovu/kit-operations'
+import { createEndpoints, getIdFromIRI, invalidateResources, mutation, query } from '@teamnovu/kit-operations'
 import type { Project, ProjectCollection, ProjectInput } from '#/types/api/Project'
 
 export const endpoints = createEndpoints({
@@ -237,16 +237,18 @@ export const endpoints = createEndpoints({
       .url('/api/projects/:id')
       .build(() => ({
         options: { method: 'PATCH' },
-        onSuccess: (_data, _variables, _onMutateResult, context) => (
-          invalidateResources(context.client, 'Project')
+        onSuccess: (data, _variables, _onMutateResult, context) => (
+          invalidateResources(context.client, ['Project', getIdFromIRI(data['@id'])])
         ),
       })),
   },
 })
 ```
 
-Invalidation belongs on the endpoint too, so no call site has to remember it: the `list` query
-declares that it holds `Project` resources, and `update` invalidates them once the write succeeds.
+Invalidation belongs on the endpoint too, so no call site has to remember it: `update` invalidates
+the project it just changed, which refetches its detail and every list that contains it. The `list`
+query also declares that it holds `Project` resources, so invalidating the whole `Project` type
+reaches it even while it is empty.
 
 That is the whole wiring. From here on, a component only spreads an endpoint into `useQuery` or
 `useMutation`:
