@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-11-06
+
+### Fixed
+
+- `Field` (and therefore `FormFieldWrapper`) follows changes to its `form`/`path` props, so rows in a field array keyed by item id show and write the correct item after an earlier item is removed or inserted. With `keepValuesOnUnmount: false`, the item that moves into the freed index is no longer reset.
+
 ## [0.4.1] - 2026-09-30
 
 ### Added
