@@ -18,10 +18,11 @@ status: draft
 
 0. **Baseline** without commits: build, docs build, lint and existing tests. All green except lint (see
    [linting](../quality/lint.md)).
-1. **Safety net:**
+1. **Safety net (done 2026-11-11):**
    - test infrastructure, package-contract tests over a clean `dist`, behaviour tests per package (see
      [testing](../quality/testing.md))
    - `fix(components)` for the exports map
+   - lint down to 0 errors
    - CI `verify` job
 2. **Zero-risk cleanup:**
    - refresh the lockfile within the declared ranges

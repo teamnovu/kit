@@ -1,44 +1,80 @@
 ---
 type: Reference
 title: Testing
-description: Existing test conventions, coverage as of the dependency update, and what test harnesses each package needs.
-tags: [vitest, testing, happy-dom, vue-test-utils]
+description: Test layout, coverage, harness conventions and the deliberate tripwires guarding dependency upgrades.
+tags: [vitest, testing, happy-dom, vue-test-utils, contract-tests]
 ---
 
-# Baseline (2026-11-11)
+# Commands
 
-| Package | Runner | Tests | Notes |
+| Command | What it does |
+|---|---|
+| `pnpm test` | vitest in every package that has a `test` script |
+| `pnpm test:contract` | `pnpm clean`, `pnpm build`, then the root `tests/` |
+| `pnpm typecheck` | `vue-tsc --noEmit` per package; covers `src/` only, not tests |
+
+CI runs all three, plus lint and the docs build, in the `verify` job (see the
+[release process](../release/current-release-process.md)).
+
+# Coverage (2026-11-11, after Phase 1 of the [update plan](../dependencies/update-plan.md))
+
+| Package | Tests | Environment | Focus |
 |---|---|---|---|
-| vue-forms | vitest 2.1, happy-dom 12 | 10 files / 205 | well covered; `SubmitEvent` needs happy-dom |
-| operations | vitest 2.1, node | 1 file / 12 | only `appendQueryParams` |
-| shopware-composables | vitest 3.1, node | 1 file / 5 | `nonShopwareQueryCache`; no `test` script |
-| animations, components, composables, cookieconsent, nuxt, shopware-api-client, api-platform-types | — | none | |
+| vue-forms | 205 | happy-dom | forms, zod validation (exact zod messages = wording tripwire) |
+| components | 77 | happy-dom | Collapse transitions and `update:open`, Accordion ARIA, Dialog, Image breakpoints |
+| operations | 73 | node | endpoints, query/mutation, JSON-LD resource invalidation |
+| shopware-api-client | 48 | node | request building, header precedence, zod error parsing, events |
+| shopware-composables | 46 | node | vue-query composables on a real client with stubbed fetch |
+| animations | 39 | happy-dom | ids, CSS variables, intersection classes, SSR/client plugin, timeline |
+| composables | 38 | happy-dom | useCollapse transition curve and completion, accordion, scroll state, prompt |
+| cookieconsent | 24 | happy-dom | defu merge rules, vanilla API keys, CookieGuard, Nuxt module |
+| api-platform-types | 19 | node | generated TypeScript pinned as file snapshots |
+| nuxt | 18 | node | registered names with and without prefix, runtime plugin, useSeotamic |
+
+**Totals:** 587 unit tests. On top of that, the root `tests/package-contract.test.ts` runs 28 contract tests
+over the built packages.
+
+# Package-contract tests
+
+For every package, after a clean build:
+- Every `main`, `module`, `types` and `exports` target must exist.
+- Every JS entry is imported **by package specifier in a separate plain Node process**, which exercises the real
+  `exports` map without vite transforms. Its export names are snapshotted.
+- The emitted `.d.ts` files are snapshotted.
+
+This caught the broken [components](../packages/components.md) exports map.
 
 # Conventions
 
-- **Imports and syntax:** tests import `describe/it/expect/vi` from `vitest` explicitly, even with
-  `globals: true`. They use no snapshots, no `.each` and no `expectTypeOf`.
-- **Composables:** called directly. `effectScope().run()` is only used to test disposal. Reactivity is awaited
-  with `nextTick()`.
-- **vue-query:** a bare `new QueryClient({ defaultOptions: { queries: { retry: false } } })`. Composables
-  that inject need `createApp` + `VueQueryPlugin` + `provide(...)` + `app.runWithContext(...)`.
-- **HTTP:** stub the global `fetch` (`vi.stubGlobal`) and return `new Response(...)`.
+- **Imports:** tests import `describe/it/expect/vi` from `vitest` explicitly. Tests live in `packages/<pkg>/tests/`.
+- **Source under test:** workspace packages are aliased to `src` in each `vitest.config`, so tests never run
+  against a stale `dist`.
+- **What to assert:** intended behaviour only. [Known bugs](known-bugs.md) are neither pinned nor fixed in test
+  commits.
+- **Fake timers:** list `requestAnimationFrame`, `performance` and `Date` explicitly in `toFake` instead of
+  relying on vitest defaults.
+- **Injection harness:** `createApp` + `VueQueryPlugin` + `provide(...)` + `app.runWithContext(...)` /
+  `effectScope`.
+- **HTTP:** stub the global `fetch` with `vi.stubGlobal`.
 
-# Harness requirements found during the review
+# Harness quirks
 
-- **happy-dom:** has no `IntersectionObserver`, and its `ResizeObserver` never fires. Stub both, and drive
-  `requestAnimationFrame` with fake timers.
-- **Workspace imports:** alias `@teamnovu/kit-*` to `src` in test configs. Otherwise tests resolve the
-  package's possibly stale `dist`.
-- **Animations:** needs CSS modules processed (sass) and `process.client = true` for the client path.
-- **Nuxt:** mock `@nuxt/kit` and alias `#imports` to a stub.
-- **cookieconsent:** `vi.mock('vanilla-cookieconsent')`; the package uses an ESM import, not `window.CookieConsent`.
-- **Module state:** operations has module-level state (`resourceIndex`, `moduleTransport`); reset it between tests.
+- **cookieconsent:** the vitest config uses `resolve.mainFields: ['module']` and inlines `vanilla-cookieconsent`.
+  Plain Node loads the package's UMD `main`, whose namespace has no `run`.
+- **nuxt:** aliases `#imports` to `tests/stubs/imports.ts`, and `vue` to the components package's copy, because
+  packages/nuxt has no `vue` of its own.
+- **animations:** stubs `Window` so that `instanceof Window` holds for the Node global vitest exposes as
+  `window`. happy-dom has no IntersectionObserver, and its ResizeObserver never fires; both are faked.
+- **operations:** module-level state (`resourceIndex`, `moduleTransport`) is reset between tests.
 
-# Planned safety net
+# Deliberate tripwires for upgrades
 
-See the [update plan](../dependencies/update-plan.md):
-- package-contract tests over the clean `dist` (export targets exist, runtime export names, `.d.ts` list)
-- behaviour tests per package
-- a `vue-tsc` typecheck, because VueUse 15 and vanilla-cookieconsent 3.3 breakages are type-level and dts
-  builds don't fail on them
+- **vue-query callback forwarding:** shopware-composables tests compare the arguments a user's `onSuccess`,
+  `onMutate` etc. receive with what vue-query passes. Newer vue-query 5.x passes an extra context argument, and
+  the composables forward fixed argument lists, so those tests fail until the composables forward everything.
+- **cookieconsent API keys:** the provided API keys are pinned explicitly. vanilla-cookieconsent 3.3 adds
+  `default`.
+- **zod:** exact zod messages (vue-forms) and zod parsing outcomes (shopware-api-client).
+- **TypeScript printer:** generated files from api-platform-types are pinned as snapshots.
+- **easeInOutCubic and VueUse `transition`:** composables/components pin the shape of the curve and that the
+  `transition` prop still takes effect.

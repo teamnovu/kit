@@ -19,6 +19,21 @@ status: deprecated
    - runs the [Slack notifier](../integrations/slack-notifications.md)
 5. Docs are deployed to GitHub Pages (kit.novu.ch) on every push.
 
+# Since `ci: run lint, typecheck, unit and contract tests` (2026-11-11)
+
+- **Triggers:** the workflow also runs on `pull_request`.
+- **`verify` job:** lint, typecheck, unit tests, package-contract tests and the docs build, on PRs and on
+  `main`.
+- **Publish and docs:** run on `main` only, after `verify`.
+- **Permissions:** scoped per job. The default is `contents: read`. Publishing gets `contents: write` and
+  `pages: write`, and the docs deploy gets `pages` and `id-token`. The publish job runs without dependency
+  caching.
+- **Action majors:** checkout v7, setup-node v7, pnpm/action-setup v6, configure-pages v6,
+  upload-pages-artifact v5, deploy-pages v5.
+- **pnpm 11:** pnpm/action-setup **v6 is the first version supporting pnpm 11**, which the repo pins. Before,
+  CI used v3.
+- **CI Node:** still 22 until the Node 24 step of the [update plan](../dependencies/update-plan.md).
+
 # Facts
 
 - All 10 package versions in git equal the npm versions as of 2026-11-11. That makes them a clean seed for
