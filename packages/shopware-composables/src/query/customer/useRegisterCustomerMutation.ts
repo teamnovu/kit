@@ -24,13 +24,13 @@ export function useRegisterCustomerMutation(
     mutationFn: async (options: OperationOptions<typeof registerOperation>) => {
       return client.query(registerOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       await Promise.all([
         queryClient.resetQueries({ queryKey: contextKeys.all() }),
         queryClient.invalidateQueries({ queryKey: customerKeys.all() }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

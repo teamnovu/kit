@@ -29,7 +29,7 @@ export function useUpdateContextMutation(
       })
     },
 
-    onSuccess: async (newContext, variables, context) => {
+    onSuccess: async (newContext, variables, ...rest) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
         queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
@@ -37,7 +37,7 @@ export function useUpdateContextMutation(
         queryClient.invalidateQueries({ queryKey: shippingKeys.lists() }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(newContext, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(newContext, variables, ...rest)
     },
   })
 }

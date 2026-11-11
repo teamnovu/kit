@@ -22,8 +22,8 @@ export function useSendRecoveryMailMutation(
     mutationFn: async (options: OperationOptions<typeof sendRecoveryMailOperation>) => {
       return client.query(sendRecoveryMailOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+    onSuccess: async (data, variables, ...rest) => {
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

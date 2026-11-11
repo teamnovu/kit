@@ -24,10 +24,10 @@ export function useHandlePaymentMutation(
     mutationFn: async (options: OperationOptions<typeof handlePaymentOperation>) => {
       return client.query(handlePaymentOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       await queryClient.invalidateQueries({ queryKey: cartKeys.get() })
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

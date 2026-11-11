@@ -24,7 +24,7 @@ export function useLogoutCustomerMutation(
     mutationFn: async (options?: OperationOptions<typeof logoutOperation>) => {
       return client.query(logoutOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       await Promise.all([
         queryClient.resetQueries({ queryKey: contextKeys.all() }),
         queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
@@ -35,7 +35,7 @@ export function useLogoutCustomerMutation(
         queryClient.invalidateQueries({ queryKey: orderKeys.all() }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

@@ -33,7 +33,7 @@ export function useDeleteCustomerAddressMutation(
         unrefOptions(options),
       )
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       // Invalidate address list queries to refetch data
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: addressKeys.lists() }),
@@ -43,7 +43,7 @@ export function useDeleteCustomerAddressMutation(
       await unref(unref(mutationOptions)?.onSuccess)?.(
         data,
         variables,
-        context,
+        ...rest,
       )
     },
   })

@@ -22,8 +22,8 @@ export function useChangePasswordMutation(
     mutationFn: async (options: OperationOptions<typeof changePasswordOperation>) => {
       return client.query(changePasswordOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+    onSuccess: async (data, variables, ...rest) => {
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

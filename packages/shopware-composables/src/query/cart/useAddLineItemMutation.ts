@@ -38,7 +38,7 @@ export function useAddLineItemMutation(
         body: body as OperationBody<typeof addCartItemOperation>,
       })
     },
-    onSuccess: async (newCart, variables, context) => {
+    onSuccess: async (newCart, variables, ...rest) => {
       queryClient.setQueryData(cartKeys.get(), newCart)
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: paymentKeys.lists() }),
@@ -48,7 +48,7 @@ export function useAddLineItemMutation(
       await unref(unref(mutationOptions)?.onSuccess)?.(
         newCart,
         variables,
-        context,
+        ...rest,
       )
     },
   })
