@@ -36,3 +36,15 @@ tags: [monorepo, pnpm, tooling]
   auto-installed, sometimes at stale versions.
 - The store lives at `~/Library/pnpm/store/v11`. See the [agent sandbox](../environment/agent-sandbox.md)
   for the consequences.
+
+# pnpm update lessons (2026-11-11)
+
+- **Lockfile-only refresh:** `pnpm update -r` rewrites `package.json` ranges to the new versions. In published
+  packages that is a consumer-facing change, so use `--no-save` for a lockfile-only refresh.
+- **Exclusions:** `pnpm update -r --no-save '!pkg' …` holds back direct dependencies. Transitive ones (e.g.
+  eslint plugins of the shared config) still move.
+- **Auto-installed peers:** a held-back auto-installed peer keeps its old peer binding. In shopware-composables,
+  vue-query stayed bound to vue 3.5.13 after vue moved to 3.5.45, and pnpm then silently skips linking it.
+  Neither a frozen nor a normal install repaired that. Declaring the peer as an explicit devDependency did.
+- **Peer TypeScript:** pnpm auto-installs the highest version for optional peers. Vue's `typescript` peer
+  resolves to 6.0.3, which doesn't affect tooling, since that uses the root TypeScript.

@@ -22,6 +22,14 @@ tags: [dependencies, migration, vueuse, zod, nanoid]
 The `nanoid()` output is unchanged (21 characters, `[A-Za-z0-9_-]`). The `./non-secure` export still exists.
 The only change that matters here is the engine: Node `^22 || ^24 || >=26`.
 
+# zod 4.0 → 4.6 (vue-forms)
+
+zod 4.6 defines the internal `_zod` property as read-only and non-configurable. A schema held inside Vue's deep
+reactivity (e.g. `ref(schema)`) is wrapped in a reactive proxy. Proxy invariants then make
+`schema.safeParseAsync` throw: `'get' on proxy: property '_zod' is a read-only and non-configurable data
+property…`. vue-forms' test "should handle reactive schema changes" reproduces it. Schemas must stay raw
+(`toRaw`/`markRaw`/`shallowRef`). The `^4` range already lets consumers get 4.6.
+
 # zod 3 → 4 (shopware-api-client)
 
 - **`z.record`:** the single-argument form was removed. Use `z.record(z.string(), z.unknown())`.
@@ -40,8 +48,17 @@ with typecheck.
 v5 is a wrapper around `unplugin-dts`, so its options follow unplugin-dts. Add `@vue/language-core` at the root
 for `.vue` declarations.
 
-# @tanstack/vue-query 5.x
+# @tanstack/vue-query 5.85 → 5.107
 
-Newer 5.x versions may pass an extra `context` argument to mutation callbacks.
-shopware-composables forwards user `onSuccess` callbacks with a fixed argument list (`useAddLineItemMutation`,
-`useUpdateContextMutation`, `useOptimistic`). Verify that the forwarding keeps all arguments.
+- **shopware-composables callbacks:** mutation callbacks receive an extra context argument, which
+  shopware-composables drops (5 tests fail, 2 of them forwarding tests).
+- **`useOptimistic` timing:** its tests also fail on timing; the cache update lands a tick later relative to the
+  cancel/abort.
+- **operations types:** `src/createEndpoints.ts:25` fails to typecheck. The query key spread hits
+  `Key | (() => Key)` and needs a cast.
+
+# eslint-plugin-tailwindcss 3.18.0 → 3.18.3
+
+This is a transitive dependency of `@teamnovu/eslint-config-vue`. 3.18.3 crashes lint with
+"Could not find tailwindcss" when loading its rules. The repo has no Tailwind, so all `tailwindcss/*` rules
+are switched off in `eslint.config.js`.

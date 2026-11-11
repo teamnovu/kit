@@ -1,5 +1,10 @@
 # Knowledge Update Log
 
+## 2026-11-11 (Phase 2 complete)
+* **Update**: [Update plan](dependencies/update-plan.md): the cleanup is done (audit 309 → 216). Four behaviour-changing in-range updates were held back.
+* **Update**: [Migration notes](dependencies/migration-notes.md) cover zod 4.6 vs Vue reactivity, vue-query 5.107 callbacks, and the eslint-plugin-tailwindcss crash.
+* **Update**: [Workspace](repository/workspace.md) gained the pnpm update lessons (`--no-save`, exclusions, auto-installed peers).
+
 ## 2026-11-11 (Phase 1 complete)
 * **Update**: [Testing](quality/testing.md) now documents 587 unit tests in all 10 packages, 28 package-contract tests and the deliberate upgrade tripwires.
 * **Update**: [Known bugs](quality/known-bugs.md) gained ~17 defects found while writing tests. The components exports bug is fixed.
