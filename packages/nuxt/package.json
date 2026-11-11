@@ -6,6 +6,9 @@
       "import": "./src/module.ts"
     }
   },
+  "scripts": {
+    "test": "vitest run"
+  },
   "peerDependencies": {
     "nuxt": "^3.0.0"
   },
