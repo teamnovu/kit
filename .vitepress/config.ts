@@ -14,6 +14,7 @@ const baseConfig: UserConfig<DefaultTheme.Config> = {
     'docs/(.*)': '(.*)',
     'packages/:pkg/docs/(.*)': 'packages/:pkg/(.*)',
   },
+  srcExclude: ['knowledge/**'],
   head: [
     [
       'link',
