@@ -31,6 +31,9 @@ pnpm install
 
 Afterwards, `node_modules/.modules.yaml` must show `storeDir` as `~/Library/pnpm/store/v11` again.
 
+An install via `!` works when nothing has to be **downloaded** (removals, versions already in the store).
+Anything that fetches new versions must run in the user's own terminal.
+
 # Agreed workarounds (2026-11-11)
 
 - The agent edits `package.json` files. **The user runs `pnpm install` in their own terminal**, not via `!`,

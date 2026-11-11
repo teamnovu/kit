@@ -24,12 +24,21 @@ status: draft
    - `fix(components)` for the exports map
    - lint down to 0 errors
    - CI `verify` job
-2. **Zero-risk cleanup:**
+2. **Cleanup (done 2026-11-11):**
    - refresh the lockfile within the declared ranges
    - remove unused root devDeps (`@vue/cli-service` and others)
-   - declare the eslint plugins the root config needs
+   - declare `@stylistic/eslint-plugin` at the root
    - drop the duplicate eslint toolchain in shopware-composables
    - move `vite` out of shopware-composables' runtime deps
+   - Audit: 309 → 216.
+   - **The in-range refresh was not zero-risk.** Several ranges allowed behaviour-changing versions that
+     consumers already receive today, and the test tripwires caught them. These were held back and get their
+     own fix steps:
+     - zod 4.0 → 4.6 (vue-forms reactive schema)
+     - vue-query 5.85 → 5.107 (shopware-composables callbacks, operations types)
+     - vanilla-cookieconsent 3.1 → 3.3
+     - TypeScript
+     - See the [migration notes](migration-notes.md).
 3. **Dev-tooling majors, one per commit:**
    - Node 24
    - TypeScript 6.0
