@@ -23,7 +23,8 @@
     "build": "vite build",
     "watch": "NODE_ENV=development vite build --watch",
     "gen-types": "bash ./docker/types.sh",
-    "lint": "eslint --fix --ignore-pattern 'dist/**' ."
+    "lint": "eslint --fix --ignore-pattern 'dist/**' .",
+    "typecheck": "vue-tsc --noEmit"
   },
   "repository": {
     "type": "git",

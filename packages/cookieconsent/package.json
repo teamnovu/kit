@@ -21,7 +21,8 @@
   },
   "scripts": {
     "build": "vite build",
-    "watch": "NODE_ENV=development vite build --watch"
+    "watch": "NODE_ENV=development vite build --watch",
+    "typecheck": "vue-tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,9 @@
     "vanilla-cookieconsent": "^3.0.0-rc.15"
   },
   "devDependencies": {
-    "@nuxt/schema": "^3.10.2"
+    "@nuxt/schema": "^3.10.2",
+    "@vue/test-utils": "^2.5.1",
+    "happy-dom": "^21.0.4",
+    "vitest": "^3.2.7"
   }
 }
