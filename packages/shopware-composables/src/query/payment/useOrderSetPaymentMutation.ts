@@ -1,6 +1,6 @@
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
 import type { UseMutationOptions } from '@tanstack/vue-query'
-import { unref } from 'vue'
+import { toValue, unref } from 'vue'
 import type { OperationKey, OperationOptions, OperationResponse } from '../types/query'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { orderKeys } from '../../keys'
@@ -20,7 +20,7 @@ export function useOrderSetPaymentMutation(
   const queryClient = useShopwareVueQueryClient()
 
   return useShopwareMutation({
-    ...mutationOptions,
+    ...unref(toValue(mutationOptions)),
     mutationFn: async (options: OperationOptions<typeof orderSetPaymentOperation>) => {
       return client.query(orderSetPaymentOperation, unrefOptions(options))
     },
@@ -28,7 +28,7 @@ export function useOrderSetPaymentMutation(
       // Invalidate order queries to refetch updated payment information
       await queryClient.invalidateQueries({ queryKey: orderKeys.all() })
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
+      await unref(unref(toValue(mutationOptions))?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }
