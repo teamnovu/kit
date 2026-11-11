@@ -24,14 +24,14 @@ export function useDeleteCustomerMutation(
     mutationFn: async (options?: OperationOptions<typeof deleteCustomerOperation>) => {
       return client.query(deleteCustomerOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       await Promise.all([
         queryClient.resetQueries({ queryKey: customerKeys.all() }),
         queryClient.resetQueries({ queryKey: contextKeys.all() }),
         queryClient.resetQueries({ queryKey: cartKeys.get() }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

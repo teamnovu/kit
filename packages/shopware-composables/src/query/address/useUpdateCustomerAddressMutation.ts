@@ -24,7 +24,7 @@ export function useUpdateCustomerAddressMutation(
     mutationFn: async (options: OperationOptions<typeof updateCustomerAddressOperation>) => {
       return client.query(updateCustomerAddressOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       const { addressId } = unrefOptions(variables).params
       queryClient.setQueryData(addressKeys.detail(addressId), data)
 
@@ -38,7 +38,7 @@ export function useUpdateCustomerAddressMutation(
         }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

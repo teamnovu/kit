@@ -31,8 +31,8 @@ export function useRegisterConfirmMutation(
 
       return response.json() as Promise<never>
     },
-    onSuccess: async (newCustomer, variables, context) => {
-      await unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, context)
+    onSuccess: async (newCustomer, variables, ...rest) => {
+      await unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, ...rest)
     },
   })
 }

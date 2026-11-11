@@ -24,7 +24,7 @@ export function useCreateOrderMutation(
     mutationFn: async (options?: OperationOptions<typeof createOrderOperation>) => {
       return client.query(createOrderOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       await Promise.all([
         // Clear cart after successful order creation
         queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
@@ -36,7 +36,7 @@ export function useCreateOrderMutation(
         queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

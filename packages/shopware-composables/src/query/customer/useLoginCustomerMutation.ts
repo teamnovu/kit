@@ -33,14 +33,14 @@ export function useLoginCustomerMutation(
 
       return response.json()
     },
-    onSuccess: async (newCustomer, variables, context) => {
+    onSuccess: async (newCustomer, variables, ...rest) => {
       await Promise.all([
         queryClient.resetQueries({ queryKey: contextKeys.all() }),
         queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
         queryClient.invalidateQueries({ queryKey: customerKeys.all() }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(newCustomer, variables, ...rest)
     },
   })
 }

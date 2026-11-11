@@ -11,7 +11,7 @@ export function useOptimistic<CacheValue, UpdateValue>(
   const queryClient = useShopwareVueQueryClient()
 
   return {
-    onMutate: async (newValue: UpdateValue) => {
+    onMutate: async (newValue: UpdateValue, ...rest) => {
       await queryClient.cancelQueries({ queryKey: queryKey })
 
       const previousValue = queryClient.getQueryData(queryKey) as CacheValue | undefined
@@ -21,12 +21,12 @@ export function useOptimistic<CacheValue, UpdateValue>(
       if (options) {
         const opts = unref(options)
         const onMutate = unref(opts.onMutate)
-        onMutate?.(newValue)
+        onMutate?.(newValue, ...rest)
       }
 
       return { previousValue }
     },
-    onError: (err, newValue: UpdateValue, context) => {
+    onError: (err, newValue: UpdateValue, context, ...rest) => {
       if (context) {
         queryClient.setQueryData(queryKey, context.previousValue)
       }
@@ -34,7 +34,7 @@ export function useOptimistic<CacheValue, UpdateValue>(
       if (options) {
         const opts = unref(options)
         const onError = unref(opts.onError)
-        onError?.(err, newValue, context)
+        onError?.(err, newValue, context, ...rest)
       }
     },
     onSettled: (...args) => {

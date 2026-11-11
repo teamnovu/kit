@@ -24,11 +24,11 @@ export function useOrderSetPaymentMutation(
     mutationFn: async (options: OperationOptions<typeof orderSetPaymentOperation>) => {
       return client.query(orderSetPaymentOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       // Invalidate order queries to refetch updated payment information
       await queryClient.invalidateQueries({ queryKey: orderKeys.all() })
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

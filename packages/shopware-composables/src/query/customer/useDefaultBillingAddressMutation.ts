@@ -24,13 +24,13 @@ export function useDefaultBillingAddressMutation(
     mutationFn: async (options: OperationOptions<typeof defaultBillingAddressOperation>) => {
       return client.query(defaultBillingAddressOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: customerKeys.all() }),
         queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }
