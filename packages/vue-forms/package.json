@@ -41,6 +41,6 @@
     "@vueuse/core": "^13.5.0",
     "lodash-es": "^4.17.21",
     "vue-component-type-helpers": "^3.0.5",
-    "zod": "^4"
+    "zod": "^4.6.7"
   }
 }
