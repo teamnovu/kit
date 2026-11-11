@@ -1,4 +1,4 @@
-import type { DefaultError, QueryClient, QueryKey, QueryOptions, QueryState } from '@tanstack/vue-query'
+import type { QueryKey } from '@tanstack/vue-query'
 import { QueryCache } from '@tanstack/vue-query'
 import { shopwareKeys } from '../keys'
 
@@ -40,28 +40,18 @@ function throwOnShopwareKey(queryKey: QueryKey): never {
  * hydration passes through `QueryCache.build`, so all entry points are covered.
  */
 export class NonShopwareQueryCache extends QueryCache {
-  private readonly onShopwareKey: (queryKey: QueryKey) => void
-
   constructor(config?: QueryCacheConfig & NonShopwareQueryCacheConfig) {
-    const { onShopwareKey, ...cacheConfig } = config ?? {}
+    const { onShopwareKey = throwOnShopwareKey, ...cacheConfig } = config ?? {}
     super(cacheConfig)
-    this.onShopwareKey = onShopwareKey ?? throwOnShopwareKey
-  }
 
-  build<
-    TQueryFnData = unknown,
-    TError = DefaultError,
-    TData = TQueryFnData,
-    TQueryKey extends QueryKey = QueryKey,
-  >(
-    client: QueryClient,
-    options: QueryOptions<TQueryFnData, TError, TData, TQueryKey> & { queryKey: TQueryKey },
-    state?: QueryState<TData, TError>,
-  ) {
-    if (isShopwareQueryKey(options.queryKey)) {
-      this.onShopwareKey(options.queryKey)
-    }
+    const build = this.build.bind(this)
 
-    return super.build(client, options, state)
+    this.build = ((client, options, state) => {
+      if (isShopwareQueryKey(options.queryKey)) {
+        onShopwareKey(options.queryKey)
+      }
+
+      return build(client, options, state)
+    }) as QueryCache['build']
   }
 }
