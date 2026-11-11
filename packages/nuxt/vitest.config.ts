@@ -10,6 +10,7 @@ export default defineConfig({
       '@teamnovu/kit-animations': resolve(__dirname, '../animations/src/index.ts'),
       '@teamnovu/kit-components': resolve(__dirname, '../components/src/index.ts'),
       '@teamnovu/kit-composables': resolve(__dirname, '../composables/src/index.ts'),
+      'vue': resolve(__dirname, '../components/node_modules/vue'),
     },
   },
   test: {
