@@ -49,8 +49,8 @@ describe('useOptimistic', () => {
     const mutation = mountOptimisticMutation(queryClient, () => pending.promise)
     const done = mutation.mutateAsync('b')
 
-    await vi.waitFor(() => expect(refetchSignal?.aborted).toBe(true))
-    expect(queryClient.getQueryData(listKey)).toEqual(['a', 'b'])
+    await vi.waitFor(() => expect(queryClient.getQueryData(listKey)).toEqual(['a', 'b']))
+    expect(refetchSignal?.aborted).toBe(true)
 
     pending.resolve(undefined)
     await Promise.all([done, refetch])
