@@ -58,6 +58,7 @@
   "scripts": {
     "build": "vite build",
     "watch": "NODE_ENV=development vite build --watch",
+    "test": "vitest run",
     "typecheck": "vue-tsc --noEmit"
   },
   "repository": {
