@@ -25,6 +25,9 @@ tags: [vue, nuxt, cookie-consent, gdpr]
   `runtimeConfig.public.cookieconsent` and registers the composables and `CookieGuard`. It adds no plugin, so
   nothing reads that runtime config.
 - **Styles:** `style.scss` imports `vanilla-cookieconsent/dist/cookieconsent.css`.
+- **Module resolution:** vanilla-cookieconsent 3.1 has no `exports` map. Bundlers use its ESM `module` build,
+  but plain Node loads the UMD `main`, whose namespace has no `run`. This is a risk for SSR externals, and tests
+  force `mainFields: ['module']`.
 
 # Update notes
 

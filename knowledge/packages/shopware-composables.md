@@ -36,5 +36,7 @@ tags: [shopware, vue-query, composables]
 - **Lint toolchain:** it carries its own copy of the ESLint toolchain, which is redundant. Its `@stylistic`
   plugin is what the root lint config resolves through hoisting; see [linting](../quality/lint.md).
 - **Lint errors:** the generated types file accounts for 7,826 of the repo's 7,905 lint errors.
-- **Test config:** `vitest.config.js` loads env via `loadEnv(mode, __dirname, '')`, and there is no `test`
-  script yet.
+- **Test config:** `vitest.config.js` loads env via `loadEnv(mode, __dirname, '')` and aliases the api client to
+  `src`. There are 46 tests.
+- **Mutation callbacks:** user callbacks are forwarded with fixed argument lists, so newer vue-query context
+  arguments get lost. Tests are a tripwire; see [known bugs](../quality/known-bugs.md).

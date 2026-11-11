@@ -23,12 +23,15 @@ tags: [eslint, lint, quality]
 - **ESLint 10:** blocked unless every plugin in that config's chain peers it. `eslint-plugin-import` (used in
   shopware-composables) peers only up to ESLint 9.
 
-# Baseline (2026-11-11, before the dependency update)
+# State
 
-- **Total:** 7,905 errors and 116 warnings in 17 files.
-- **Generated file:** 7,826 errors are in the generated `packages/shopware-composables/api-types/storeApiTypes.d.ts`.
-  It should be lint-ignored.
-- **Elsewhere:** ~80 errors across 16 files, mostly autofixable `@stylistic` rules (member-delimiter-style,
-  quotes, indent), plus `no-explicit-any`, `no-redeclare` and `no-console` in `scripts/notify-changelog.js`.
-- **CI:** for the planned CI lint job, the generated file is ignored and the rest fixed in explicit `style:`
-  commits.
+- **Baseline (2026-11-11):** 7,905 errors. 7,826 of them were in the generated
+  `packages/shopware-composables/api-types/storeApiTypes.d.ts`.
+- **Now:** **0 errors** and 61 warnings, enforced by the CI `verify` job via `pnpm exec eslint .`. Warnings
+  don't fail it.
+- **Config changes** (commit `66bca68`):
+  - the generated API types are ignored
+  - the core `no-redeclare` is off for `.ts`/`.mts`/`.vue`; it flagged TypeScript overloads, and the shared
+    config had re-enabled it after typescript-eslint turned it off
+  - `no-console` is allowed in `scripts/`
+- **Remaining errors:** fixed in `style: fix pre-existing lint errors` (`fda4089`).
