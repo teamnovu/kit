@@ -1,0 +1,25 @@
+export interface BookSerializationGroups {
+    resourceClass: 'App\\Entity\\Book';
+    properties: {
+        id: {
+            groups: 'book:read';
+        };
+        title: {
+            groups: 'book:read' | 'book:write';
+        };
+        author: {
+            groups: 'book:read';
+        };
+        published_at: {
+            groups: 'book:read' | 'book:write';
+        };
+    };
+}
+export interface AuthorSerializationGroups {
+    resourceClass: 'App\\Entity\\Author';
+    properties: {
+        name: {
+            groups: 'author:read' | 'book:read';
+        };
+    };
+}
