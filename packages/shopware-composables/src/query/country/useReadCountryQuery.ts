@@ -29,4 +29,3 @@ export const useReadCountryQueryOptions = function useReadCountryQueryOptions(
 export function useReadCountryQuery(options?: OperationOptions<typeof readCountryOperation>) {
   return useShopwareQuery(useReadCountryQueryOptions(options))
 }
-

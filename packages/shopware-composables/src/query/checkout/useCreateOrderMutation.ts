@@ -33,7 +33,7 @@ export function useCreateOrderMutation(
         queryClient.invalidateQueries({ queryKey: orderKeys.lists() }),
 
         // Invalidate context
-        queryClient.invalidateQueries({ queryKey: contextKeys.all() })
+        queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
       ])
 
       await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)

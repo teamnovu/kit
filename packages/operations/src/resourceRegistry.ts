@@ -42,8 +42,8 @@ export function setQueryDataWithResources<T>(
   queryKey: QueryKey,
   data: T,
 ): void {
-  queryClient.setQueryData(queryKey, data);
-  registerQueryResources(extractResourceTypes(data), queryKey);
+  queryClient.setQueryData(queryKey, data)
+  registerQueryResources(extractResourceTypes(data), queryKey)
 }
 
 /**

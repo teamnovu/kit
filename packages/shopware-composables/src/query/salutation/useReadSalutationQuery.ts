@@ -29,4 +29,3 @@ export const useReadSalutationQueryOptions = function useReadSalutationQueryOpti
 export function useReadSalutationQuery(options?: OperationOptions<typeof readSalutationOperation>) {
   return useShopwareQuery(useReadSalutationQueryOptions(options))
 }
-
