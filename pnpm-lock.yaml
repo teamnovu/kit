@@ -263,8 +263,8 @@ importers:
         version: 4.18.1
     devDependencies:
       '@tanstack/vue-query':
-        specifier: ^5.101.0
-        version: 5.101.0(vue@3.5.45(typescript@6.0.3))
+        specifier: ^5.107.1
+        version: 5.107.1(vue@3.5.45(typescript@6.0.3))
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.10(vite@6.4.6(@types/node@26.6.6)(jiti@2.7.0)(sass@1.108.1)(terser@5.51.2)(tsx@4.19.3)(yaml@2.9.1))(vue@3.5.45(typescript@6.0.3))
@@ -310,8 +310,8 @@ importers:
         specifier: ^1.4.0
         version: 1.8.0
       '@tanstack/vue-query':
-        specifier: 5.85.3
-        version: 5.85.3(vue@3.5.45(typescript@5.9.3))
+        specifier: ^5.107.1
+        version: 5.107.1(vue@3.5.45(typescript@5.9.3))
       '@vue/test-utils':
         specifier: ^2.4.6
         version: 2.5.1(@vue/compiler-dom@3.5.45)(@vue/server-renderer@3.5.45)(vue@3.5.45(typescript@5.9.3))
@@ -2320,27 +2320,15 @@ packages:
     peerDependencies:
       eslint: '>=9.0.0'
 
-  '@tanstack/match-sorter-utils@8.19.4':
-    resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
-    engines: {node: '>=12'}
+  '@tanstack/match-sorter-utils@9.2.6':
+    resolution: {integrity: sha512-DIpUSOhPfQ7u/qfUi/Wgm0wBO56MyBYXGvnlI0NcauDRPqdBUlAZZjW2Dxm92m+k1UWVhKw8YJ4f47+75Aujyw==}
+    engines: {node: '>=20'}
 
-  '@tanstack/query-core@5.101.0':
-    resolution: {integrity: sha512-cQetA74EB+seWySv1TTKr828TnP0u39m6LykwDXIo84SNortpDkp30TMEjkqtYCNP9c40uT/iwl6MLiufEt0Ow==}
+  '@tanstack/query-core@5.107.1':
+    resolution: {integrity: sha512-PSyAik11oQBEVOiVy5hjZWHmoUqOXqK1WYy4v55mcxozEfKaQgpUMsgnXhWjuESzSht8JfzqMS1m6M/9CpNgvg==}
 
-  '@tanstack/query-core@5.85.3':
-    resolution: {integrity: sha512-9Ne4USX83nHmRuEYs78LW+3lFEEO2hBDHu7mrdIgAFx5Zcrs7ker3n/i8p4kf6OgKExmaDN5oR0efRD7i2J0DQ==}
-
-  '@tanstack/vue-query@5.101.0':
-    resolution: {integrity: sha512-sZeW0RvfEZ9QRiaXirE/HQZsFT5saMlPZVfeYvjPX6lqSBS9lkD7wfnCfzOBns6HD2f34Gx9cazkuU3Xj6hl/A==}
-    peerDependencies:
-      '@vue/composition-api': ^1.1.2
-      vue: ^2.6.0 || ^3.3.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-
-  '@tanstack/vue-query@5.85.3':
-    resolution: {integrity: sha512-SwLIgbHccHNdBTrL89n6DLtnpDO+pj4KQZUcv5YecZ+a/Bc9AIOcv7erqitbKiUXsBVCPdj4IagE0q1E+ha5oQ==}
+  '@tanstack/vue-query@5.107.1':
+    resolution: {integrity: sha512-O08F25JtbFDWJwEUjQNgSFRhkAXjlrAIUe0o06LfHC5agyNaxgzK9VUqjONu/BOUckARYdlXxSS7KIiKWeWlRw==}
     peerDependencies:
       '@vue/composition-api': ^1.1.2
       vue: ^2.6.0 || ^3.3.0
@@ -9181,29 +9169,27 @@ snapshots:
       - supports-color
       - typescript
 
-  '@tanstack/match-sorter-utils@8.19.4':
+  '@tanstack/match-sorter-utils@9.2.6':
     dependencies:
       remove-accents: 0.5.0
 
-  '@tanstack/query-core@5.101.0': {}
+  '@tanstack/query-core@5.107.1': {}
 
-  '@tanstack/query-core@5.85.3': {}
-
-  '@tanstack/vue-query@5.101.0(vue@3.5.45(typescript@6.0.3))':
+  '@tanstack/vue-query@5.107.1(vue@3.5.45(typescript@5.9.3))':
     dependencies:
-      '@tanstack/match-sorter-utils': 8.19.4
-      '@tanstack/query-core': 5.101.0
-      '@vue/devtools-api': 6.6.4
-      vue: 3.5.45(typescript@6.0.3)
-      vue-demi: 0.14.10(vue@3.5.45(typescript@6.0.3))
-
-  '@tanstack/vue-query@5.85.3(vue@3.5.45(typescript@5.9.3))':
-    dependencies:
-      '@tanstack/match-sorter-utils': 8.19.4
-      '@tanstack/query-core': 5.85.3
+      '@tanstack/match-sorter-utils': 9.2.6
+      '@tanstack/query-core': 5.107.1
       '@vue/devtools-api': 6.6.4
       vue: 3.5.45(typescript@5.9.3)
       vue-demi: 0.14.10(vue@3.5.45(typescript@5.9.3))
+
+  '@tanstack/vue-query@5.107.1(vue@3.5.45(typescript@6.0.3))':
+    dependencies:
+      '@tanstack/match-sorter-utils': 9.2.6
+      '@tanstack/query-core': 5.107.1
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.45(typescript@6.0.3)
+      vue-demi: 0.14.10(vue@3.5.45(typescript@6.0.3))
 
   '@teamnovu/eslint-config-vue@9.0.19(@stylistic/eslint-plugin@4.4.1(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(typescript@5.8.3))(eslint-plugin-vue@10.12.1(@stylistic/eslint-plugin@4.4.1(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(typescript@5.8.3))(@typescript-eslint/parser@8.72.2(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(typescript@5.8.3))(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(vue-eslint-parser@10.4.2(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))))(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(tailwindcss@3.4.17)':
     dependencies:
