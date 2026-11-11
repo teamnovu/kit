@@ -12,6 +12,7 @@
     "build": "vite build",
     "watch": "NODE_ENV=development vite build --watch",
     "lint": "eslint --fix --ignore-pattern 'dist/**' .",
+    "test": "vitest run",
     "typecheck": "vue-tsc --noEmit"
   },
   "license": "ISC",
