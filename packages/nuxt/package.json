@@ -16,6 +16,7 @@
     "@teamnovu/kit-composables": "workspace:*"
   },
   "devDependencies": {
-    "@nuxt/schema": "^3.10.2"
+    "@nuxt/schema": "^3.10.2",
+    "vitest": "^3.2.7"
   }
 }

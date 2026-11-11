@@ -57,7 +57,8 @@
   },
   "scripts": {
     "build": "vite build",
-    "watch": "NODE_ENV=development vite build --watch"
+    "watch": "NODE_ENV=development vite build --watch",
+    "typecheck": "vue-tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -77,6 +78,9 @@
     "nanoid": "^5.0.6"
   },
   "devDependencies": {
-    "@vueuse/shared": "^10.8.0"
+    "@vue/test-utils": "^2.5.1",
+    "@vueuse/shared": "^10.8.0",
+    "happy-dom": "^21.0.4",
+    "vitest": "^3.2.7"
   }
 }

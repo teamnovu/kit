@@ -14,7 +14,8 @@
   "scripts": {
     "build": "vite build",
     "watch": "NODE_ENV=development vite build --watch",
-    "lint": "eslint --fix --ignore-pattern 'dist/**' ."
+    "lint": "eslint --fix --ignore-pattern 'dist/**' .",
+    "typecheck": "vue-tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,8 @@
   "homepage": "https://kit.novu.ch/packages/shopware-api-client/",
   "dependencies": {
     "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.7"
   }
 }
