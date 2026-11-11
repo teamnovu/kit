@@ -1,6 +1,6 @@
 import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
-import { unref } from 'vue'
+import { toValue, unref } from 'vue'
 import { useShopwareQueryClient } from '../../inject'
 import { unrefOptions } from '../../util/unrefOptions'
 import { useShopwareMutation } from '../../util/useShopwareQuery'
@@ -18,12 +18,12 @@ export function useRecoveryPasswordMutation(
   const client = useShopwareQueryClient()
 
   return useShopwareMutation({
-    ...mutationOptions,
+    ...unref(toValue(mutationOptions)),
     mutationFn: async (options: OperationOptions<typeof recoveryPasswordOperation>) => {
       return client.query(recoveryPasswordOperation, unrefOptions(options))
     },
     onSuccess: async (data, variables, ...rest) => {
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
+      await unref(unref(toValue(mutationOptions))?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

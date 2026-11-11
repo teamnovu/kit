@@ -1,6 +1,6 @@
 import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
-import { unref } from 'vue'
+import { toValue, unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { cartKeys } from '../../keys'
 import { useShopwareMutation } from '../../util/useShopwareQuery'
@@ -32,7 +32,7 @@ export function useUpdateLineItemMutation(
   const queryClient = useShopwareVueQueryClient()
 
   return useShopwareMutation({
-    ...mutationOptions,
+    ...unref(toValue(mutationOptions)),
     mutationFn: async (body: Body) => {
       return client.query(updateCartItemOperation, {
         body: body as OperationBody<typeof updateCartItemOperation>,
@@ -41,7 +41,7 @@ export function useUpdateLineItemMutation(
     onSuccess: async (newCart, variables, ...rest) => {
       queryClient.setQueryData(cartKeys.get(), newCart)
       // queryClient.invalidateQueries({ queryKey: cartKeys.get() })
-      await unref(unref(mutationOptions)?.onSuccess)?.(newCart, variables, ...rest)
+      await unref(unref(toValue(mutationOptions))?.onSuccess)?.(newCart, variables, ...rest)
     },
   })
 }

@@ -1,6 +1,6 @@
 import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
-import { unref } from 'vue'
+import { toValue, unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { contextKeys, customerKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
@@ -20,7 +20,7 @@ export function useChangeEmailMutation(
   const queryClient = useShopwareVueQueryClient()
 
   return useShopwareMutation({
-    ...mutationOptions,
+    ...unref(toValue(mutationOptions)),
     mutationFn: async (options: OperationOptions<typeof changeEmailOperation>) => {
       return client.query(changeEmailOperation, unrefOptions(options))
     },
@@ -28,7 +28,7 @@ export function useChangeEmailMutation(
       await queryClient.invalidateQueries({ queryKey: customerKeys.all() })
       await queryClient.invalidateQueries({ queryKey: contextKeys.all() })
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, ...rest)
+      await unref(unref(toValue(mutationOptions))?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

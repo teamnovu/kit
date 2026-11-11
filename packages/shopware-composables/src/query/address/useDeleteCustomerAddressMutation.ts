@@ -1,6 +1,6 @@
 import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
-import { unref } from 'vue'
+import { toValue, unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { addressKeys, contextKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
@@ -24,7 +24,7 @@ export function useDeleteCustomerAddressMutation(
   const queryClient = useShopwareVueQueryClient()
 
   return useShopwareMutation({
-    ...mutationOptions,
+    ...unref(toValue(mutationOptions)),
     mutationFn: async (
       options: OperationOptions<typeof deleteCustomerAddressOperation>,
     ) => {
@@ -40,7 +40,7 @@ export function useDeleteCustomerAddressMutation(
         queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(
+      await unref(unref(toValue(mutationOptions))?.onSuccess)?.(
         data,
         variables,
         ...rest,
