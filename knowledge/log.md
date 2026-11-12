@@ -1,5 +1,10 @@
 # Knowledge Update Log
 
+## 2026-11-12 (Phase 3 complete)
+* **Update**: [Migration notes](dependencies/migration-notes.md) cover the TS 6 `rootDir`, vite 7 target, vite 8 `keepNames`, dts `processor: 'vue'`, vitest 5, the deferred ESLint 10/@stylistic 5, and the held-back runtime fixes.
+* **Update**: The [build pipeline](build/build-pipeline.md) reflects vite 8, TS 6 and vite-plugin-dts 5, with follow-ups.
+* **Update**: The [agent sandbox](environment/agent-sandbox.md) entry is corrected: `!` installs work; the real trap is pnpm 11's automatic install before pnpm commands after `package.json` edits.
+
 ## 2026-11-11 (Phase 2 complete)
 * **Update**: [Update plan](dependencies/update-plan.md): the cleanup is done (audit 309 → 216). Four behaviour-changing in-range updates were held back.
 * **Update**: [Migration notes](dependencies/migration-notes.md) cover zod 4.6 vs Vue reactivity, vue-query 5.107 callbacks, and the eslint-plugin-tailwindcss crash.

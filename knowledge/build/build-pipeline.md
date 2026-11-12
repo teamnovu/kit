@@ -26,10 +26,20 @@ tags: [build, vite, typescript, declarations]
 - **Baseline warning:** the build log has only one warning: shopware-composables imports `ShopwareApiError`
   without using it in ~20 mutation files.
 
-# Upgrade notes
+# State after Phase 3 (2026-11-12)
 
-- `vite-plugin-dts` 5 is a thin wrapper around `unplugin-dts@1.1.2`, so its options follow unplugin-dts.
-  unplugin-dts expects `@vue/language-core` and `@microsoft/api-extractor` as peers; without
-  `@vue/language-core` at the root, `.vue` declarations break.
-- vite 8 replaces Rollup with Rolldown. Gate it with the package-contract tests and a `dist` diff; see the
-  [update plan](../dependencies/update-plan.md).
+- **Versions:**
+  - vite 8 (Rolldown/Oxc, Lightning CSS minification) and `@vitejs/plugin-vue` 6 at the root
+  - TypeScript 6.0
+  - vite-plugin-dts 5 (on unplugin-dts 1.1) with `@vue/language-core` 3.3
+- **Package tsconfigs** set `rootDir: ./src`.
+- **`.vue` declarations:** components, cookieconsent and vue-forms pass `processor: 'vue'` to the dts plugin.
+- **keepNames:** shopware-api-client keeps class names via `build.rolldownOptions.output.keepNames`. The
+  contract tests pin `ShopwareApiError`'s name.
+- **api-platform-types** now builds with the root vite version (explicit devDependency) instead of an
+  auto-installed vite 7 peer.
+- **Follow-ups, not urgent:**
+  - Rename `build.rollupOptions` to `rolldownOptions` in the other configs (deprecated alias).
+  - Rename `vite.config.js` to `.mjs` in packages without `"type": "module"`. vite warns that its future
+    native config loader won't accept ESM in CJS-scoped files. Setting `"type": "module"` instead would change
+    output extensions and exports.

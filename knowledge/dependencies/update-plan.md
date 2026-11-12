@@ -39,13 +39,21 @@ status: draft
      - vanilla-cookieconsent 3.1 → 3.3
      - TypeScript
      - See the [migration notes](migration-notes.md).
-3. **Dev-tooling majors, one per commit:**
-   - Node 24
+3. **Dev-tooling majors (done 2026-11-12):**
+   - Node 24 (`.nvmrc`, which CI now reads)
    - TypeScript 6.0
-   - lint stack (ESLint 10 only if the plugins allow it)
-   - vite 7 → 8 with plugin-vue 6 and vite-plugin-dts 5
+   - `@eslint/compat` 2
+   - plugin-vue 6
+   - vite 7, then 8
    - vitest 5 with happy-dom 21
-   - docs stack
+   - vite-plugin-dts 5
+   - glob 14 (docs)
+   - `@types/node` 24
+   - Audit: 216 → 201 (critical 7).
+   - **Deferred:** ESLint 10, `@eslint/js` 10 and `@stylistic` 5, until `@teamnovu/eslint-config-vue` ships a
+     version for them; TypeScript 7, blocked by typescript-eslint.
+   - The held-back zod, vue-query and vanilla-cookieconsent updates landed with fixes; see the
+     [migration notes](migration-notes.md).
 4. **Consumer-facing runtime deps:**
    - security floors (lodash-es, defu, zod, nanoid)
    - drop unused deps
