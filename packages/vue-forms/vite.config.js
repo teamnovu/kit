@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
+      processor: 'vue',
       staticImport: true,
     }),
   ],
