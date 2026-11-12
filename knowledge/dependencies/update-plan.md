@@ -61,7 +61,38 @@ status: draft
    - nanoid 6 (breaking)
    - Nuxt 3/4 support
    - See the [migration notes](migration-notes.md).
-5. **release-please:** see the [release-please migration](../release/release-please-migration.md).
+4b. **Done 2026-11-12:**
+   - unused runtime deps dropped
+   - security floors: lodash-es 4.18.1, zod 4.6.7, defu 6.1.7
+   - zod 4 in shopware-api-client
+   - glob 14 and yaml in api-platform-types
+   - VueUse 15 with Vue ≥ 3.5 in components, composables, shopware-composables and vue-forms
+   - nanoid 6
+   - Nuxt 3/4 support, verified by smoke apps on Nuxt 3.21 and 4.6
+   - `files` whitelists
+   - kit-nuxt developed against Nuxt 4
+   - **Audit: 310 → 33** (critical 12 → 3, all dev-only: `@shopware/api-gen`, VitePress 1 tooling).
+5. **release-please (done 2026-11-12):** see the [release-please setup](../release/release-please-migration.md).
+6. **Final verification (2026-11-12):**
+   - lint, typecheck, 587 unit tests, 28 contract tests and 3 notifier tests, docs build
+   - 67 conventional commits, no hand-edited versions
+   - Vite consumer smoke app built from the tarballs (all entries and subpaths). Its strict type check only
+     reported the pre-existing shopware-composables type issues in [known bugs](../quality/known-bugs.md).
+
+# Follow-ups
+
+- **Shared config:** release `@teamnovu/eslint-config-vue` with ESLint 10, `@stylistic` 5 and the Tailwind
+  plugins v4. ESLint 9 is end-of-life.
+- **After the first release:** remove the `release-as` entries.
+- **Secrets:** check whether shopware-composables' `.env` files were published, and rotate secrets if so.
+  Untrack the files if they are committed.
+- **Vite configs:** rename `vite.config.js` to `.mjs` in packages without `"type": "module"`, and
+  `rollupOptions` to `rolldownOptions`.
+- **Nuxt flags:** switch kit-nuxt's runtime to `import.meta.client` (`process.client` only keeps working for
+  compatibility).
+- **shopware-composables types:** fix the published type issues.
+- **VitePress 2:** once stable, it drops the remaining vite 5 dev-server advisories.
+- **Known bugs:** work through the runtime bugs in [known bugs](../quality/known-bugs.md).
 
 # Gate after every update commit
 

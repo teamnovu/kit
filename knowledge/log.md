@@ -1,5 +1,11 @@
 # Knowledge Update Log
 
+## 2026-11-12 (Phases 4 and 5 complete)
+* **Update**: The [release-please setup](release/release-please-migration.md) is implemented, with pinned first-release versions (`release-as`, to be removed afterwards).
+* **Update**: [Slack notifications](integrations/slack-notifications.md) are implemented. A real webhook test post is still open.
+* **Update**: [Known bugs](quality/known-bugs.md) gained the published-type issues in shopware-composables and the `.env` publishing risk.
+* **Update**: The [update plan](dependencies/update-plan.md) records the final results (audit 310 → 33), the verification and the follow-ups.
+
 ## 2026-11-12 (Phase 3 complete)
 * **Update**: [Migration notes](dependencies/migration-notes.md) cover the TS 6 `rootDir`, vite 7 target, vite 8 `keepNames`, dts `processor: 'vue'`, vitest 5, the deferred ESLint 10/@stylistic 5, and the held-back runtime fixes.
 * **Update**: The [build pipeline](build/build-pipeline.md) reflects vite 8, TS 6 and vite-plugin-dts 5, with follow-ups.
