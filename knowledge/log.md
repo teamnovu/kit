@@ -1,5 +1,8 @@
 # Knowledge Update Log
 
+## 2026-11-12 (first release)
+* **Update**: The [release-please setup](release/release-please-migration.md) records the first release with the pinned versions, the removed `release-as` entries and the workflow approval on release PRs.
+
 ## 2026-11-12 (Slack test post, `.env` check)
 * **Update**: [Slack notifications](integrations/slack-notifications.md) are verified by a real webhook post to a scratch channel.
 * **Update**: [Known bugs](quality/known-bugs.md): the published `.env` files hold nothing sensitive, so no rotation is needed.

@@ -28,8 +28,10 @@ Jobs: `verify` → `release-please` (main only) → `publish` (only if `releases
 - **`release-please`** opens or updates the release PR. Merging it creates the tags and GitHub releases.
 - **`publish`** runs `pnpm -r publish`, which only publishes versions missing from npm, then
   `scripts/notify-changelog.js`; see [Slack notifications](../integrations/slack-notifications.md).
-- **Release PR tokens:** PRs opened with `GITHUB_TOKEN` don't trigger `pull_request` workflows. If `verify`
-  should run on release PRs, use a PAT or GitHub App token.
+- **Release PR checks:** release PRs are opened with `GITHUB_TOKEN`, so their workflows wait for a
+  maintainer's "Approve workflows to run" ([GitHub changelog, 2026-06-11](https://github.blog/changelog/2026-06-11-bot-created-pull-requests-can-run-workflows-if-approved/)).
+  Approving runs only `verify`. Without approval, `verify` still runs on `main` before tagging and publishing.
+  A PAT or GitHub App token would make it automatic; the team decided against it for now.
 
 ## Process rules
 
@@ -55,5 +57,5 @@ Implemented as `release-as` per package:
 | api-platform-types | 0.3.0 | TypeScript 6, glob 14 |
 | operations, shopware-api-client | 0.1.0 | vue-query 5.107 / zod 4 |
 
-**After that release is published, remove every `release-as` entry.** Otherwise release-please keeps
-proposing the same versions.
+**Published 2026-11-12** with exactly these versions, and the release notes reached Slack. The `release-as` entries
+were removed afterwards, so release-please derives versions from the commits again.

@@ -83,7 +83,6 @@ status: draft
 
 - **Shared config:** release `@teamnovu/eslint-config-vue` with ESLint 10, `@stylistic` 5 and the Tailwind
   plugins v4. ESLint 9 is end-of-life.
-- **After the first release:** remove the `release-as` entries.
 - **Vite configs:** rename `vite.config.js` to `.mjs` in packages without `"type": "module"`, and
   `rollupOptions` to `rolldownOptions`.
 - **Nuxt flags:** switch kit-nuxt's runtime to `import.meta.client` (`process.client` only keeps working for
