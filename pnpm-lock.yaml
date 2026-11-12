@@ -100,8 +100,8 @@ importers:
   packages/animations:
     dependencies:
       nanoid:
-        specifier: ^5.0.6
-        version: 5.1.16
+        specifier: ^6.0.2
+        version: 6.0.2
       vue:
         specifier: ^3.0.0
         version: 3.5.45(typescript@6.0.3)
@@ -175,8 +175,8 @@ importers:
         specifier: ^4.18.1
         version: 4.18.1
       nanoid:
-        specifier: ^5.0.6
-        version: 5.1.16
+        specifier: ^6.0.2
+        version: 6.0.2
       vue:
         specifier: ^3.5.0
         version: 3.5.45(typescript@6.0.3)
@@ -5110,9 +5110,9 @@ packages:
     engines: {node: ^18 || >=20}
     hasBin: true
 
-  nanoid@5.1.5:
-    resolution: {integrity: sha512-Ir/+ZpE9fDsNH0hQ3C68uyThDXzYcim2EqcZ8zn8Chtt1iylPT9xXJB0kPCnqzgcEGikO9RxSrh63MsmVCU7Fw==}
-    engines: {node: ^18 || >=20}
+  nanoid@6.0.2:
+    resolution: {integrity: sha512-hIvVOb9Qr1p/9CNNLOe0OlWvgx/ziTsVwKN/GDSsuArN2K0wDiafP3s0SWmsm7o2BdnyS8Z9Z64NFBUbn6ziBg==}
+    engines: {node: ^22 || ^24 || >=26}
     hasBin: true
 
   nanotar@0.2.0:
@@ -9693,7 +9693,7 @@ snapshots:
       '@vue/devtools-kit': 7.7.2
       '@vue/devtools-shared': 7.7.2
       mitt: 3.0.1
-      nanoid: 5.1.5
+      nanoid: 5.1.16
       pathe: 2.0.3
       vite-hot-client: 0.2.4(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.4.2)(sass@1.108.1)(terser@5.51.2)(tsx@4.19.3)(yaml@2.9.1))
       vue: 3.5.45(typescript@5.9.3)
@@ -12104,7 +12104,7 @@ snapshots:
 
   nanoid@5.1.16: {}
 
-  nanoid@5.1.5: {}
+  nanoid@6.0.2: {}
 
   nanotar@0.2.0: {}
 
