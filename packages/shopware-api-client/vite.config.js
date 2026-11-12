@@ -6,9 +6,6 @@ import pkg from './package.json'
 export default defineConfig({
   plugins: [dts()],
   root: resolve(__dirname),
-  esbuild: {
-    keepNames: true,
-  },
   build: {
     emptyOutDir: false,
     lib: {
@@ -18,10 +15,13 @@ export default defineConfig({
         index: resolve(__dirname, 'src/index.ts'),
       },
     },
-    rollupOptions: {
+    rolldownOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
       external: ['vue', ...Object.keys(pkg.dependencies ?? {})],
+      output: {
+        keepNames: true,
+      },
     },
   },
 })
