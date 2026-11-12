@@ -33,9 +33,8 @@
   "homepage": "https://kit.novu.ch/packages/cookieconsent/",
   "dependencies": {
     "@nuxt/kit": "^3.8.1",
-    "@vueuse/core": "^10.5.0",
-    "defu": "^6.1.3",
-    "vanilla-cookieconsent": "^3.0.0-rc.15"
+    "defu": "^6.1.7",
+    "vanilla-cookieconsent": "^3.3.0"
   },
   "devDependencies": {
     "@nuxt/schema": "^3.10.2",
