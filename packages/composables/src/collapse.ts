@@ -19,7 +19,7 @@ import { nanoid } from 'nanoid'
 import { useCollapseController } from './injects/collapseController'
 import { collapseContextKey } from './injects/collapseContext'
 
-export interface CollapseOptions extends UseTransitionOptions {
+export interface CollapseOptions extends UseTransitionOptions<number> {
   id?: string
   dimension?: 'width' | 'height'
   initiallyClosed?: boolean
@@ -40,7 +40,7 @@ export default function useCollapsable(
   const transition = useTransition(baseState, {
     ...options,
     duration: options?.duration ?? 300,
-    transition: options?.transition ?? TransitionPresets.easeInOutCubic,
+    easing: options?.easing ?? options?.transition ?? TransitionPresets.easeInOutCubic,
     onFinished: () => {
       window.requestAnimationFrame(() => {
         const element = unref(elm)
