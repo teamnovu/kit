@@ -99,9 +99,6 @@ importers:
 
   packages/animations:
     dependencies:
-      '@vueuse/core':
-        specifier: ^10.1.0
-        version: 10.11.1(vue@3.5.45(typescript@6.0.3))
       nanoid:
         specifier: ^5.0.6
         version: 5.1.16
@@ -155,9 +152,6 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      nanoid:
-        specifier: ^5.0.6
-        version: 5.1.16
       vue:
         specifier: ^3.0.0
         version: 3.5.45(typescript@6.0.3)
@@ -2596,9 +2590,6 @@ packages:
   '@types/web-bluetooth@0.0.16':
     resolution: {integrity: sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==}
 
-  '@types/web-bluetooth@0.0.20':
-    resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
-
   '@types/web-bluetooth@0.0.21':
     resolution: {integrity: sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==}
 
@@ -2927,9 +2918,6 @@ packages:
       '@vue/server-renderer':
         optional: true
 
-  '@vueuse/core@10.11.1':
-    resolution: {integrity: sha512-guoy26JQktXPcz+0n3GukWIy/JDNKti9v6VEMu6kV2sYBsWuGiTU8OWdg+ADfUbHg3/3DlqySDe7JmdHrktiww==}
-
   '@vueuse/core@12.8.2':
     resolution: {integrity: sha512-HbvCmZdzAu3VGi/pWYm5Ut+Kd9mn1ZHnn4L5G8kOQTPs/IwIAmJoBrmYk2ckLArgMXZj0AW3n5CAejLUO+PhdQ==}
 
@@ -2981,9 +2969,6 @@ packages:
         optional: true
       universal-cookie:
         optional: true
-
-  '@vueuse/metadata@10.11.1':
-    resolution: {integrity: sha512-IGa5FXd003Ug1qAZmyE8wF3sJ81xGLSqTqtQ6jaVfkeZ4i5kS2mwQF61yhVqojRnenVew5PldLyRgvdl4YYuSw==}
 
   '@vueuse/metadata@12.8.2':
     resolution: {integrity: sha512-rAyLGEuoBJ/Il5AmFHiziCPdQzRt88VxR+Y/A/QhJ1EWtWqPBBAxTAFaSkviwEuOEZNtW8pvkPgoCZQ+HxqW1A==}
@@ -9384,8 +9369,6 @@ snapshots:
 
   '@types/web-bluetooth@0.0.16': {}
 
-  '@types/web-bluetooth@0.0.20': {}
-
   '@types/web-bluetooth@0.0.21': {}
 
   '@types/whatwg-mimetype@3.0.2': {}
@@ -9931,16 +9914,6 @@ snapshots:
     optionalDependencies:
       '@vue/server-renderer': 3.5.45
 
-  '@vueuse/core@10.11.1(vue@3.5.45(typescript@6.0.3))':
-    dependencies:
-      '@types/web-bluetooth': 0.0.20
-      '@vueuse/metadata': 10.11.1
-      '@vueuse/shared': 10.11.1(vue@3.5.45(typescript@6.0.3))
-      vue-demi: 0.14.10(vue@3.5.45(typescript@6.0.3))
-    transitivePeerDependencies:
-      - '@vue/composition-api'
-      - vue
-
   '@vueuse/core@12.8.2(typescript@6.0.3)':
     dependencies:
       '@types/web-bluetooth': 0.0.21
@@ -9979,8 +9952,6 @@ snapshots:
       jwt-decode: 4.0.0
     transitivePeerDependencies:
       - typescript
-
-  '@vueuse/metadata@10.11.1': {}
 
   '@vueuse/metadata@12.8.2': {}
 
