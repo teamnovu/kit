@@ -14,7 +14,7 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "nuxt": "^3.0.0"
+    "nuxt": "^3.13.1 || ^4.0.0"
   },
   "dependencies": {
     "@nuxt/kit": "^3.8.0",
