@@ -34,7 +34,7 @@ exports[`@teamnovu/kit-api-platform-types > emits the same declaration files 1`]
 exports[`@teamnovu/kit-api-platform-types > exposes the same runtime exports when imported by plain Node 1`] = `
 {
   ".": [
-    "generateSerializationGroups: function K",
+    "generateSerializationGroups: function f",
   ],
 }
 `;
