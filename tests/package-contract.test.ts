@@ -58,7 +58,11 @@ function runtimeSubpaths(pkg: PackageJson) {
 }
 
 function importInNode(dir: string, specifier: string): string[] {
-  const code = `const m = await import(${JSON.stringify(specifier)}); process.stdout.write(JSON.stringify(Object.keys(m).sort()))`
+  const code = [
+    `const m = await import(${JSON.stringify(specifier)})`,
+    'const describe = key => typeof m[key] === \'function\' ? `${key}: function ${m[key].name}` : `${key}: ${typeof m[key]}`',
+    'process.stdout.write(JSON.stringify(Object.keys(m).sort().map(describe)))',
+  ].join('\n')
   const output = execFileSync(process.execPath, ['--input-type=module', '--eval', code], {
     cwd: dir,
     encoding: 'utf8',
