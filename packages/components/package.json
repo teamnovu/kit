@@ -1,10 +1,14 @@
 {
   "name": "@teamnovu/kit-components",
-  "version": "1.2.3",
+  "version": "2.0.0",
   "description": "A collection of vue(3) components for jkweb",
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "type": "module",
-  "main": "dist/index.mjs",
-  "module": "dist/index.mjs",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
@@ -13,51 +17,53 @@
     },
     "./Image": {
       "types": "./dist/Image.vue.d.ts",
-      "import": "./dist/Image.mjs"
+      "import": "./dist/Image.js"
     },
     "./Dialog": {
       "types": "./dist/Dialog.vue.d.ts",
-      "import": "./dist/Dialog.mjs"
+      "import": "./dist/Dialog.js"
     },
     "./Collapse": {
       "types": "./dist/Collapse.vue.d.ts",
-      "import": "./dist/Collapse.mjs"
+      "import": "./dist/Collapse.js"
     },
     "./Accordion": {
       "types": "./dist/accordion/Accordion.vue.d.ts",
-      "import": "./dist/Accordion.mjs"
+      "import": "./dist/Accordion.js"
     },
     "./AccordionItem": {
       "types": "./dist/accordion/AccordionItem.vue.d.ts",
-      "import": "./dist/AccordionItem.mjs"
+      "import": "./dist/AccordionItem.js"
     },
     "./AccordionHeader": {
       "types": "./dist/accordion/AccordionHeader.vue.d.ts",
-      "import": "./dist/AccordionHeader.mjs"
+      "import": "./dist/AccordionHeader.js"
     },
     "./AccordionBody": {
       "types": "./dist/accordion/AccordionBody.vue.d.ts",
-      "import": "./dist/AccordionBody.mjs"
+      "import": "./dist/AccordionBody.js"
     },
     "./HAccordion": {
       "types": "./dist/accordion/HAccordion.vue.d.ts",
-      "import": "./dist/HAccordion.mjs"
+      "import": "./dist/HAccordion.js"
     },
     "./HAccordionItem": {
       "types": "./dist/accordion/HAccordionItem.vue.d.ts",
-      "import": "./dist/HAccordionItem.mjs"
+      "import": "./dist/HAccordionItem.js"
     },
     "./AccessibleComponent": {
       "types": "./dist/AccessibleComponent.vue.d.ts",
-      "import": "./dist/AccessibleComponent.mjs"
+      "import": "./dist/AccessibleComponent.js"
     }
   },
   "peerDependencies": {
-    "vue": "^3.0.0"
+    "vue": "^3.5.0"
   },
   "scripts": {
     "build": "vite build",
-    "watch": "NODE_ENV=development vite build --watch"
+    "watch": "NODE_ENV=development vite build --watch",
+    "test": "vitest run",
+    "typecheck": "vue-tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -72,11 +78,12 @@
   "homepage": "https://kit.novu.ch/packages/components/",
   "dependencies": {
     "@teamnovu/kit-composables": "workspace:*",
-    "@vueuse/core": "^9.13.0",
-    "lodash-es": "^4.17.21",
-    "nanoid": "^5.0.6"
+    "@vueuse/core": "^15.0.0",
+    "lodash-es": "^4.18.1"
   },
   "devDependencies": {
-    "@vueuse/shared": "^10.8.0"
+    "@vue/test-utils": "^2.5.1",
+    "happy-dom": "^21.0.4",
+    "vitest": "^5.1.0"
   }
 }

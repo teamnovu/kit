@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "f1d6ea6224d99202a4557def5578ab98e465102b",
+  "release-type": "node",
+  "bump-minor-pre-major": true,
+  "plugins": ["node-workspace"],
+  "packages": {
+    "packages/animations": { "release-as": "2.0.0" },
+    "packages/api-platform-types": { "release-as": "0.3.0" },
+    "packages/components": { "release-as": "2.0.0" },
+    "packages/composables": { "release-as": "2.0.0" },
+    "packages/cookieconsent": { "release-as": "3.1.0" },
+    "packages/nuxt": { "release-as": "2.0.0" },
+    "packages/operations": { "release-as": "0.1.0" },
+    "packages/shopware-api-client": { "release-as": "0.1.0" },
+    "packages/shopware-composables": { "release-as": "0.2.0" },
+    "packages/vue-forms": { "release-as": "0.5.0" }
+  }
+}

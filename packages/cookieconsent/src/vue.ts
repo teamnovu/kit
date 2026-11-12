@@ -64,8 +64,12 @@ function install(app: App, _options?: CookieConsentConfig) {
     onChange: onUpdate,
   })
 
+  const vanillaApi = Object.fromEntries(
+    Object.entries(VanillaConsent).filter(([name]) => name !== 'default'),
+  ) as typeof VanillaConsent
+
   const cookieConsent = {
-    ...VanillaConsent,
+    ...vanillaApi,
     services,
     acceptService,
   } satisfies CookieConsent

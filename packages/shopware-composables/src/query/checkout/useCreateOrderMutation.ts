@@ -1,6 +1,6 @@
 import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
-import { unref } from 'vue'
+import { toValue, unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { cartKeys, contextKeys, orderKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
@@ -20,11 +20,11 @@ export function useCreateOrderMutation(
   const queryClient = useShopwareVueQueryClient()
 
   return useShopwareMutation({
-    ...mutationOptions,
-    mutationFn: async (options?: OperationOptions<typeof createOrderOperation>) => {
+    ...unref(toValue(mutationOptions)),
+    mutationFn: async (options: OperationOptions<typeof createOrderOperation>) => {
       return client.query(createOrderOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       await Promise.all([
         // Clear cart after successful order creation
         queryClient.invalidateQueries({ queryKey: cartKeys.get() }),
@@ -33,10 +33,10 @@ export function useCreateOrderMutation(
         queryClient.invalidateQueries({ queryKey: orderKeys.lists() }),
 
         // Invalidate context
-        queryClient.invalidateQueries({ queryKey: contextKeys.all() })
+        queryClient.invalidateQueries({ queryKey: contextKeys.all() }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(toValue(mutationOptions))?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

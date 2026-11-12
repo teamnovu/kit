@@ -5,6 +5,7 @@ import {
   onBeforeUnmount,
   reactive,
   ref,
+  toRaw,
   toRefs,
   toValue,
   unref,
@@ -80,7 +81,7 @@ implements Validator<T, TOut> {
       return SuccessValidationResult
     }
 
-    const result = await this.schema.safeParseAsync(data)
+    const result = await toRaw(this.schema).safeParseAsync(data)
 
     if (result.success) {
       return {

@@ -1,0 +1,480 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@teamnovu/kit-animations > emits the same declaration files 1`] = `
+[
+  "animations/index.d.ts",
+  "impl.d.ts",
+  "index.d.ts",
+  "timeline.d.ts",
+  "types.d.ts",
+  "util.d.ts",
+]
+`;
+
+exports[`@teamnovu/kit-animations > exposes the same runtime exports when imported by plain Node 1`] = `
+{
+  ".": [
+    "create: function B",
+    "createTimeline: function z",
+    "default: object",
+  ],
+}
+`;
+
+exports[`@teamnovu/kit-api-platform-types > emits the same declaration files 1`] = `
+[
+  "index.d.ts",
+  "plugin/generateSerializationGroups/index.d.ts",
+  "plugin/generateSerializationGroups/parser/yaml.d.ts",
+  "plugin/generateSerializationGroups/types.d.ts",
+  "types.d.ts",
+]
+`;
+
+exports[`@teamnovu/kit-api-platform-types > exposes the same runtime exports when imported by plain Node 1`] = `
+{
+  ".": [
+    "generateSerializationGroups: function f",
+  ],
+}
+`;
+
+exports[`@teamnovu/kit-components > emits the same declaration files 1`] = `
+[
+  "AccessibleComponent.vue.d.ts",
+  "Collapse.vue.d.ts",
+  "Dialog.vue.d.ts",
+  "HScrollState.vue.d.ts",
+  "Image.vue.d.ts",
+  "PromptProvider.vue.d.ts",
+  "accordion/Accordion.vue.d.ts",
+  "accordion/AccordionBody.vue.d.ts",
+  "accordion/AccordionHeader.vue.d.ts",
+  "accordion/AccordionItem.vue.d.ts",
+  "accordion/HAccordion.vue.d.ts",
+  "accordion/HAccordionItem.vue.d.ts",
+  "index.d.ts",
+  "utils/dialog.d.ts",
+  "utils/event.d.ts",
+  "utils/promise.d.ts",
+  "utils/selectors.d.ts",
+  "utils/transition.d.ts",
+]
+`;
+
+exports[`@teamnovu/kit-components > exposes the same runtime exports when imported by plain Node 1`] = `
+{
+  ".": [
+    "AccessibleComponent: object",
+    "Accordion: object",
+    "AccordionBody: object",
+    "AccordionHeader: object",
+    "AccordionItem: object",
+    "Collapse: object",
+    "Dialog: object",
+    "HAccordion: object",
+    "HAccordionItem: object",
+    "HScrollState: object",
+    "Image: object",
+    "PromptProvider: object",
+  ],
+  "./AccessibleComponent": [
+    "default: object",
+  ],
+  "./Accordion": [
+    "default: object",
+  ],
+  "./AccordionBody": [
+    "default: object",
+  ],
+  "./AccordionHeader": [
+    "default: object",
+  ],
+  "./AccordionItem": [
+    "default: object",
+  ],
+  "./Collapse": [
+    "default: object",
+  ],
+  "./Dialog": [
+    "default: object",
+  ],
+  "./HAccordion": [
+    "default: object",
+  ],
+  "./HAccordionItem": [
+    "default: object",
+  ],
+  "./Image": [
+    "default: object",
+  ],
+}
+`;
+
+exports[`@teamnovu/kit-composables > emits the same declaration files 1`] = `
+[
+  "accordion.d.ts",
+  "collapse.d.ts",
+  "index.d.ts",
+  "injects/collapseContext.d.ts",
+  "injects/collapseController.d.ts",
+  "injects/promptContext.d.ts",
+  "promptProvider.d.ts",
+  "scrollState.d.ts",
+]
+`;
+
+exports[`@teamnovu/kit-composables > exposes the same runtime exports when imported by plain Node 1`] = `
+{
+  ".": [
+    "useAccordion: function x",
+    "useCollapse: function b",
+    "useCollapseContext: function y",
+    "useCollapseController: function _",
+    "usePrompt: function w",
+    "usePromptProvider: function T",
+    "useScrollState: function S",
+  ],
+}
+`;
+
+exports[`@teamnovu/kit-cookieconsent > emits the same declaration files 1`] = `
+[
+  "components/CookieGuard.vue.d.ts",
+  "composables/cookieGuard.d.ts",
+  "cookieconsent.config.d.ts",
+  "index.d.ts",
+  "lib.d.ts",
+  "nuxt.d.ts",
+  "types.d.ts",
+  "vue.d.ts",
+]
+`;
+
+exports[`@teamnovu/kit-cookieconsent > exposes the same runtime exports when imported by plain Node 1`] = `
+{
+  ".": [
+    "CookieConsentSymbol: symbol",
+    "CookieGuard: object",
+    "createCookieConsent: function y",
+    "useCookieConsent: function b",
+    "useCookieGuard: function C",
+  ],
+  "./nuxt": [
+    "default: function normalizedModule",
+  ],
+}
+`;
+
+exports[`@teamnovu/kit-operations > emits the same declaration files 1`] = `
+[
+  "createEndpoints.d.ts",
+  "fetcher.d.ts",
+  "index.d.ts",
+  "iri.d.ts",
+  "mutation.d.ts",
+  "query.d.ts",
+  "queryParams.d.ts",
+  "resourceRegistry.d.ts",
+  "types.d.ts",
+  "unwrapParams.d.ts",
+]
+`;
+
+exports[`@teamnovu/kit-operations > exposes the same runtime exports when imported by plain Node 1`] = `
+{
+  ".": [
+    "appendQueryParams: function j",
+    "createEndpoints: function k",
+    "deepUnwrapParams: function S",
+    "extractResourceTypes: function b",
+    "getIdFromIRI: function p",
+    "invalidateResources: function x",
+    "makeQueryFn: function d",
+    "mapArrayOfIdFromIRI: function m",
+    "mapIdFromIRIByKey: function h",
+    "mutation: function D",
+    "query: function T",
+    "registerQueryResources: function v",
+    "resourceIndex: object",
+    "serializeResource: function _",
+    "setQueryDataWithResources: function y",
+    "setTransport: function l",
+    "toFetchOptions: function C",
+    "toLossyQueryOptions: function o",
+    "transportKey: symbol",
+    "useMutationFn: function f",
+    "useTransport: function u",
+  ],
+}
+`;
+
+exports[`@teamnovu/kit-shopware-api-client > emits the same declaration files 1`] = `
+[
+  "client.d.ts",
+  "error.d.ts",
+  "eventEmitter.d.ts",
+  "index.d.ts",
+  "query.d.ts",
+  "types.d.ts",
+]
+`;
+
+exports[`@teamnovu/kit-shopware-api-client > exposes the same runtime exports when imported by plain Node 1`] = `
+{
+  ".": [
+    "ShopwareApiError: function ShopwareApiError",
+    "ShopwareClient: function ShopwareClient",
+  ],
+}
+`;
+
+exports[`@teamnovu/kit-shopware-composables > emits the same declaration files 1`] = `
+[
+  "global.d.ts",
+  "helpers/checkout/index.d.ts",
+  "helpers/checkout/useCheckoutAddresses.d.ts",
+  "helpers/checkout/useOrderDetails.d.ts",
+  "helpers/checkout/useOrderPayment.d.ts",
+  "helpers/checkout/usePaymentMethods.d.ts",
+  "helpers/checkout/useShippingMethods.d.ts",
+  "helpers/general/index.d.ts",
+  "helpers/general/usePagination.d.ts",
+  "helpers/general/useSeoUrl.d.ts",
+  "helpers/index.d.ts",
+  "helpers/product/index.d.ts",
+  "helpers/product/useProductPrice.d.ts",
+  "helpers/product/useProductVariantForOptions.d.ts",
+  "helpers/types/schema.d.ts",
+  "helpers/user/index.d.ts",
+  "helpers/user/useIsLoggedIn.d.ts",
+  "helpers/user/useUser.d.ts",
+  "index.d.ts",
+  "inject.d.ts",
+  "keys.d.ts",
+  "query/address/index.d.ts",
+  "query/address/useCreateCustomerAddressMutation.d.ts",
+  "query/address/useDeleteCustomerAddressMutation.d.ts",
+  "query/address/useListAddressQuery.d.ts",
+  "query/address/useUpdateCustomerAddressMutation.d.ts",
+  "query/cart/index.d.ts",
+  "query/cart/useAddLineItemMutation.d.ts",
+  "query/cart/useReadCartQuery.d.ts",
+  "query/cart/useRemoveLineItemMutation.d.ts",
+  "query/cart/useUpdateLineItemMutation.d.ts",
+  "query/checkout/index.d.ts",
+  "query/checkout/useCreateOrderMutation.d.ts",
+  "query/context/index.d.ts",
+  "query/context/useReadContextQuery.d.ts",
+  "query/context/useReadLanguageQuery.d.ts",
+  "query/context/useUpdateContextMutation.d.ts",
+  "query/country/index.d.ts",
+  "query/country/useReadCountryQuery.d.ts",
+  "query/customer/index.d.ts",
+  "query/customer/useChangeEmailMutation.d.ts",
+  "query/customer/useChangePasswordMutation.d.ts",
+  "query/customer/useChangeProfileMutation.d.ts",
+  "query/customer/useDefaultBillingAddressMutation.d.ts",
+  "query/customer/useDefaultShippingAddressMutation.d.ts",
+  "query/customer/useDeleteCustomerMutation.d.ts",
+  "query/customer/useImitateCustomerLoginQuery.d.ts",
+  "query/customer/useLoginCustomerMutation.d.ts",
+  "query/customer/useLogoutCustomerMutation.d.ts",
+  "query/customer/useReadCustomerQuery.d.ts",
+  "query/customer/useRecoveryPasswordMutation.d.ts",
+  "query/customer/useRegisterConfirmMutation.d.ts",
+  "query/customer/useRegisterCustomerMutation.d.ts",
+  "query/customer/useSendRecoveryMailMutation.d.ts",
+  "query/index.d.ts",
+  "query/navigation/index.d.ts",
+  "query/navigation/useReadNavigationQuery.d.ts",
+  "query/order/index.d.ts",
+  "query/order/useReadOrderQuery.d.ts",
+  "query/payment/index.d.ts",
+  "query/payment/useHandlePaymentMutation.d.ts",
+  "query/payment/useOrderSetPaymentMutation.d.ts",
+  "query/payment/useReadPaymentMethodQuery.d.ts",
+  "query/products/index.d.ts",
+  "query/products/useReadCategoryListQuery.d.ts",
+  "query/products/useReadCompactProductListingQuery.d.ts",
+  "query/products/useReadCustomProductDetailQuery.d.ts",
+  "query/products/useReadProductDetailQuery.d.ts",
+  "query/products/useReadProductQuery.d.ts",
+  "query/products/useSearchPageQuery.d.ts",
+  "query/products/useSearchSuggestQuery.d.ts",
+  "query/salutation/index.d.ts",
+  "query/salutation/useReadSalutationQuery.d.ts",
+  "query/seoUrl/index.d.ts",
+  "query/seoUrl/useReadSeoUrlQuery.d.ts",
+  "query/shipping/index.d.ts",
+  "query/shipping/useReadShippingMethodQuery.d.ts",
+  "query/types/index.d.ts",
+  "query/types/operations.d.ts",
+  "query/types/query.d.ts",
+  "query/types/util.d.ts",
+  "util/index.d.ts",
+  "util/nonShopwareQueryCache.d.ts",
+  "util/nonShopwareQueryCache.test.d.ts",
+  "util/shopwareQueryOptions.d.ts",
+  "util/unrefOptions.d.ts",
+  "util/url.d.ts",
+  "util/useOptimistic.d.ts",
+  "util/useShopwareQuery.d.ts",
+]
+`;
+
+exports[`@teamnovu/kit-shopware-composables > exposes the same runtime exports when imported by plain Node 1`] = `
+{
+  ".": [
+    "NonShopwareQueryCache: function ce",
+    "absolutizeSeoUrl: function le",
+    "addressKeys: object",
+    "cartKeys: object",
+    "categoryKeys: object",
+    "contextKeys: object",
+    "countryKeys: object",
+    "customerKeys: object",
+    "getProductVariantForOptions: function rn",
+    "isShopwareQueryKey: function V",
+    "languageKey: object",
+    "navigationKeys: object",
+    "orderKeys: object",
+    "paymentKeys: object",
+    "productKeys: object",
+    "readPaymentMethodOperation: string",
+    "readShippingMethodOperation: string",
+    "relativizeSeoUrl: function H",
+    "salutationKeys: object",
+    "seoUrlKeys: object",
+    "shippingKeys: object",
+    "shopwareClientKey: symbol",
+    "shopwareKeys: object",
+    "shopwareQueryOptions: function F",
+    "unrefOptions: function R",
+    "useAddLineItemMutation: function we",
+    "useChangeEmailMutation: function Re",
+    "useChangePasswordMutation: function at",
+    "useChangeProfileMutation: function Be",
+    "useCheckoutAddresses: function pe",
+    "useCreateCustomerAddressMutation: function ve",
+    "useCreateOrderMutation: function Me",
+    "useDefaultBillingAddressMutation: function Ye",
+    "useDefaultShippingAddressMutation: function Ze",
+    "useDeleteCustomerAddressMutation: function be",
+    "useDeleteCustomerMutation: function $e",
+    "useHandlePaymentMutation: function vt",
+    "useImitateCustomerLoginQuery: function ct",
+    "useImitateCustomerLoginQueryOptions: function st",
+    "useIsLoggedIn: function on",
+    "useListAddressQuery: function B",
+    "useListAddressQueryOptions: function z",
+    "useLoginCustomerMutation: function He",
+    "useLogoutCustomerMutation: function We",
+    "useOptimistic: function ue",
+    "useOrderDetails: function he",
+    "useOrderPayment: function ge",
+    "useOrderSetPaymentMutation: function bt",
+    "usePagination: function en",
+    "usePaymentMethods: function Xt",
+    "useProductPrice: function nn",
+    "useProductVariantForOptions: function an",
+    "useReadCartQuery: function Ee",
+    "useReadCartQueryOptions: function J",
+    "useReadCategoryListQuery: function Ct",
+    "useReadCategoryListQueryOptions: function St",
+    "useReadCompactProductListingQuery: function Et",
+    "useReadCompactProductListingQueryOptions: function Tt",
+    "useReadContextQuery: function W",
+    "useReadContextQueryOptions: function U",
+    "useReadCountryQuery: function Ie",
+    "useReadCountryQueryOptions: function X",
+    "useReadCustomProductDetailOptions: function Ot",
+    "useReadCustomProductDetailQuery: function kt",
+    "useReadCustomerQuery: function Q",
+    "useReadCustomerQueryOptions: function Z",
+    "useReadLanguageQuery: function Pe",
+    "useReadLanguageQueryOptions: function Y",
+    "useReadNavigationQuery: function pt",
+    "useReadNavigationQueryOptions: function ft",
+    "useReadOrderQuery: function q",
+    "useReadOrderQueryOptions: function K",
+    "useReadPaymentMethodQuery: function gt",
+    "useReadPaymentMethodQueryOptions: function ht",
+    "useReadProductDetailQuery: function Bt",
+    "useReadProductDetailQueryOptions: function $",
+    "useReadProductQuery: function Rt",
+    "useReadProductQueryOptions: function Lt",
+    "useReadSalutationQuery: function Ut",
+    "useReadSalutationQueryOptions: function Ht",
+    "useReadSeoUrlQuery: function Kt",
+    "useReadSeoUrlQueryOptions: function Gt",
+    "useReadShippingMethodQuery: function Yt",
+    "useReadShippingMethodQueryOptions: function Jt",
+    "useRecoveryPasswordMutation: function ut",
+    "useRegisterConfirmMutation: function tt",
+    "useRegisterCustomerMutation: function qe",
+    "useRemoveLineItemMutation: function Oe",
+    "useSearchPageQuery: function Mt",
+    "useSearchPageQueryOptions: function jt",
+    "useSearchSuggestQuery: function Ft",
+    "useSearchSuggestQueryOptions: function Pt",
+    "useSendRecoveryMailMutation: function rt",
+    "useSeoUrl: function $t",
+    "useShippingMethods: function Zt",
+    "useShopwareInfiniteQuery: function te",
+    "useShopwareIsFetching: function re",
+    "useShopwareIsMutating: function ie",
+    "useShopwareMutation: function L",
+    "useShopwareMutationState: function ae",
+    "useShopwareQueries: function ne",
+    "useShopwareQuery: function I",
+    "useShopwareQueryClient: function v",
+    "useShopwareVueQueryClient: function y",
+    "useUpdateContextMutation: function G",
+    "useUpdateCustomerAddressMutation: function Se",
+    "useUpdateLineItemMutation: function Ae",
+    "useUser: function sn",
+  ],
+}
+`;
+
+exports[`@teamnovu/kit-vue-forms > emits the same declaration files 1`] = `
+[
+  "components/Field.vue.d.ts",
+  "components/FormFieldWrapper.vue.d.ts",
+  "components/FormPart.vue.d.ts",
+  "composables/useField.d.ts",
+  "composables/useFieldArray.d.ts",
+  "composables/useFieldRegistry.d.ts",
+  "composables/useForm.d.ts",
+  "composables/useFormData.d.ts",
+  "composables/useFormState.d.ts",
+  "composables/useInitialDataOverride.d.ts",
+  "composables/useSubform.d.ts",
+  "composables/useValidation.d.ts",
+  "index.d.ts",
+  "types/FormComponentProps.d.ts",
+  "types/form.d.ts",
+  "types/util.d.ts",
+  "types/validation.d.ts",
+  "utils/general.d.ts",
+  "utils/path.d.ts",
+  "utils/rc.d.ts",
+  "utils/submitHandler.d.ts",
+  "utils/type-helpers.d.ts",
+  "utils/validation.d.ts",
+  "utils/zod.d.ts",
+]
+`;
+
+exports[`@teamnovu/kit-vue-forms > exposes the same runtime exports when imported by plain Node 1`] = `
+{
+  ".": [
+    "Field: object",
+    "FormFieldWrapper: object",
+    "FormPart: object",
+    "isValidResult: function N",
+    "useForm: function ge",
+  ],
+}
+`;

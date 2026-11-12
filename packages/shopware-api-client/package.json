@@ -1,7 +1,11 @@
 {
   "name": "@teamnovu/kit-shopware-api-client",
-  "version": "0.0.15",
+  "version": "0.1.0",
   "description": "A client for the Shopware API",
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -14,7 +18,9 @@
   "scripts": {
     "build": "vite build",
     "watch": "NODE_ENV=development vite build --watch",
-    "lint": "eslint --fix --ignore-pattern 'dist/**' ."
+    "lint": "eslint --fix --ignore-pattern 'dist/**' .",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",
@@ -24,6 +30,9 @@
   "author": "Elias Bernhaut",
   "homepage": "https://kit.novu.ch/packages/shopware-api-client/",
   "dependencies": {
-    "zod": "^3.25.67"
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "vitest": "^5.1.0"
   }
 }

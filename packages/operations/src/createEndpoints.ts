@@ -1,6 +1,6 @@
 import { type DefaultError, type QueryKey } from '@tanstack/vue-query'
 import { mapValues } from 'lodash-es'
-import { unref } from 'vue'
+import { toValue, unref } from 'vue'
 import type {
   ApiParams,
   QueryEndpoint,
@@ -22,7 +22,7 @@ function mapKeyFn<
     const result = fn(...rest)
     return {
       ...result,
-      queryKey: [...path, ...unref(unref(result).queryKey)] as [...Path, ...Key],
+      queryKey: [...path, ...toValue(unref(result).queryKey)] as [...Path, ...Key],
       $invalidateKey: [...path, ...unref(unref(result).$invalidateKey)] as [...Path, ...Key],
     } as const
   }

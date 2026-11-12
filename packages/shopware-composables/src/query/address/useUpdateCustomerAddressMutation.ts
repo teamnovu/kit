@@ -1,6 +1,6 @@
 import type { UseMutationOptions } from '@tanstack/vue-query'
 import { ShopwareApiError } from '@teamnovu/kit-shopware-api-client'
-import { unref } from 'vue'
+import { toValue, unref } from 'vue'
 import { useShopwareQueryClient, useShopwareVueQueryClient } from '../../inject'
 import { addressKeys, contextKeys } from '../../keys'
 import { unrefOptions } from '../../util/unrefOptions'
@@ -20,11 +20,11 @@ export function useUpdateCustomerAddressMutation(
   const queryClient = useShopwareVueQueryClient()
 
   return useShopwareMutation({
-    ...mutationOptions,
+    ...unref(toValue(mutationOptions)),
     mutationFn: async (options: OperationOptions<typeof updateCustomerAddressOperation>) => {
       return client.query(updateCustomerAddressOperation, unrefOptions(options))
     },
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data, variables, ...rest) => {
       const { addressId } = unrefOptions(variables).params
       queryClient.setQueryData(addressKeys.detail(addressId), data)
 
@@ -38,7 +38,7 @@ export function useUpdateCustomerAddressMutation(
         }),
       ])
 
-      await unref(unref(mutationOptions)?.onSuccess)?.(data, variables, context)
+      await unref(unref(toValue(mutationOptions))?.onSuccess)?.(data, variables, ...rest)
     },
   })
 }

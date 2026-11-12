@@ -29,4 +29,3 @@ export const useReadSeoUrlQueryOptions = function useReadSeoUrlQueryOptions(
 export function useReadSeoUrlQuery(options?: OperationOptions<typeof readSeoUrlOperation>) {
   return useShopwareQuery(useReadSeoUrlQueryOptions(options))
 }
-

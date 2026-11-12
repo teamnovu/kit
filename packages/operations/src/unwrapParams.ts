@@ -1,5 +1,5 @@
-import { mapValues } from 'lodash-es';
-import { type MaybeRef, unref } from 'vue';
+import { mapValues } from 'lodash-es'
+import { type MaybeRef, unref } from 'vue'
 
 /**
  * Deeply unwraps an API params bag. Each section (`params`/`queryParams`/`body`) may be a
@@ -12,12 +12,12 @@ export function deepUnwrapParams<T>(
   return mapValues(
     (unref(bag) ?? {}) as Record<string, unknown>,
     (section) => {
-      const unrefedSection = unref(section);
+      const unrefedSection = unref(section)
       return unrefedSection !== null
         && typeof unrefedSection === 'object'
         && !Array.isArray(unrefedSection)
         ? mapValues(unrefedSection, v => unref(v))
-        : unrefedSection;
+        : unrefedSection
     },
-  ) as T;
+  ) as T
 }

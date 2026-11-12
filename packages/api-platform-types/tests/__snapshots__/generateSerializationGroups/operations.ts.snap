@@ -1,0 +1,60 @@
+export interface BookOperations {
+    resourceClass: 'App\\Entity\\Book';
+    type: 'Publication';
+    operations: {
+        GetCollection: {
+            output: {
+                groups: 'book:read';
+            };
+        };
+        Get: {
+            output: {
+                groups: 'book:read';
+            };
+        };
+        Post: {
+            input: {
+                groups: 'book:write';
+            };
+            output: {
+                groups: 'book:read';
+            };
+        };
+        Put: {
+            input: {
+                groups: 'book:replace';
+            };
+            output: {
+                groups: 'book:read';
+            };
+        };
+        Patch: {
+            input: {
+                groups: 'book:write';
+            };
+            output: {
+                groups: 'book:read' | 'book:detail';
+            };
+        };
+        publish: {
+            input: {
+                groups: 'book:publish';
+            };
+            output: {
+                groups: 'book:read';
+            };
+        };
+    };
+}
+export interface ReviewOperations {
+    resourceClass: 'App\\Entity\\Review';
+    type: 'Review';
+    operations: {
+        review_get: {
+            output: {
+                groups: 'review:read';
+            };
+        };
+    };
+}
+export type OperationsUnionType = BookOperations | ReviewOperations;

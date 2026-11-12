@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 export default tseslint.config(
   includeIgnoreFile(fileURLToPath(new URL('.gitignore', import.meta.url))),
+  { ignores: ['packages/shopware-composables/api-types/**'] },
   {
     extends: [tseslint.configs.recommended],
     languageOptions: {
@@ -25,5 +26,25 @@ export default tseslint.config(
         ],
         '@typescript-eslint/no-empty-object-type': 'off',
       },
+  },
+  {
+    rules: {
+      'tailwindcss/classnames-order': 'off',
+      'tailwindcss/enforces-negative-arbitrary-values': 'off',
+      'tailwindcss/enforces-shorthand': 'off',
+      'tailwindcss/migration-from-tailwind-2': 'off',
+      'tailwindcss/no-arbitrary-value': 'off',
+      'tailwindcss/no-contradicting-classname': 'off',
+      'tailwindcss/no-custom-classname': 'off',
+      'tailwindcss/no-unnecessary-arbitrary-value': 'off',
+    },
+  },
+  {
+    files: ['**/*.ts', '**/*.mts', '**/*.vue'],
+    rules: { 'no-redeclare': 'off' },
+  },
+  {
+    files: ['scripts/**'],
+    rules: { 'no-console': 'off' },
   },
 )
