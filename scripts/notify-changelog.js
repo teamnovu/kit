@@ -1,106 +1,88 @@
-import { execSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
-const { SLACK_WEBHOOK_URL } = process.env
+// Slack's cumulative limit for markdown blocks in one payload
+export const MARKDOWN_LIMIT = 12_000
 
-if (!SLACK_WEBHOOK_URL) {
-  console.log('SLACK_WEBHOOK_URL not set, skipping notification')
-  process.exit(0)
-}
-
-// Find the previous release tag to compare against
-function getPreviousReleaseTag() {
-  try {
-    // Get all release tags sorted by date, skip the one we just created (most recent)
-    const tags = execSync('git tag --list "release-*" --sort=-creatordate', { encoding: 'utf-8' })
-      .trim()
-      .split('\n')
-      .filter(Boolean)
-
-    // Return second tag (previous release) or null if none
-    return tags[1] ?? undefined
-  } catch {
-    return undefined
+function fitToLimit(body, releaseUrl) {
+  if (body.length <= MARKDOWN_LIMIT) {
+    return body
   }
+
+  const suffix = `\n\n… [Full release notes](${releaseUrl})`
+  return body.slice(0, MARKDOWN_LIMIT - suffix.length) + suffix
 }
 
-const previousTag = getPreviousReleaseTag()
-const compareRef = previousTag ?? 'HEAD~1'
+/**
+ * Builds one Slack message per package released by release-please.
+ *
+ * @param {Record<string, string>} outputs The release-please action outputs
+ * @param {(path: string) => string} readPackageName Resolves a package path to its npm name
+ */
+export function buildReleaseMessages(outputs, readPackageName) {
+  const paths = JSON.parse(outputs.paths_released ?? '[]')
 
-console.log(`Comparing against: ${compareRef}`)
+  return paths.map((path) => {
+    const name = readPackageName(path)
+    const version = outputs[`${path}--version`]
+    const releaseUrl = outputs[`${path}--html_url`]
+    const body = outputs[`${path}--body`] ?? ''
 
-const changedFiles = execSync(`git diff --name-only ${compareRef} HEAD -- "packages/**/CHANGELOG.md"`, { encoding: 'utf-8' })
-  .trim()
-  .split('\n')
-  .filter(Boolean)
-
-if (changedFiles.length === 0) {
-  console.log('No changelog files changed')
-  process.exit(0)
+    return {
+      text: `${name} ${version} released`,
+      blocks: [
+        {
+          type: 'header',
+          text: {
+            type: 'plain_text',
+            text: `📦 ${name} ${version}`,
+            emoji: true,
+          },
+        },
+        {
+          type: 'markdown',
+          text: fitToLimit(body, releaseUrl),
+        },
+      ],
+    }
+  })
 }
 
-const changes = []
+function readPackageName(path) {
+  return JSON.parse(readFileSync(join(path, 'package.json'), 'utf8')).name
+}
 
-for (const file of changedFiles) {
-  const packageName = file.split('/')[1] // packages/[name]/CHANGELOG.md
+async function main() {
+  const outputs = JSON.parse(process.env.RELEASE_PLEASE_OUTPUTS ?? '{}')
+  const messages = buildReleaseMessages(outputs, readPackageName)
 
-  const diff = execSync(`git diff ${compareRef} HEAD -- "${file}"`, { encoding: 'utf-8' })
-  const lines = diff
-    .split('\n')
-    .filter(line => line.startsWith('+') && !line.startsWith('+++'))
-    .map(line => line.slice(1)) // Remove the '+' prefix
+  if (messages.length === 0) {
+    console.log('No releases created')
+    return
+  }
 
-  // Find first version entry and skip everything before
-  const firstVersionIndex = lines.findIndex(line => line.startsWith('## ['))
-  const contentLines = firstVersionIndex >= 0 ? lines.slice(firstVersionIndex) : lines
+  const { SLACK_WEBHOOK_URL } = process.env
 
-  const addedLines = contentLines.join('\n').trim()
+  if (!SLACK_WEBHOOK_URL) {
+    console.log(JSON.stringify(messages, null, 2))
+    return
+  }
 
-  if (addedLines) {
-    changes.push({
-      packageName,
-      addedLines,
+  for (const message of messages) {
+    const response = await fetch(SLACK_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(message),
     })
+
+    if (!response.ok) {
+      console.error(`Failed to send Slack notification for "${message.text}": ${response.status} ${response.statusText}`)
+      process.exitCode = 1
+    }
   }
 }
 
-if (changes.length === 0) {
-  console.log('No new changelog entries found')
-  process.exit(0)
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main()
 }
-
-const message = changes
-  .map(({ packageName, addedLines }) => `📦 \`@teamnovu/kit-${packageName}\`\n\`\`\`\n${addedLines}\n\`\`\``)
-  .join('\n\n')
-
-const payload = {
-  blocks: [
-    {
-      type: 'header',
-      text: {
-        type: 'plain_text',
-        text: '📝 Changelog updated',
-        emoji: true,
-      },
-    },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: message,
-      },
-    },
-  ],
-}
-
-const response = await fetch(SLACK_WEBHOOK_URL, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(payload),
-})
-
-if (!response.ok) {
-  console.error('Failed to send Slack notification:', response.statusText)
-  process.exit(1)
-}
-
-console.log('Slack notification sent successfully')
