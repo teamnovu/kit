@@ -5,7 +5,7 @@ const shopwareErrorSchema = z.object({
   code: z.string(),
   title: z.string().optional(),
   detail: z.string().optional(),
-  meta: z.record(z.unknown()).optional(),
+  meta: z.record(z.string(), z.unknown()).optional(),
   source: z.object({
     pointer: z.string().optional(),
   }).optional(),
