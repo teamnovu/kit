@@ -1,6 +1,10 @@
 {
   "name": "@teamnovu/kit-nuxt",
   "version": "1.1.8",
+  "files": [
+    "src",
+    "CHANGELOG.md"
+  ],
   "exports": {
     ".": {
       "import": "./src/module.ts"
