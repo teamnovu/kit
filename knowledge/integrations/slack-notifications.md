@@ -19,7 +19,21 @@ tags: [slack, release, ci]
   `**bold**` or `[text](url)` links. Wrapping in a code block kept it legible but showed raw Markdown.
 - **Weakness:** the custom diff parsing is fragile.
 
-# Planned (release-please)
+# Current (since commit `13b9767`, wired in `4453da1`)
+
+`scripts/notify-changelog.js` exports `buildReleaseMessages(outputs, readPackageName)`, covered by
+`tests/notify-changelog.test.ts` with a snapshot. To preview locally:
+
+```
+RELEASE_PLEASE_OUTPUTS='<json>' node scripts/notify-changelog.js
+```
+
+Without `SLACK_WEBHOOK_URL`, the script prints the payloads instead of sending them.
+
+**Still to verify:** one real post to a scratch channel, to confirm that incoming webhooks render the
+`markdown` block. If not, switch to the link-only fallback.
+
+# Design
 
 - **No parsing:** the script reads the release-please action outputs (`RELEASE_PLEASE_OUTPUTS` =
   `toJSON(steps.release.outputs)`). For each path in `paths_released`, it takes `--version`, `--html_url` and

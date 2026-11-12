@@ -70,6 +70,24 @@ tags: [bugs, follow-up]
 - **Context token:** a non-ok response doesn't pick up a `sw-context-token` header.
 - **Invalid operation key:** reported as "Failed to communicate with Shopware API" (500).
 
+# shopware-composables (published types)
+
+These issues already exist in the published 0.1.2. They were found by a consumer type check with
+`skipLibCheck: false`, which most setups don't use:
+
+- **`query/types/operations.d.ts` and the helpers:** they import `../../../api-types/storeApiTypes.d.ts` with a
+  value `import` (TS2846, "use import type").
+- **`helpers/product/useProductPrice.d.ts`:** imports `TierPrice` from `@shopware/helpers`, which is only a
+  devDependency (bundled in the JS), so the type is unresolvable for consumers.
+- **`operations.d.ts`:** references the global `ShopwareApi` namespace from `dist/global.d.ts`, which isn't in
+  scope unless the consumer includes that file.
+
+# Publishing (fixed in `2441823`)
+
+- Packages without a `files` whitelist published everything not gitignored. That likely included
+  `packages/shopware-composables/.env` and `.env.test`, plus the API schema and `.http` files. **Check the
+  published tarballs and rotate any secrets.**
+
 # shopware-composables
 
 - **`useOptimistic.ts:30-32`:** when nothing was cached, the rollback is a no-op, because vue-query ignores
