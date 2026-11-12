@@ -11,7 +11,7 @@ tags: [vitest, testing, happy-dom, vue-test-utils, contract-tests]
 |---|---|
 | `pnpm test` | vitest in every package that has a `test` script |
 | `pnpm test:contract` | `pnpm clean`, `pnpm build`, then the root `tests/` |
-| `pnpm typecheck` | `vue-tsc --noEmit` per package; covers `src/` only, not tests |
+| `pnpm typecheck` | `vue-tsc --noEmit` per package; covers `src/` only, not tests. Needs a built `dist`, because packages resolve each other's types from it |
 
 CI runs all three, plus lint and the docs build, in the `verify` job (see the
 [release process](../release/current-release-process.md)).

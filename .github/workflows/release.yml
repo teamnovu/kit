@@ -36,6 +36,9 @@ jobs:
       - name: Lint
         run: pnpm exec eslint .
 
+      - name: Build
+        run: pnpm build
+
       - name: Typecheck
         run: pnpm typecheck
 
