@@ -28,14 +28,15 @@ describe('useScrollState', () => {
     expect(y.value).toBe(0)
   })
 
-  it('starts downward but still at the beginning when the page is already scrolled', () => {
+  it('picks up an already scrolled page once mounted', async () => {
     document.documentElement.scrollTop = 300
 
     const { beginning, downward, y } = setupScrollState()
+    await nextTick()
 
-    expect(beginning.value).toBe(true)
-    expect(downward.value).toBe(true)
     expect(y.value).toBe(300)
+    expect(downward.value).toBe(true)
+    expect(beginning.value).toBe(false)
   })
 
   it('tracks the window scroll position in y', async () => {
