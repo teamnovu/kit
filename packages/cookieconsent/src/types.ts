@@ -1,4 +1,4 @@
-import * as VanillaConsent from 'vanilla-cookieconsent/types'
+import type * as VanillaConsent from 'vanilla-cookieconsent'
 import type { Ref } from 'vue'
 
 declare global {
