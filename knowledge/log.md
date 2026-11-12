@@ -1,5 +1,9 @@
 # Knowledge Update Log
 
+## 2026-11-12 (Slack test post, `.env` check)
+* **Update**: [Slack notifications](integrations/slack-notifications.md) are verified by a real webhook post to a scratch channel.
+* **Update**: [Known bugs](quality/known-bugs.md): the published `.env` files hold nothing sensitive, so no rotation is needed.
+
 ## 2026-11-12 (Phases 4 and 5 complete)
 * **Update**: The [release-please setup](release/release-please-migration.md) is implemented, with pinned first-release versions (`release-as`, to be removed afterwards).
 * **Update**: [Slack notifications](integrations/slack-notifications.md) are implemented. A real webhook test post is still open.
