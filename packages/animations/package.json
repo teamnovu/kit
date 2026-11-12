@@ -36,7 +36,6 @@
   "author": "Elias Bernhaut",
   "homepage": "https://kit.novu.ch/packages/animations/",
   "dependencies": {
-    "@vueuse/core": "^10.1.0",
     "nanoid": "^5.0.6"
   },
   "devDependencies": {
