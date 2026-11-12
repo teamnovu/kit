@@ -33,7 +33,7 @@
   "homepage": "https://kit.novu.ch/packages/composables/",
   "dependencies": {
     "@vueuse/core": "^9.13.0",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.18.1",
     "nanoid": "^5.0.6"
   },
   "devDependencies": {
