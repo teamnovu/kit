@@ -5,15 +5,15 @@
   "bump-minor-pre-major": true,
   "plugins": ["node-workspace"],
   "packages": {
-    "packages/animations": { "release-as": "2.0.0" },
-    "packages/api-platform-types": { "release-as": "0.3.0" },
-    "packages/components": { "release-as": "2.0.0" },
-    "packages/composables": { "release-as": "2.0.0" },
-    "packages/cookieconsent": { "release-as": "3.1.0" },
-    "packages/nuxt": { "release-as": "2.0.0" },
-    "packages/operations": { "release-as": "0.1.0" },
-    "packages/shopware-api-client": { "release-as": "0.1.0" },
-    "packages/shopware-composables": { "release-as": "0.2.0" },
-    "packages/vue-forms": { "release-as": "0.5.0" }
+    "packages/animations": {},
+    "packages/api-platform-types": {},
+    "packages/components": {},
+    "packages/composables": {},
+    "packages/cookieconsent": {},
+    "packages/nuxt": {},
+    "packages/operations": {},
+    "packages/shopware-api-client": {},
+    "packages/shopware-composables": {},
+    "packages/vue-forms": {}
   }
 }
