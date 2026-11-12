@@ -10,7 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, unref, VNodeRef } from 'vue'
+import {
+  ref, unref, VNodeRef, type MaybeRef, type Ref,
+} from 'vue'
 import { omit } from 'lodash-es'
 import { useCollapse } from '@teamnovu/kit-composables'
 import {
@@ -18,7 +20,6 @@ import {
   useVModel,
   type CubicBezierPoints,
   type EasingFunction,
-  type MaybeRef,
 } from '@vueuse/core'
 
 // #region Types
@@ -61,7 +62,7 @@ const isOpen = useCollapse(collapseRef, {
 
 const model = useVModel(props, 'open', emit, { passive: true })
 
-syncRef(isOpen, model)
+syncRef(isOpen, model as Ref<boolean>)
 
 // #endregion
 

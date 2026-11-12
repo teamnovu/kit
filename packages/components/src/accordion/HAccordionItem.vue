@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import type { CubicBezierPoints, EasingFunction } from '@vueuse/core'
-import type { MaybeRef } from '@vueuse/shared'
+import type { MaybeRef } from 'vue'
 import Collapse from '../Collapse.vue'
 import { useVModel } from '@vueuse/core'
 

@@ -23,7 +23,7 @@ import {
   type CubicBezierPoints,
   type EasingFunction,
 } from '@vueuse/core'
-import type { MaybeRef } from '@vueuse/shared'
+import type { MaybeRef } from 'vue'
 import HAccordionItem from './HAccordionItem.vue'
 import AccessibleComponent from '../AccessibleComponent.vue'
 import { omit } from 'lodash-es'
