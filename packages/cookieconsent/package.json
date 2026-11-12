@@ -2,6 +2,10 @@
   "name": "@teamnovu/kit-cookieconsent",
   "version": "3.0.6",
   "description": "A Vue wrapper for Cookie Consent",
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

@@ -2,6 +2,10 @@
   "name": "@teamnovu/kit-api-platform-types",
   "version": "0.2.5",
   "description": "Frontend typescript types for API Platform",
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

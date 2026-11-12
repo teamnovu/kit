@@ -3,7 +3,8 @@
   "version": "1.2.1",
   "description": "Animations for novu",
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",

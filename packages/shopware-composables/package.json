@@ -2,6 +2,11 @@
   "name": "@teamnovu/kit-shopware-composables",
   "version": "0.1.2",
   "description": "A collection of composables for the Shopware API",
+  "files": [
+    "dist",
+    "api-types/storeApiTypes.d.ts",
+    "CHANGELOG.md"
+  ],
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
