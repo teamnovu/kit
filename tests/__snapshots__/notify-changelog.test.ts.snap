@@ -1,0 +1,50 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`buildReleaseMessages > builds one message per released package with the release notes verbatim 1`] = `
+[
+  {
+    "blocks": [
+      {
+        "text": {
+          "emoji": true,
+          "text": "📦 @teamnovu/kit-components 2.0.0",
+          "type": "plain_text",
+        },
+        "type": "header",
+      },
+      {
+        "text": "## [2.0.0](https://github.com/teamnovu/kit/compare/kit-components-v1.2.3...kit-components-v2.0.0) (2026-11-12)
+
+### ⚠ BREAKING CHANGES
+
+* **deps:** @teamnovu/kit-components requires vue >= 3.5
+
+### Bug Fixes
+
+* **components:** point exports, main and module at the emitted .js files ([cd0d859](https://github.com/teamnovu/kit/commit/cd0d859))",
+        "type": "markdown",
+      },
+    ],
+    "text": "@teamnovu/kit-components 2.0.0 released",
+  },
+  {
+    "blocks": [
+      {
+        "text": {
+          "emoji": true,
+          "text": "📦 @teamnovu/kit-operations 0.0.7",
+          "type": "plain_text",
+        },
+        "type": "header",
+      },
+      {
+        "text": "### Bug Fixes
+
+* **operations:** unwrap getter query keys in createEndpoints",
+        "type": "markdown",
+      },
+    ],
+    "text": "@teamnovu/kit-operations 0.0.7 released",
+  },
+]
+`;
