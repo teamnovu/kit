@@ -275,8 +275,8 @@ importers:
   packages/shopware-api-client:
     dependencies:
       zod:
-        specifier: ^3.25.67
-        version: 3.25.67
+        specifier: ^4.6.7
+        version: 4.6.7
     devDependencies:
       vitest:
         specifier: ^5.1.0
