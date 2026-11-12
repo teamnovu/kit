@@ -205,15 +205,12 @@ importers:
       '@nuxt/kit':
         specifier: ^3.8.1
         version: 3.21.11(magicast@0.3.5)
-      '@vueuse/core':
-        specifier: ^10.5.0
-        version: 10.11.1(vue@3.5.45(typescript@6.0.3))
       defu:
-        specifier: ^6.1.3
+        specifier: ^6.1.7
         version: 6.1.7
       vanilla-cookieconsent:
-        specifier: ^3.0.0-rc.15
-        version: 3.1.0
+        specifier: ^3.3.0
+        version: 3.3.0
       vue:
         specifier: ^3.3.8
         version: 3.5.45(typescript@6.0.3)
@@ -3665,9 +3662,6 @@ packages:
     resolution: {integrity: sha512-N+MeXYoqr3pOgn8xfyRPREN7gHakLYjhsHhWGT3fWAiL4IkAt0iDw14QiiEm2bE30c5XX5q0FtAA3CK5f9/BUg==}
     engines: {node: '>=12'}
 
-  defu@6.1.4:
-    resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
-
   defu@6.1.7:
     resolution: {integrity: sha512-7z22QmUWiQ/2d0KkdYmANbRUVABpZ9SNYyH5vx6PZ+nE5bcC0l7uFvEfHlyld/HcGBFTL536ClDt3DEcSlEJAQ==}
 
@@ -6688,8 +6682,8 @@ packages:
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
-  vanilla-cookieconsent@3.1.0:
-    resolution: {integrity: sha512-/McNRtm/3IXzb9dhqMIcbquoU45SzbN2VB+To4jxEPqMmp7uVniP6BhGLjU8MC7ZCDsNQVOp27fhQTM/ruIXAA==}
+  vanilla-cookieconsent@3.3.0:
+    resolution: {integrity: sha512-KkFJL9W9MAOC7ipSmk1CqTY1PHBViDU81jRBRWGw1Zhx5Y3nyAQ2COYwMpEG2z2SM75HNUIOwM7NnkSJe775Tw==}
 
   vfile-message@4.0.4:
     resolution: {integrity: sha512-66ycRswIkNmHH9PHku7ADtv5RVwgIrOcuv3J8Svz6h4qgGRrKVa+9/neuKyJZUXyOpYwLTvS+whZ4R2urHHgQg==}
@@ -8312,7 +8306,7 @@ snapshots:
       citty: 0.1.6
       clipboardy: 4.0.0
       consola: 3.4.2
-      defu: 6.1.4
+      defu: 6.1.7
       fuse.js: 7.1.0
       giget: 2.0.0
       h3: 1.15.1
@@ -8401,7 +8395,7 @@ snapshots:
     dependencies:
       c12: 3.0.3(magicast@0.3.5)
       consola: 3.4.2
-      defu: 6.1.4
+      defu: 6.1.7
       destr: 2.0.5
       errx: 0.1.0
       exsolve: 1.0.4
@@ -8453,7 +8447,7 @@ snapshots:
   '@nuxt/schema@3.16.2':
     dependencies:
       consola: 3.4.2
-      defu: 6.1.4
+      defu: 6.1.7
       pathe: 2.0.3
       std-env: 3.9.0
 
@@ -8491,7 +8485,7 @@ snapshots:
       autoprefixer: 10.4.21(postcss@8.5.6)
       consola: 3.4.2
       cssnano: 7.0.6(postcss@8.5.6)
-      defu: 6.1.4
+      defu: 6.1.7
       esbuild: 0.25.2
       escape-string-regexp: 5.0.0
       exsolve: 1.0.4
@@ -10443,7 +10437,7 @@ snapshots:
     dependencies:
       chokidar: 4.0.3
       confbox: 0.2.2
-      defu: 6.1.4
+      defu: 6.1.7
       dotenv: 16.5.0
       exsolve: 1.0.4
       giget: 2.0.0
@@ -10821,8 +10815,6 @@ snapshots:
   define-lazy-prop@2.0.0: {}
 
   define-lazy-prop@3.0.0: {}
-
-  defu@6.1.4: {}
 
   defu@6.1.7: {}
 
@@ -11554,7 +11546,7 @@ snapshots:
     dependencies:
       citty: 0.1.6
       consola: 3.4.2
-      defu: 6.1.4
+      defu: 6.1.7
       node-fetch-native: 1.6.6
       nypm: 0.6.0
       pathe: 2.0.3
@@ -11672,7 +11664,7 @@ snapshots:
     dependencies:
       cookie-es: 1.2.2
       crossws: 0.3.4
-      defu: 6.1.4
+      defu: 6.1.7
       destr: 2.0.3
       iron-webcrypto: 1.2.1
       node-mock-http: 1.0.0
@@ -12046,7 +12038,7 @@ snapshots:
       clipboardy: 4.0.0
       consola: 3.4.2
       crossws: 0.3.4
-      defu: 6.1.4
+      defu: 6.1.7
       get-port-please: 3.1.2
       h3: 1.15.1
       http-shutdown: 1.2.2
@@ -12369,7 +12361,7 @@ snapshots:
       croner: 9.0.0
       crossws: 0.3.4
       db0: 0.3.1
-      defu: 6.1.4
+      defu: 6.1.7
       destr: 2.0.5
       dot-prop: 9.0.0
       esbuild: 0.25.2
@@ -12543,7 +12535,7 @@ snapshots:
       compatx: 0.1.8
       consola: 3.4.2
       cookie-es: 2.0.0
-      defu: 6.1.4
+      defu: 6.1.7
       destr: 2.0.3
       devalue: 5.1.1
       errx: 0.1.0
@@ -13189,7 +13181,7 @@ snapshots:
 
   rc9@2.1.2:
     dependencies:
-      defu: 6.1.4
+      defu: 6.1.7
       destr: 2.0.5
 
   rc9@3.1.0:
@@ -13442,7 +13434,7 @@ snapshots:
 
   serve-placeholder@2.0.2:
     dependencies:
-      defu: 6.1.4
+      defu: 6.1.7
 
   serve-static@2.2.0:
     dependencies:
@@ -13968,7 +13960,7 @@ snapshots:
 
   unenv@2.0.0-rc.15:
     dependencies:
-      defu: 6.1.4
+      defu: 6.1.7
       exsolve: 1.0.4
       ohash: 2.0.11
       pathe: 2.0.3
@@ -14183,7 +14175,7 @@ snapshots:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
 
-  vanilla-cookieconsent@3.1.0: {}
+  vanilla-cookieconsent@3.3.0: {}
 
   vfile-message@4.0.4:
     dependencies:
