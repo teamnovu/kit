@@ -1,12 +1,12 @@
 ---
 type: Reference
 title: Slack release notifications
-description: How release notes are posted to Slack, why they used to show as raw Markdown, and the planned replacement.
+description: How release notes are posted to Slack, why they used to show as raw Markdown, and how they render now.
 resource: https://docs.slack.dev/reference/block-kit/blocks/markdown-block
 tags: [slack, release, ci]
 ---
 
-# Today (`scripts/notify-changelog.js`)
+# Before (until `13b9767`)
 
 - **When:** runs in CI after a version change, with the `SLACK_WEBHOOK_URL` secret; it skips if the secret is
   unset.
@@ -30,8 +30,10 @@ RELEASE_PLEASE_OUTPUTS='<json>' node scripts/notify-changelog.js
 
 Without `SLACK_WEBHOOK_URL`, the script prints the payloads instead of sending them.
 
-**Still to verify:** one real post to a scratch channel, to confirm that incoming webhooks render the
-`markdown` block. If not, switch to the link-only fallback.
+**Verified 2026-11-12:** a test post through an incoming webhook to a scratch channel rendered the
+`markdown` block. Headings appear as bold text; bold scopes, lists, quotes and commit links render. Links
+inside headings show as plain text, so the compare link in release-please's version heading isn't
+clickable.
 
 # Design
 
@@ -42,7 +44,5 @@ Without `SLACK_WEBHOOK_URL`, the script prints the payloads instead of sending t
   block** carrying the body verbatim. That block renders standard Markdown: headings, bold, links, lists.
 - **Limit:** the markdown block's cumulative limit is 12,000 characters per payload. Longer text is cut and
   the release link appended.
-- **Unverified:** whether incoming webhooks accept the `markdown` block. If they don't, fall back to a
-  link-only message.
 - **Ordering:** the step runs only after a successful publish, so Slack never announces a version that isn't
   on npm.

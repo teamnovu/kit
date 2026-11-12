@@ -85,8 +85,9 @@ These issues already exist in the published 0.1.2. They were found by a consumer
 # Publishing (fixed in `2441823`)
 
 - Packages without a `files` whitelist published everything not gitignored. That likely included
-  `packages/shopware-composables/.env` and `.env.test`, plus the API schema and `.http` files. **Check the
-  published tarballs and rotate any secrets.**
+  `packages/shopware-composables/.env` and `.env.test`, plus the API schema and `.http` files.
+- **Checked 2026-11-12:** these files hold nothing sensitive. `.env.local` was gitignored, so it was never
+  published, and its dev-only token is already invalid. No rotation needed.
 
 # shopware-composables
 
