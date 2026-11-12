@@ -5,6 +5,52 @@ description: Breaking API changes in the upgraded dependencies and the exact pla
 tags: [dependencies, migration, vueuse, zod, nanoid]
 ---
 
+# Done in Phase 3 (2026-11-11/12)
+
+- **TypeScript 5.8 → 6.0:**
+  - `rootDir` is no longer inferred, so vite-plugin-dts emitted declarations to `dist/src/`. All package
+    tsconfigs now set `"rootDir": "./src"`.
+  - `types` defaults to `[]`, which was harmless here because every tsconfig sets `types`.
+  - The built output stayed byte-identical.
+- **vite 6 → 7:** the default build target is now `baseline-widely-available`. That brings native class fields
+  instead of a helper, CSS `inset` shorthands and no `-moz-` prefix. These are consumer-visible syntax changes
+  but fine for current browsers.
+- **vite 7 → 8 (Rolldown/Oxc):**
+  - `esbuild.keepNames` is **not** converted automatically; use `build.rolldownOptions.output.keepNames`
+    (shopware-api-client).
+  - `build.rollupOptions` still works as a deprecated alias, without a warning.
+  - Minified internal function names change, but export keys and types don't.
+  - CSS is minified by Lightning CSS (e.g. `translateX` instead of `translate`), with the same CSS-module class
+    names.
+- **vite-plugin-dts 4 → 5:**
+  - It wraps unplugin-dts and needs `@vue/language-core` (declared at the root).
+  - Its automatic `.vue` detection misses components that are only imported from `index.ts`, so set
+    `processor: 'vue'` (components, cookieconsent, vue-forms).
+  - The generated `*.vue.d.ts` changed shape but were verified type-equivalent.
+- **vitest 2/3 → 5:**
+  - `clearMocks` is on by default.
+  - Test options are no longer allowed as the third argument.
+  - Nothing in this repo needed changes.
+- **@stylistic 4 → 5 (deferred):** v5 applies `indent`/`operator-linebreak` to TypeScript type syntax. Its
+  autofix produced worse formatting in places (a stray leading `|`, 180-character lines), so it waits for the
+  shared config.
+- **ESLint 10 (deferred):** blocked by `@teamnovu/eslint-config-vue@9.0.19`, which pins
+  `eslint-plugin-better-tailwindcss@^3` (peers ESLint ≤ 9). ESLint 9 itself is end-of-life, so the shared
+  config needs a release with ESLint 10, `@stylistic` 5 and the Tailwind plugins v4.
+
+# Done in the held-back runtime steps
+
+- **zod 4.6 (vue-forms):** fixed with `toRaw` on the schema, plus a floor of `^4.6.7`.
+- **vue-query 5.107:**
+  - Mutation composables forward all callback arguments and accept options as refs and getters
+    (`unref(toValue(…))`).
+  - `NonShopwareQueryCache` wraps `build` in the constructor instead of redeclaring it.
+  - `useOptimistic` has an explicit `MutationOptions` return type, so its declaration doesn't leak
+    `MutationFunctionContext`, which doesn't exist in 5.85.
+  - operations uses `toValue` for getter query keys.
+- **vanilla-cookieconsent 3.3:** import the types from the package root, and filter the namespace's new
+  `default` out of the provided API.
+
 # VueUse 9/10/13 → 15
 
 - **`MaybeRef`:** no longer exported from `@vueuse/core` or `@vueuse/shared`. Use

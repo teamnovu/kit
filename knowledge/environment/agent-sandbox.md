@@ -13,14 +13,29 @@ tags: [claude-code, sandbox, pnpm, workflow]
 - **Private files:** `~/.npmrc`, `.env*`, SSH keys and GitHub CLI config are unreadable. Private GitHub repos
   (e.g. `teamnovu/novu-skills`, SSH only) cannot be fetched from the sandbox.
 - **Inline scripts:** `node -e` snippets are not approved. For JSON analysis, use `jq` (e.g. on
-  `eslint -f json` or `pnpm audit --json`).
+  `eslint -f json -o <file>` or `pnpm audit --json`). Scripts placed in the scratchpad and run with `node <file>`
+  work.
+- **Searches:** `rg` commands are declined. `packages/shopware-composables/.env` and `.env.test` are not
+  gitignored, so content searches touch them. Use `git grep` on tracked paths instead, or `grep` on explicit
+  directories.
+- **Command size:** long compound commands (several pipes, `rm -rf`, trailing status checks) tend to be
+  declined. Keep commands short and focused.
 - **Raw `rm -rf`** of build output was declined.
 
 # Pitfall: installing inside the sandbox
 
-A `pnpm install` that runs inside the sandbox, including one started with `!` from a Claude Code session,
-cannot write the global store. pnpm then switches to a repo-local `.pnpm-store`, purges every `node_modules`
-and fails half-way. This happened on 2026-11-11.
+A `pnpm install` that runs inside the agent's sandbox cannot write the global store. pnpm then switches to a
+repo-local `.pnpm-store`, purges every `node_modules` and fails half-way. This happened on 2026-11-11.
+
+**The trap is pnpm 11's automatic install.** Before `pnpm exec`, `pnpm run` or `pnpm test`, pnpm checks
+whether `package.json` matches the installed state, and installs on a mismatch. So any pnpm command the agent
+runs after a `package.json` edit triggers a sandboxed install. A later attempt was only saved because pnpm
+aborted the purge without a TTY.
+
+**Rules after editing `package.json`:**
+- Run no `pnpm` command until the user has installed.
+- If you need a tool before that, call the binary directly (`./node_modules/.bin/eslint`, `vitest`, `tsc`),
+  which bypasses the check.
 
 Recover from **your own terminal**:
 
@@ -31,8 +46,8 @@ pnpm install
 
 Afterwards, `node_modules/.modules.yaml` must show `storeDir` as `~/Library/pnpm/store/v11` again.
 
-An install via `!` works when nothing has to be **downloaded** (removals, versions already in the store).
-Anything that fetches new versions must run in the user's own terminal.
+Installs the user runs via `!` work, including ones that download new versions; they use the global store.
+An earlier note claiming the opposite was wrong.
 
 # Agreed workarounds (2026-11-11)
 
