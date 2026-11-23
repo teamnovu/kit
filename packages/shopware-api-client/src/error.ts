@@ -1,21 +1,21 @@
-import { z } from 'zod'
+import * as z from 'zod/mini'
 
 const shopwareErrorSchema = z.object({
   status: z.string(),
   code: z.string(),
-  title: z.string().optional(),
-  detail: z.string().optional(),
-  meta: z.record(z.string(), z.unknown()).optional(),
-  source: z.object({
-    pointer: z.string().optional(),
-  }).optional(),
-  trace: z.array(
+  title: z.optional(z.string()),
+  detail: z.optional(z.string()),
+  meta: z.optional(z.record(z.string(), z.unknown())),
+  source: z.optional(z.object({
+    pointer: z.optional(z.string()),
+  })),
+  trace: z.optional(z.array(
     z.object({
       file: z.string(),
       line: z.number(),
       function: z.string(),
     }),
-  ).optional(),
+  )),
 })
 
 const shopwareErrorResponseSchema = z.object({
