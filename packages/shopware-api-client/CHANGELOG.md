@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/teamnovu/kit/compare/kit-shopware-api-client-v0.1.0...kit-shopware-api-client-v0.2.0) (2026-11-23)
+
+
+### Features
+
+* lazy-load zod ([b0bc660](https://github.com/teamnovu/kit/commit/b0bc66085d4512ba252b4311edbaddd514124f73))
+
 ## [0.1.0](https://github.com/teamnovu/kit/compare/kit-shopware-api-client-v0.0.15...kit-shopware-api-client-v0.1.0) (2026-11-12)
 
 
